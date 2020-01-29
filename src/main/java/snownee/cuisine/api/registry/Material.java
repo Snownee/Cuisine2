@@ -14,6 +14,14 @@ public class Material extends ForgeRegistryEntry<Material> {
     private ImmutableSet<Tag<Item>> tags;
     private ImmutableListMultimap<Integer, Bonus> stars;
 
+    public ImmutableSet<Item> getItems() {
+        return items;
+    }
+
+    public ImmutableSet<Tag<Item>> getTags() {
+        return tags;
+    }
+
     @Override
     public String toString() {
         return "Material{" + getRegistryName() + "}";

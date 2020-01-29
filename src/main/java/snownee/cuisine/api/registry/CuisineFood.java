@@ -17,6 +17,16 @@ public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
     @SerializedName("max_stars")
     private int maxStars = 2;
 
+    @Nullable
+    public Item getItem() {
+        return item;
+    }
+
+    @Nullable
+    public Block getBlock() {
+        return block;
+    }
+
     @Override
     public String toString() {
         return "CuisineFood{" + getRegistryName() + "}";

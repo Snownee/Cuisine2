@@ -7,6 +7,7 @@ import snownee.cuisine.api.RecipeRule;
 
 public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> implements Comparable<CuisineRecipe> {
 
+    private CuisineFood result;
     private int priority;
     private Utensil utensil;
     private List<RecipeRule> rules;

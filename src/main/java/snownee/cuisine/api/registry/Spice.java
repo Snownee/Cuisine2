@@ -14,6 +14,22 @@ public class Spice extends ForgeRegistryEntry<Spice> {
     private ImmutableSet<Fluid> fluids;
     private ImmutableSet<Tag<Fluid>> fluidTags;
 
+    public ImmutableSet<Item> getItems() {
+        return items;
+    }
+
+    public ImmutableSet<Tag<Item>> getTags() {
+        return tags;
+    }
+
+    public ImmutableSet<Fluid> getFluids() {
+        return fluids;
+    }
+
+    public ImmutableSet<Tag<Fluid>> getFluidTags() {
+        return fluidTags;
+    }
+
     @Override
     public String toString() {
         return "Spice{" + getRegistryName() + "}";

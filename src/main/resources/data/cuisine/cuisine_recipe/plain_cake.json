@@ -1,5 +1,5 @@
 {
-  "result": "cuisine:plain_cake"
+  "result": "cuisine:plain_cake",
   "priority": -1000,
   "utensil": "cuisine:oven",
   "rules": [
