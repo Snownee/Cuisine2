@@ -11,23 +11,19 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonObject;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.resources.JsonReloadListener;
-import net.minecraft.item.Item;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.JsonUtils.ImmutableListTypeAdapter;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import snownee.cuisine.api.Bonus;
 import snownee.cuisine.api.RecipeRule;
-import snownee.cuisine.api.registry.CuisineFood;
-import snownee.cuisine.api.registry.Material;
-import snownee.cuisine.api.registry.Spice;
-import snownee.cuisine.api.registry.Utensil;
-import snownee.cuisine.data.adapter.ForgeRegistryAdapter;
+import snownee.cuisine.data.adapter.ForgeRegistryAdapterFactory;
 import snownee.cuisine.data.adapter.ImmutableSetAdapter;
 import snownee.cuisine.data.adapter.StarsAdapter;
 import snownee.cuisine.data.adapter.TagAdapter;
@@ -39,12 +35,7 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
             .setPrettyPrinting()
             .disableHtmlEscaping()
             .enableComplexMapKeySerialization()
-            .registerTypeAdapter(Item.class, new ForgeRegistryAdapter(Item.class))
-            .registerTypeAdapter(Block.class, new ForgeRegistryAdapter(Block.class))
-            //.registerTypeAdapter(Material.class, new ForgeRegistryAdapter(Material.class))
-            //.registerTypeAdapter(Spice.class, new ForgeRegistryAdapter(Spice.class))
-            //.registerTypeAdapter(Utensil.class, new ForgeRegistryAdapter(Utensil.class))
-            //.registerTypeAdapter(CuisineFood.class, new ForgeRegistryAdapter(CuisineFood.class))
+            .registerTypeAdapterFactory(new ForgeRegistryAdapterFactory())
             .registerTypeAdapter(ImmutableListMultimap.class, new StarsAdapter())
             .registerTypeAdapter(ImmutableList.class, ImmutableListTypeAdapter.INSTANCE)
             .registerTypeAdapter(ImmutableSet.class, ImmutableSetAdapter.INSTANCE)
@@ -71,14 +62,21 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
     @Override
     protected void apply(Map<ResourceLocation, JsonObject> splashList, IResourceManager resourceManagerIn, IProfiler profilerIn) {
         profilerIn.startSection("Loading " + registry.getRegistryName());
+        boolean noWarning = true;
+        ModLoadingContext ctx = ModLoadingContext.get();
         registry.unfreeze();
         registry.clear();
         splashList.forEach((id, o) -> {
             System.out.println(registry.getRegistryName() + " " + id);
+            if (noWarning)
+                ctx.setActiveContainer(ModList.get().getModContainerById(id.getNamespace()).orElse(null), ctx.extension());
             T go = GSON.fromJson(o, registry.getRegistrySuperType());
             registry.register(go.setRegistryName(id));
         });
         registry.freeze();
+        if (callback != null) {
+            callback.run();
+        }
         profilerIn.endSection();
     }
 

@@ -10,9 +10,9 @@ import snownee.cuisine.api.Bonus;
 
 public class Material extends ForgeRegistryEntry<Material> {
 
-    private ImmutableSet<Item> items;
-    private ImmutableSet<Tag<Item>> tags;
-    private ImmutableListMultimap<Integer, Bonus> stars;
+    private ImmutableSet<Item> items = ImmutableSet.of();
+    private ImmutableSet<Tag<Item>> tags = ImmutableSet.of();
+    private ImmutableListMultimap<Integer, Bonus> stars = ImmutableListMultimap.of();
 
     public ImmutableSet<Item> getItems() {
         return items;
