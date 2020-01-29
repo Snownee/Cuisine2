@@ -1,0 +1,18 @@
+{
+  "priority": -1000,
+  "utensil": "cuisine:saucepan",
+  "rules": [
+    {
+      "type": "material",
+      "value": "cuisine:red_mushroom"
+    },
+    {
+      "type": "material",
+      "value": "cuisine:brown_mushroom"
+    },
+    {
+      "type": "!material",
+      "values": [ "#fruit", "#flower" ]
+    }
+  ]
+}

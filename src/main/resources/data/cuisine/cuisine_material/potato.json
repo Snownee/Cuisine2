@@ -1,0 +1,21 @@
+{
+  "tags": [ "forge:crops/potato" ],
+  "stars": {
+    "2": {
+      "effect": {
+        "jump_boost": {
+          "duration": 200,
+          "amplifier": 0
+        }
+      }
+    },
+    "3": {
+      "effect": {
+        "jump_boost": {
+          "duration": 200,
+          "amplifier": 1
+        }
+      }
+    }
+  }
+}

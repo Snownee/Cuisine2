@@ -1,0 +1,28 @@
+{
+  "result": "cuisine:plain_cake"
+  "priority": -1000,
+  "utensil": "cuisine:oven",
+  "rules": [
+    {
+      "type": "material",
+      "value": "#flour",
+      "min": 3
+    },
+    {
+      "type": "material",
+      "value": "#egg"
+    },
+    {
+      "type": "!material",
+      "values": [ "#meat", "#vege", "#fruit", "#mushroom", "#fish" ]
+    },
+    {
+      "type": "spice",
+      "value": "#sweet"
+    },
+    {
+      "type": "!spice",
+      "value": "#salty"
+    }
+  ]
+}

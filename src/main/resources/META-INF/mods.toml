@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[31,)"
+[[mods]]
+modId="cuisine"
+version="${file.jarVersion}"
+displayName="Cuisine"
+authors="Snownee"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/cuisine2"
+description='''Huge thanks to my supporters:
+
+粉鱼 Lioness131 皮蛋 路人玖 Cherls idyllic_bean 鱼加盐有点咸 洋葱菜菜子 面条公爵 车轮饼 mc00zhu 洛华 纪华裕 可爱至吉 ycccz 东篱下i Ruriri Meowsquito
+'''
+
+[[dependencies.cuisine]]
+    modId="kiwi"
+    mandatory=true
+    versionRange="[2.6.3, 2.10)"
+    ordering="BEFORE"
+    side="BOTH"
+
+[[dependencies.cuisine]]
+    modId="forge"
+    mandatory=true
+    versionRange="[31.0.1,)"
+    ordering="BEFORE"
+    side="BOTH"

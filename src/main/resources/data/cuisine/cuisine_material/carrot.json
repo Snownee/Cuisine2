@@ -1,0 +1,21 @@
+{
+  "tags": [ "forge:crops/carrot" ],
+  "stars": {
+    "2": {
+      "effect": {
+        "speed": {
+          "duration": 200,
+          "amplifier": 0
+        }
+      }
+    },
+    "3": {
+      "effect": {
+        "speed": {
+          "duration": 200,
+          "amplifier": 1
+        }
+      }
+    }
+  }
+}

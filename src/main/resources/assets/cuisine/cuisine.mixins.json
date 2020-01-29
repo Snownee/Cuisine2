@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "snownee.cuisine.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "mixins.cuisine.refmap.json",
+  "mixins": [
+    "MixinLivingEntity",
+    "MixinFoodStats"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

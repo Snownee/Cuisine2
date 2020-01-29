@@ -1,0 +1,7 @@
+{
+  "type": "cuisine:milling",
+  "ingredient": {
+    "tag": "forge:crops/wheat"
+  },
+  "result": "cuisine:flour"
+}
