@@ -79,7 +79,7 @@ public final class CoreModule extends AbstractModule {
             for (Item item : material.getItems()) {
                 item2Material.put(item, material);
             }
-            for (Tag<Item> tag : material.getTags()) {
+            for (Tag<Item> tag : material.getItemTags()) {
                 for (Item item : tag.getAllElements()) {
                     item2Material.put(item, material);
                 }
@@ -94,7 +94,7 @@ public final class CoreModule extends AbstractModule {
             for (Item item : spice.getItems()) {
                 item2Spice.put(item, spice);
             }
-            for (Tag<Item> tag : spice.getTags()) {
+            for (Tag<Item> tag : spice.getItemTags()) {
                 for (Item item : tag.getAllElements()) {
                     item2Spice.put(item, spice);
                 }

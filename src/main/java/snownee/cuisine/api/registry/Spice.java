@@ -1,11 +1,16 @@
 package snownee.cuisine.api.registry;
 
+import java.util.Set;
+
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import snownee.cuisine.tag.SpiceTags;
 
 public class Spice extends ForgeRegistryEntry<Spice> {
 
@@ -13,21 +18,26 @@ public class Spice extends ForgeRegistryEntry<Spice> {
     private ImmutableSet<Tag<Item>> tags = ImmutableSet.of();
     private ImmutableSet<Fluid> fluids = ImmutableSet.of();
     private ImmutableSet<Tag<Fluid>> fluidTags = ImmutableSet.of();
+    private ReverseTagWrapper<Spice> reverseTags = new ReverseTagWrapper<>(this, SpiceTags::getGeneration, SpiceTags::getCollection);
 
-    public ImmutableSet<Item> getItems() {
+    public final ImmutableSet<Item> getItems() {
         return items;
     }
 
-    public ImmutableSet<Tag<Item>> getTags() {
+    public final ImmutableSet<Tag<Item>> getItemTags() {
         return tags;
     }
 
-    public ImmutableSet<Fluid> getFluids() {
+    public final ImmutableSet<Fluid> getFluids() {
         return fluids;
     }
 
-    public ImmutableSet<Tag<Fluid>> getFluidTags() {
+    public final ImmutableSet<Tag<Fluid>> getFluidTags() {
         return fluidTags;
+    }
+
+    public final Set<ResourceLocation> getTags() {
+        return reverseTags.getTagNames();
     }
 
     @Override
