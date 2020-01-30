@@ -42,19 +42,17 @@ public final class CoreModule extends AbstractModule {
     @Override
     protected void preInit() {
         CuisineRegistries.class.hashCode();
+        cuisineNetworkTagManager = new CuisineNetworkTagManager();
 
         CuisineAPI.registerBonusAdapter("effect", new EffectsBonus.Adapter());
         CuisineAPI.registerBonusAdapter("new_material", new NewMaterialBonus.Adapter());
 
-        CuisineAPI.registerRecipeRuleAdapter("material", new CountRegistryRecipeRule.Adapter());
-        CuisineAPI.registerRecipeRuleAdapter("spice", new CountRegistryRecipeRule.Adapter());
-
-        cuisineNetworkTagManager = new CuisineNetworkTagManager();
+        CuisineAPI.registerRecipeRuleAdapter("material", new CountRegistryRecipeRule.Adapter<>(cuisineNetworkTagManager.getMaterials(), CuisineRegistries.MATERIALS));
+        CuisineAPI.registerRecipeRuleAdapter("spice", new CountRegistryRecipeRule.Adapter<>(cuisineNetworkTagManager.getSpices(), CuisineRegistries.SPICES));
     }
 
     @SubscribeEvent
     protected void serverInit(FMLServerAboutToStartEvent event) {
-
         if (materialManager == null) {
             materialManager = new CuisineDataManager("cuisine_material", CuisineRegistries.MATERIALS).setCallback(CoreModule::buildMaterialMap);
             spiceManager = new CuisineDataManager("cuisine_spice", CuisineRegistries.SPICES).setCallback(CoreModule::buildSpiceMap);

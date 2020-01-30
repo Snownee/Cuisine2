@@ -25,6 +25,7 @@ import snownee.cuisine.api.Bonus;
 import snownee.cuisine.api.RecipeRule;
 import snownee.cuisine.data.adapter.ForgeRegistryAdapterFactory;
 import snownee.cuisine.data.adapter.ImmutableSetAdapter;
+import snownee.cuisine.data.adapter.RecipeRuleAdapter;
 import snownee.cuisine.data.adapter.StarsAdapter;
 import snownee.cuisine.data.adapter.TagAdapter;
 
@@ -40,6 +41,7 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
             .registerTypeAdapter(ImmutableList.class, ImmutableListTypeAdapter.INSTANCE)
             .registerTypeAdapter(ImmutableSet.class, ImmutableSetAdapter.INSTANCE)
             .registerTypeAdapter(Tag.class, new TagAdapter())
+            .registerTypeAdapter(RecipeRule.class, new RecipeRuleAdapter())
             .create();
     /* on */
 

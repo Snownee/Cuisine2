@@ -21,7 +21,7 @@ public class ForgeRegistryAdapterFactory implements TypeAdapterFactory {
 
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-        Class<? super T> clazz = type.getRawType();
+        Class clazz = type.getRawType();
         IForgeRegistry<?> registry = RegistryManager.ACTIVE.getRegistry(clazz);
         if (registry != null) {
             return new ForgeRegistryAdapter(registry, gson, type, this);

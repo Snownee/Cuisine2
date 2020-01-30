@@ -11,6 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.JSONUtils;
 import net.minecraftforge.registries.ForgeRegistry;
@@ -43,8 +44,13 @@ public class CountRegistryRecipeRule<T extends IForgeRegistryEntry<T>> implement
 
     public static class Adapter<T extends IForgeRegistryEntry<T>> implements JsonDeserializer<CountRegistryRecipeRule> {
 
-        private TagCollection<T> tagCollection;
-        private ForgeRegistry<T> registry;
+        private final TagCollection<T> tagCollection;
+        private final ForgeRegistry<T> registry;
+
+        public Adapter(TagCollection<T> tagCollection, ForgeRegistry<T> registry) {
+            this.tagCollection = tagCollection;
+            this.registry = registry;
+        }
 
         @Override
         public CountRegistryRecipeRule deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -66,7 +72,8 @@ public class CountRegistryRecipeRule<T extends IForgeRegistryEntry<T>> implement
                 return Collections.EMPTY_LIST;
             }
             if (key.charAt(0) == '#') {
-                return tagCollection.get(Util.RL(key.substring(1))).getAllElements();
+                Tag<T> tag = tagCollection.get(Util.RL(key.substring(1)));
+                return tag != null ? tag.getAllElements() : Collections.EMPTY_LIST;
             }
             return Collections.singleton(registry.getValue(Util.RL(key)));
         }
