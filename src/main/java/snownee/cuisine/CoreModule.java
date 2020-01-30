@@ -12,7 +12,12 @@ import net.minecraft.item.Item;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.tags.Tag;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.registry.CuisineFood;
@@ -25,8 +30,10 @@ import snownee.cuisine.impl.bonus.NewMaterialBonus;
 import snownee.cuisine.impl.rule.CountRegistryRecipeRule;
 import snownee.cuisine.tag.CuisineNetworkTagManager;
 import snownee.kiwi.AbstractModule;
+import snownee.kiwi.Kiwi;
 import snownee.kiwi.KiwiModule;
 import snownee.kiwi.KiwiModule.Subscriber.Bus;
+import snownee.kiwi.util.Util;
 
 @KiwiModule(name = "core")
 @KiwiModule.Subscriber(value = Bus.FORGE)
@@ -39,8 +46,17 @@ public final class CoreModule extends AbstractModule {
 
     private CuisineNetworkTagManager cuisineNetworkTagManager;
 
+    public CoreModule() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CuisineCommonConfig.spec);
+        if (FMLEnvironment.dist.isClient()) {
+            ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, CuisineClientConfig.spec);
+        }
+    }
+
     @Override
     protected void preInit() {
+        Cuisine.debug = Kiwi.isLoaded(Util.RL("kiwi:test"));
+
         CuisineRegistries.class.hashCode();
         cuisineNetworkTagManager = new CuisineNetworkTagManager();
 
@@ -49,6 +65,16 @@ public final class CoreModule extends AbstractModule {
 
         CuisineAPI.registerRecipeRuleAdapter("material", new CountRegistryRecipeRule.Adapter<>(cuisineNetworkTagManager.getMaterials(), CuisineRegistries.MATERIALS));
         CuisineAPI.registerRecipeRuleAdapter("spice", new CountRegistryRecipeRule.Adapter<>(cuisineNetworkTagManager.getSpices(), CuisineRegistries.SPICES));
+    }
+
+    @Override
+    protected void init(FMLCommonSetupEvent event) {
+        CuisineCommonConfig.refresh();
+    }
+
+    @Override
+    protected void clientInit(FMLClientSetupEvent event) {
+        CuisineClientConfig.refresh();
     }
 
     @SubscribeEvent
