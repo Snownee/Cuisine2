@@ -31,7 +31,6 @@ import snownee.cuisine.data.CuisineDataManager;
 import snownee.cuisine.impl.bonus.EffectsBonus;
 import snownee.cuisine.impl.bonus.NewMaterialBonus;
 import snownee.cuisine.tag.CuisineNetworkTagManager;
-import snownee.cuisine.tag.CuisineSTagsListPacket;
 import snownee.cuisine.tag.MaterialTags;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiModule;
@@ -56,8 +55,6 @@ public final class CoreModule extends AbstractModule {
         CuisineAPI.registerBonusAdapter("effect", new EffectsBonus.Adapter());
         CuisineAPI.registerBonusAdapter("new_material", new NewMaterialBonus.Adapter());
 
-        NetworkChannel.register(CuisineSTagsListPacket.class, new CuisineSTagsListPacket.Handler());
-        cuisineNetworkTagManager = new CuisineNetworkTagManager();
 
 
     }
@@ -70,16 +67,14 @@ public final class CoreModule extends AbstractModule {
             spiceManager = new CuisineDataManager("cuisine_spice", CuisineRegistries.SPICES).setCallback(CoreModule::buildSpiceMap);
             foodManager = new CuisineDataManager("cuisine_food", CuisineRegistries.FOODS).setCallback(CoreModule::buildFoodMap);
             recipeManager = new CuisineDataManager("cuisine_recipe", CuisineRegistries.RECIPES);
+            cuisineNetworkTagManager = new CuisineNetworkTagManager();
         }
         IReloadableResourceManager manager = event.getServer().getResourceManager();
         manager.addReloadListener(materialManager);
         manager.addReloadListener(spiceManager);
         manager.addReloadListener(foodManager);
         manager.addReloadListener(recipeManager);
-        IResourceManager man = event.getServer().getResourceManager();
-        if (man instanceof SimpleReloadableResourceManager){
-            ((SimpleReloadableResourceManager) man).addReloadListener(cuisineNetworkTagManager);
-        }
+        manager.addReloadListener(cuisineNetworkTagManager);
 
     }
 
