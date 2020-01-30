@@ -1,1 +1,7 @@
-{}
+{
+  "replace": false,
+  "values": [
+    "cuisine:carrot",
+    "cuisine:potato"
+  ]
+}
