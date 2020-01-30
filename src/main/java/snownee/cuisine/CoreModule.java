@@ -7,12 +7,20 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.SimpleReloadableResourceManager;
 import net.minecraft.tags.Tag;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.registry.CuisineFood;
@@ -22,9 +30,12 @@ import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.data.CuisineDataManager;
 import snownee.cuisine.impl.bonus.EffectsBonus;
 import snownee.cuisine.impl.bonus.NewMaterialBonus;
+import snownee.cuisine.tag.CuisineNetworkTagManager;
+import snownee.cuisine.tag.MaterialTags;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiModule;
 import snownee.kiwi.KiwiModule.Subscriber.Bus;
+import snownee.kiwi.network.NetworkChannel;
 
 @KiwiModule(name = "core")
 @KiwiModule.Subscriber(value = Bus.FORGE)
@@ -35,16 +46,22 @@ public final class CoreModule extends AbstractModule {
     private CuisineDataManager<CuisineFood> foodManager;
     private CuisineDataManager<CuisineRecipe> recipeManager;
 
+    private CuisineNetworkTagManager cuisineNetworkTagManager;
+
     @Override
     protected void preInit() {
         CuisineRegistries.class.hashCode();
 
         CuisineAPI.registerBonusAdapter("effect", new EffectsBonus.Adapter());
         CuisineAPI.registerBonusAdapter("new_material", new NewMaterialBonus.Adapter());
+
+        cuisineNetworkTagManager = new CuisineNetworkTagManager();
+
     }
 
     @SubscribeEvent
     protected void serverInit(FMLServerAboutToStartEvent event) {
+
         if (materialManager == null) {
             materialManager = new CuisineDataManager("cuisine_material", CuisineRegistries.MATERIALS).setCallback(CoreModule::buildMaterialMap);
             spiceManager = new CuisineDataManager("cuisine_spice", CuisineRegistries.SPICES).setCallback(CoreModule::buildSpiceMap);
@@ -56,6 +73,8 @@ public final class CoreModule extends AbstractModule {
         manager.addReloadListener(spiceManager);
         manager.addReloadListener(foodManager);
         manager.addReloadListener(recipeManager);
+        manager.addReloadListener(cuisineNetworkTagManager);
+
     }
 
     static Map<Item, Material> item2Material = Maps.newHashMap();
