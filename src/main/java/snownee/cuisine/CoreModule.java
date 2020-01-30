@@ -22,6 +22,7 @@ import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.data.CuisineDataManager;
 import snownee.cuisine.impl.bonus.EffectsBonus;
 import snownee.cuisine.impl.bonus.NewMaterialBonus;
+import snownee.cuisine.impl.rule.CountRegistryRecipeRule;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiModule;
 import snownee.kiwi.KiwiModule.Subscriber.Bus;
@@ -41,6 +42,9 @@ public final class CoreModule extends AbstractModule {
 
         CuisineAPI.registerBonusAdapter("effect", new EffectsBonus.Adapter());
         CuisineAPI.registerBonusAdapter("new_material", new NewMaterialBonus.Adapter());
+
+        CuisineAPI.registerRecipeRuleAdapter("material", new CountRegistryRecipeRule.Adapter());
+        CuisineAPI.registerRecipeRuleAdapter("spice", new CountRegistryRecipeRule.Adapter());
     }
 
     @SubscribeEvent
