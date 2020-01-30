@@ -1,4 +1,4 @@
-package snownee.cuisine.tag;
+package snownee.cuisine.data.tag;
 
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;

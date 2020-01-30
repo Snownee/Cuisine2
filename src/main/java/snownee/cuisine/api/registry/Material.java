@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import snownee.cuisine.api.Bonus;
-import snownee.cuisine.tag.MaterialTags;
+import snownee.cuisine.data.tag.MaterialTags;
 
 public class Material extends ForgeRegistryEntry<Material> {
 

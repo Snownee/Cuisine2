@@ -10,7 +10,7 @@ import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import snownee.cuisine.tag.SpiceTags;
+import snownee.cuisine.data.tag.SpiceTags;
 
 public class Spice extends ForgeRegistryEntry<Spice> {
 

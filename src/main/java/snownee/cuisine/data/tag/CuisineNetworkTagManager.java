@@ -1,5 +1,6 @@
-package snownee.cuisine.tag;
+package snownee.cuisine.data.tag;
 
+import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IFutureReloadListener;
@@ -41,11 +42,14 @@ public class CuisineNetworkTagManager implements IFutureReloadListener {
     public CompletableFuture<Void> reload(IFutureReloadListener.IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
         CompletableFuture<Map<ResourceLocation, Tag.Builder<Spice>>> completablefuture = this.spices.reload(resourceManager, backgroundExecutor);
         CompletableFuture<Map<ResourceLocation, Tag.Builder<Material>>> completablefuture1 = this.materials.reload(resourceManager, backgroundExecutor);
-        return completablefuture.thenCombine(completablefuture1, ReloadResults::new).thenCompose(stage::markCompleteAwaitingOthers).thenAcceptAsync((p_215298_1_) -> {
-            this.spices.registerAll(p_215298_1_.spices);
-            this.materials.registerAll(p_215298_1_.materials);
-            SpiceTags.setCollection(this.spices);
+        /**
+         * @see ReloadListener#reload
+         */
+        return completablefuture1.thenCompose(stage::markCompleteAwaitingOthers).thenAcceptAsync((p_215269_3_) -> {
+            reloadProfiler.startSection("Loading " + p_215269_3_.toString());
+            this.materials.registerAll(p_215269_3_);
             MaterialTags.setCollection(this.materials);
+            reloadProfiler.endSection();
         }, gameExecutor);
     }
 

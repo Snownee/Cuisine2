@@ -28,7 +28,7 @@ import snownee.cuisine.data.CuisineDataManager;
 import snownee.cuisine.impl.bonus.EffectsBonus;
 import snownee.cuisine.impl.bonus.NewMaterialBonus;
 import snownee.cuisine.impl.rule.CountRegistryRecipeRule;
-import snownee.cuisine.tag.CuisineNetworkTagManager;
+import snownee.cuisine.data.tag.CuisineNetworkTagManager;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.Kiwi;
 import snownee.kiwi.KiwiModule;

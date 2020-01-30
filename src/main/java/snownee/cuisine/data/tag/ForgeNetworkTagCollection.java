@@ -1,4 +1,4 @@
-package snownee.cuisine.tag;
+package snownee.cuisine.data.tag;
 
 import com.google.common.collect.Maps;
 import net.minecraft.network.PacketBuffer;
