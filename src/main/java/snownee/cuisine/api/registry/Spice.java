@@ -9,10 +9,10 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public class Spice extends ForgeRegistryEntry<Spice> {
 
-    private ImmutableSet<Item> items;
-    private ImmutableSet<Tag<Item>> tags;
-    private ImmutableSet<Fluid> fluids;
-    private ImmutableSet<Tag<Fluid>> fluidTags;
+    private ImmutableSet<Item> items = ImmutableSet.of();
+    private ImmutableSet<Tag<Item>> tags = ImmutableSet.of();
+    private ImmutableSet<Fluid> fluids = ImmutableSet.of();
+    private ImmutableSet<Tag<Fluid>> fluidTags = ImmutableSet.of();
 
     public ImmutableSet<Item> getItems() {
         return items;

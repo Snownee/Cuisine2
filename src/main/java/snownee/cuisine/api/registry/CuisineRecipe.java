@@ -1,5 +1,6 @@
 package snownee.cuisine.api.registry;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -10,7 +11,7 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> implements 
     private CuisineFood result;
     private int priority;
     private Utensil utensil;
-    private List<RecipeRule> rules;
+    private List<RecipeRule> rules = Collections.EMPTY_LIST;
 
     public int getPriority() {
         return priority;
