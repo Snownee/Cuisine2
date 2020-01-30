@@ -55,7 +55,7 @@ public final class CoreModule extends AbstractModule {
         CuisineAPI.registerBonusAdapter("effect", new EffectsBonus.Adapter());
         CuisineAPI.registerBonusAdapter("new_material", new NewMaterialBonus.Adapter());
 
-
+        cuisineNetworkTagManager = new CuisineNetworkTagManager();
 
     }
 
@@ -67,7 +67,6 @@ public final class CoreModule extends AbstractModule {
             spiceManager = new CuisineDataManager("cuisine_spice", CuisineRegistries.SPICES).setCallback(CoreModule::buildSpiceMap);
             foodManager = new CuisineDataManager("cuisine_food", CuisineRegistries.FOODS).setCallback(CoreModule::buildFoodMap);
             recipeManager = new CuisineDataManager("cuisine_recipe", CuisineRegistries.RECIPES);
-            cuisineNetworkTagManager = new CuisineNetworkTagManager();
         }
         IReloadableResourceManager manager = event.getServer().getResourceManager();
         manager.addReloadListener(materialManager);
