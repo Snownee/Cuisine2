@@ -23,6 +23,7 @@ import snownee.cuisine.data.CuisineDataManager;
 import snownee.cuisine.impl.bonus.EffectsBonus;
 import snownee.cuisine.impl.bonus.NewMaterialBonus;
 import snownee.cuisine.impl.rule.CountRegistryRecipeRule;
+import snownee.cuisine.tag.CuisineNetworkTagManager;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiModule;
 import snownee.kiwi.KiwiModule.Subscriber.Bus;
@@ -36,6 +37,8 @@ public final class CoreModule extends AbstractModule {
     private CuisineDataManager<CuisineFood> foodManager;
     private CuisineDataManager<CuisineRecipe> recipeManager;
 
+    private CuisineNetworkTagManager cuisineNetworkTagManager;
+
     @Override
     protected void preInit() {
         CuisineRegistries.class.hashCode();
@@ -45,10 +48,13 @@ public final class CoreModule extends AbstractModule {
 
         CuisineAPI.registerRecipeRuleAdapter("material", new CountRegistryRecipeRule.Adapter());
         CuisineAPI.registerRecipeRuleAdapter("spice", new CountRegistryRecipeRule.Adapter());
+
+        cuisineNetworkTagManager = new CuisineNetworkTagManager();
     }
 
     @SubscribeEvent
     protected void serverInit(FMLServerAboutToStartEvent event) {
+
         if (materialManager == null) {
             materialManager = new CuisineDataManager("cuisine_material", CuisineRegistries.MATERIALS).setCallback(CoreModule::buildMaterialMap);
             spiceManager = new CuisineDataManager("cuisine_spice", CuisineRegistries.SPICES).setCallback(CoreModule::buildSpiceMap);
@@ -60,6 +66,8 @@ public final class CoreModule extends AbstractModule {
         manager.addReloadListener(spiceManager);
         manager.addReloadListener(foodManager);
         manager.addReloadListener(recipeManager);
+        manager.addReloadListener(cuisineNetworkTagManager);
+
     }
 
     static Map<Item, Material> item2Material = Maps.newHashMap();

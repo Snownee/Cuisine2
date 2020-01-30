@@ -152,3 +152,7 @@ apply plugin: 'org.spongepowered.mixin'
 mixin {
     add sourceSets.main, "mixins.cuisine.refmap.json"
 }
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
