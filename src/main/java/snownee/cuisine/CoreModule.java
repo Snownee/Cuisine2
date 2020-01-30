@@ -63,9 +63,8 @@ public final class CoreModule extends AbstractModule {
         manager.addReloadListener(materialManager);
         manager.addReloadListener(spiceManager);
         manager.addReloadListener(foodManager);
-        manager.addReloadListener(recipeManager);
         manager.addReloadListener(cuisineNetworkTagManager);
-
+        manager.addReloadListener(recipeManager);
     }
 
     static Map<Item, Material> item2Material = Maps.newHashMap();

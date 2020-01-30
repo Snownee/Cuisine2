@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.profiler.IProfiler;
@@ -21,6 +22,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.Bonus;
 import snownee.cuisine.api.RecipeRule;
 import snownee.cuisine.data.adapter.ForgeRegistryAdapterFactory;
@@ -69,11 +71,14 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
         registry.unfreeze();
         registry.clear();
         splashList.forEach((id, o) -> {
-            System.out.println(registry.getRegistryName() + " " + id);
             if (noWarning)
                 ctx.setActiveContainer(ModList.get().getModContainerById(id.getNamespace()).orElse(null), ctx.extension());
-            T go = GSON.fromJson(o, registry.getRegistrySuperType());
-            registry.register(go.setRegistryName(id));
+            try {
+                T go = GSON.fromJson(o, registry.getRegistrySuperType());
+                registry.register(go.setRegistryName(id));
+            } catch (JsonSyntaxException | NullPointerException e) {
+                Cuisine.logger.catching(e);
+            }
         });
         registry.freeze();
         if (callback != null) {

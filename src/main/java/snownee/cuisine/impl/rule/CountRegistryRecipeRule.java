@@ -73,9 +73,10 @@ public class CountRegistryRecipeRule<T extends IForgeRegistryEntry<T>> implement
             }
             if (key.charAt(0) == '#') {
                 Tag<T> tag = tagCollection.get(Util.RL(key.substring(1)));
-                return tag != null ? tag.getAllElements() : Collections.EMPTY_LIST;
+                return tag.getAllElements();
             }
-            return Collections.singleton(registry.getValue(Util.RL(key)));
+            T go = registry.getValue(Util.RL(key));
+            return Collections.singleton(go);
         }
 
     }
