@@ -11,7 +11,7 @@ import snownee.kiwi.KiwiModule.Subscriber.Bus;
 @KiwiModule.Group("decorations")
 @KiwiModule.Subscriber(Bus.MOD)
 public class BaseModule extends AbstractModule {
-    public static final SpiceBottleItem SPICE_BOTTLE = new SpiceBottleItem(itemProp());
+    public static final SpiceBottleItem SPICE_BOTTLE = new SpiceBottleItem(50, itemProp());
 
     public static final IRecipeSerializer<?> SPICE_BOTTLE_FILL = new SpiceBottleFillingRecipe.Serializer();
 }

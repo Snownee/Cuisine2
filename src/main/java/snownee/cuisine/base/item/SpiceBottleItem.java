@@ -1,5 +1,12 @@
 package snownee.cuisine.base.item;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -14,11 +21,11 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -30,68 +37,54 @@ import snownee.kiwi.item.ModItem;
 import snownee.kiwi.util.NBTHelper;
 import snownee.kiwi.util.Util;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class SpiceBottleItem extends ModItem {
-    public SpiceBottleItem(Properties builder) {
-        super(builder);
-        MinecraftForge.EVENT_BUS.register(this);
-    }
+
+    public final int maxVolume;
 
     public static final int VOLUME_PER_ITEM = 10;
-    public static final int MAX_VOLUME_ITEM = 5;
+    public static final int FLUID_PER_VOLUME = 100;
+
+    public static final String SPICE = "spice";
     public static final String SPICE_VALUE = "spice.value";
     public static final String SPICE_NAME = "spice.name";
-    public static final String SPICE = "spice";
 
-    /**
-     * @param container 被放的东西
-     * @param in        要放的东西
-     * @return 能装多少
-     */
-    public int fill(ItemStack container, ItemStack in, IFluidHandler.FluidAction action) {
-        AtomicInteger num = new AtomicInteger();
-        CuisineAPI.findSpice(in).ifPresent(spice -> {
-            NBTHelper nbt = NBTHelper.of(container);
-            if (nbt.getInt(SPICE_VALUE) == 0) {
-                //获取能装多少
-                int fill_item = Math.min(MAX_VOLUME_ITEM, in.getCount());
-                if (action.execute()) {
-                    nbt.setString(SPICE_NAME, spice.getRegistryName().toString());
-                    nbt.setInt(SPICE_VALUE, fill_item * VOLUME_PER_ITEM);
-                }
-                num.set(fill_item);
-            } else if (Objects.equals(nbt.getString(SPICE_NAME), spice.getRegistryName().toString())) {
-                //获取现在的余量
-                int c = nbt.getInt(SPICE_VALUE);
-                //如果没满
-                if (c < MAX_VOLUME_ITEM * VOLUME_PER_ITEM) {
-                    //获取还能装多少
-                    int fill_count = (MAX_VOLUME_ITEM * VOLUME_PER_ITEM - c + 9) / VOLUME_PER_ITEM;
-                    //获取转多少东西
-                    int fill_item = Math.min(fill_count, in.getCount());
-                    //获取装完的东西是多少
-                    int now_num = Math.min(fill_item * VOLUME_PER_ITEM + c, MAX_VOLUME_ITEM * VOLUME_PER_ITEM);
-                    if (action.execute())
-                        nbt.setInt(SPICE_VALUE, now_num);
-                    num.set(fill_item);
-                }
-            }
-        });
-        return num.get();
+    public SpiceBottleItem(int maxVolume, Properties builder) {
+        super(builder);
+        this.maxVolume = maxVolume;
     }
 
     /**
      * @param container 被放的东西
      * @param in        要放的东西
-     * @return 能装多少
+     * @return 能装多少volume
      */
+    public int fill(ItemStack container, ItemStack in, IFluidHandler.FluidAction action) {
+        Spice spiceIn = CuisineAPI.findSpice(in).orElse(null);
+        if (spiceIn == null) {
+            return 0;
+        }
+        if (!getSpice(container).map(spiceIn::equals).orElse(true)) {
+            return 0;
+        }
+        NBTHelper nbt = NBTHelper.of(container);
+        int volume = nbt.getInt(SPICE_VALUE);
+        int fill_item = (maxVolume - volume) / VOLUME_PER_ITEM;
+        fill_item = Math.min(fill_item, in.getCount());
+        volume += fill_item * VOLUME_PER_ITEM;
+        if (action.execute()) {
+            nbt.setString(SPICE_NAME, spiceIn.getRegistryName().toString());
+            nbt.setInt(SPICE_VALUE, volume);
+            in.shrink(fill_item);
+        }
+        return fill_item * VOLUME_PER_ITEM;
+    }
+
+    /**
+     * @param container 被放的东西
+     * @param in        要放的东西
+     * @return 能装多少volume
+     */
+    //FIXME
     public int fill(ItemStack container, FluidStack in, IFluidHandler.FluidAction action) {
         int num = fillFluid(container, in, action);
         if (num == 0)
@@ -151,22 +144,11 @@ public class SpiceBottleItem extends ModItem {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack container, @Nullable CompoundNBT nbt) {
-        return new SpiceFluidHandler(container, MAX_VOLUME_ITEM * FluidAttributes.BUCKET_VOLUME);
+        return new SpiceFluidHandler(container, FLUID_PER_VOLUME * maxVolume);
     }
 
     public boolean hasFluid(ItemStack container) {
-        if (!container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null).isPresent()) {
-            return false;
-        }
-        AtomicBoolean flag = new AtomicBoolean(false);
-        getFluidHandler(container).ifPresent(i -> {
-            flag.set(i.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE).equals(FluidStack.EMPTY));
-        });
-        return flag.get();
-    }
-
-    public LazyOptional<IFluidHandlerItem> getFluidHandler(ItemStack container) {
-        return container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+        return FluidUtil.getFluidContained(container).map(FluidStack::isEmpty).orElse(false);
     }
 
     public int getDurability(ItemStack container) {
@@ -186,7 +168,7 @@ public class SpiceBottleItem extends ModItem {
     public boolean consume(ItemStack container, int amount) {
         if (amount <= VOLUME_PER_ITEM && amount > 0) {
             if (hasFluid(container)) {
-                LazyOptional<IFluidHandlerItem> handlerOp = getFluidHandler(container);
+                LazyOptional<IFluidHandlerItem> handlerOp = FluidUtil.getFluidHandler(container);
                 if (!handlerOp.isPresent()) {
                     return false;
                 }
@@ -216,7 +198,7 @@ public class SpiceBottleItem extends ModItem {
     @Nonnull
     public UseAction getUseAction(ItemStack stack) {
         if (hasFluid(stack)) {
-            LazyOptional<IFluidHandlerItem> handler = getFluidHandler(stack);
+            LazyOptional<IFluidHandlerItem> handler = FluidUtil.getFluidHandler(stack);
             if (handler.isPresent()) {
                 FluidStack fluidStack = handler.orElse(null).drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
                 return fluidStack.getAmount() == FluidAttributes.BUCKET_VOLUME ? UseAction.DRINK : UseAction.NONE;
@@ -285,6 +267,6 @@ public class SpiceBottleItem extends ModItem {
         if (isContainerEmpty(stack)) {
             return;
         }
-        tooltip.add(new TranslationTextComponent("cuisine.rest").appendText(String.format(":%d/%d", getLeft(stack), VOLUME_PER_ITEM * MAX_VOLUME_ITEM)));
+        tooltip.add(new TranslationTextComponent("cuisine.rest").appendText(String.format(":%d/%d", getLeft(stack), maxVolume)));
     }
 }

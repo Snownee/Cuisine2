@@ -18,6 +18,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import snownee.cuisine.api.CuisineAPI;
@@ -40,7 +41,7 @@ public class SpiceBottleFillingRecipe extends DynamicShapedRecipe {
         if (pos == null) {
             return false;
         }
-        ItemStack in = inv.getStackInSlot(pos[0] + pos[1] * inv.getWidth());
+        ItemStack in = ItemHandlerHelper.copyStackWithSize(inv.getStackInSlot(pos[0] + pos[1] * inv.getWidth()), 1);
         ItemStack container = inv.getStackInSlot(pos[0] + (pos[1] + 1) * inv.getWidth());
         return bottle.fill(container, in, IFluidHandler.FluidAction.SIMULATE) > 0;
     }
@@ -51,8 +52,8 @@ public class SpiceBottleFillingRecipe extends DynamicShapedRecipe {
         if (pos == null) {
             return ItemStack.EMPTY;
         }
-        ItemStack in = inv.getStackInSlot(pos[0] + pos[1] * inv.getWidth());
-        ItemStack container = inv.getStackInSlot(pos[0] + (pos[1] + 1) * inv.getWidth()).copy();
+        ItemStack in = ItemHandlerHelper.copyStackWithSize(inv.getStackInSlot(pos[0] + pos[1] * inv.getWidth()), 1);
+        ItemStack container = ItemHandlerHelper.copyStackWithSize(inv.getStackInSlot(pos[0] + (pos[1] + 1) * inv.getWidth()), 1);
         int num = this.bottle.fill(container, in, IFluidHandler.FluidAction.EXECUTE);
         return num == SpiceBottleItem.VOLUME_PER_ITEM ? container : ItemStack.EMPTY;
     }
