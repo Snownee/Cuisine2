@@ -1,3 +1,4 @@
 {
-  "type": "cuisine:spice_bottle_fill"
+  "type": "cuisine:spice_bottle_fill",
+  "item": "cuisine:spice_bottle"
 }
