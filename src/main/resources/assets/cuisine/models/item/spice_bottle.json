@@ -1,7 +1,7 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "cuisine:item/spice_bottle_base",
-		"layer1": "cuisine:item/spice_bottle_content"
+		"layer0": "cuisine:item/spice_bottle_overlay",
+		"layer1": "cuisine:item/spice_bottle"
 	}
 }

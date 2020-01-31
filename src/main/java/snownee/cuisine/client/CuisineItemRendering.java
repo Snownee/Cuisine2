@@ -2,33 +2,29 @@ package snownee.cuisine.client;
 
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import snownee.cuisine.Cuisine;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import snownee.cuisine.api.CuisineAPI;
+import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.base.BaseModule;
 
-import java.util.concurrent.atomic.AtomicInteger;
+@OnlyIn(Dist.CLIENT)
+@EventBusSubscriber(bus = Bus.MOD, value = Dist.CLIENT)
+public final class CuisineItemRendering {
 
-@Mod.EventBusSubscriber(modid = Cuisine.MODID, value = Dist.CLIENT)
-public class CuisineItemRendering {
-    //FIXME:没调用
+    private CuisineItemRendering() {}
+
     @SubscribeEvent
     public static void onItemColorsInit(ColorHandlerEvent.Item event) {
         ItemColors itemColors = event.getItemColors();
-        AtomicInteger ret = new AtomicInteger(0xffffff);
         itemColors.register((stack, tintIndex) -> {
-            if (tintIndex == 1) {
-                CuisineAPI.findSpice(stack).ifPresent(i -> {
-                    String color = i.getColor();
-                    System.out.println(color);
-                    if (color != null) {
-                        ret.set(Integer.parseInt(color, 16));
-                    }
-                });
+            if (tintIndex == 0) { //TODO write color in stack NBT //FIXME cannot find spice directly from bottle
+                return CuisineAPI.findSpice(stack).map(Spice::getColor).orElse(-1);
             }
-            return ret.get();
+            return -1;
         }, BaseModule.SPICE_BOTTLE);
     }
 }

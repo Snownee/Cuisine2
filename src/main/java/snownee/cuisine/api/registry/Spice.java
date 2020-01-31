@@ -14,7 +14,7 @@ import snownee.cuisine.data.tag.SpiceTags;
 
 public class Spice extends ForgeRegistryEntry<Spice> {
 
-    private String color = null;
+    private int color = 0xff0000;
     private ImmutableSet<Item> items = ImmutableSet.of();
     private ImmutableSet<Tag<Item>> tags = ImmutableSet.of();
     private ImmutableSet<Fluid> fluids = ImmutableSet.of();
@@ -41,7 +41,7 @@ public class Spice extends ForgeRegistryEntry<Spice> {
         return reverseTags.getTagNames();
     }
 
-    public String getColor() {
+    public int getColor() {
         return color;
     }
 
