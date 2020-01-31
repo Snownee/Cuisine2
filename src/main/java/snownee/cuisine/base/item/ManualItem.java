@@ -1,4 +1,4 @@
-package snownee.cuisine.item;
+package snownee.cuisine.base.item;
 
 import net.minecraft.item.Item;
 import snownee.kiwi.item.ModItem;

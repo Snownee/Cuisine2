@@ -42,6 +42,7 @@ public class MaterialTags {
             super(resourceLocationIn);
         }
 
+        @Override
         public boolean contains(Material materialIn) {
             if (this.lastKnownGeneration != MaterialTags.generation) {
                 this.cachedTag = MaterialTags.collection.getOrCreate(this.getId());
@@ -51,6 +52,7 @@ public class MaterialTags {
             return this.cachedTag.contains(materialIn);
         }
 
+        @Override
         public Collection<Material> getAllElements() {
             if (this.lastKnownGeneration != MaterialTags.generation) {
                 this.cachedTag = MaterialTags.collection.getOrCreate(this.getId());
@@ -60,6 +62,7 @@ public class MaterialTags {
             return this.cachedTag.getAllElements();
         }
 
+        @Override
         public Collection<ITagEntry<Material>> getEntries() {
             if (this.lastKnownGeneration != MaterialTags.generation) {
                 this.cachedTag = MaterialTags.collection.getOrCreate(this.getId());

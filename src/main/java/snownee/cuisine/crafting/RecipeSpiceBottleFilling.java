@@ -1,7 +1,11 @@
 package snownee.cuisine.crafting;
 
-import com.google.common.collect.Lists;
+import java.util.Optional;
+
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonObject;
+
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
@@ -11,24 +15,17 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.registry.Spice;
-import snownee.cuisine.BaseModule;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Optional;
+import snownee.cuisine.base.BaseModule;
 
 public class RecipeSpiceBottleFilling implements ICraftingRecipe {
-    private final ResourceLocation Id;
+    private final ResourceLocation id;
     private final String group;
 
     public RecipeSpiceBottleFilling(ResourceLocation idIn, String groupIn) {
-        this.Id = idIn;
+        this.id = idIn;
         this.group = groupIn;
     }
 
@@ -51,8 +48,7 @@ public class RecipeSpiceBottleFilling implements ICraftingRecipe {
             return false;
         }
         ItemStack bottle = inv.getStackInSlot(slot + inv.getWidth());
-        return bottle.getItem() == BaseModule.SPICE_BOTTLE &&
-                BaseModule.SPICE_BOTTLE.fill(bottle, spice, IFluidHandler.FluidAction.SIMULATE) != 0;
+        return bottle.getItem() == BaseModule.SPICE_BOTTLE && BaseModule.SPICE_BOTTLE.fill(bottle, spice, IFluidHandler.FluidAction.SIMULATE) != 0;
     }
 
     @Override
@@ -74,10 +70,10 @@ public class RecipeSpiceBottleFilling implements ICraftingRecipe {
             return ItemStack.EMPTY;
         }
         int num = BaseModule.SPICE_BOTTLE.fill(bottle, spice, IFluidHandler.FluidAction.EXECUTE);
-        if (num==0){
+        if (num == 0) {
             return ItemStack.EMPTY;
         }
-        spice.shrink(num-1);
+        spice.shrink(num - 1);
         return bottle;
     }
 
@@ -98,29 +94,27 @@ public class RecipeSpiceBottleFilling implements ICraftingRecipe {
 
     @Override
     public ResourceLocation getId() {
-        return Id;
+        return id;
     }
 
     @Override
     public IRecipeSerializer<?> getSerializer() {
-        return BaseModule.recipeSpiceBottleFilling;
+        return BaseModule.SPICE_BOTTLE_FILL;
     }
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeSpiceBottleFilling> {
-        public static boolean recordRecipes = EffectiveSide.get() == LogicalSide.CLIENT && ModList.get().isLoaded("jei");
-        public static List<RecipeSpiceBottleFilling> recipes = recordRecipes ? Lists.newArrayList() : null;
 
         @Override
         public RecipeSpiceBottleFilling read(ResourceLocation recipeId, JsonObject json) {
             String group = JSONUtils.getString(json, "group", "");
-            return record(new RecipeSpiceBottleFilling(recipeId, group));
+            return new RecipeSpiceBottleFilling(recipeId, group);
         }
 
         @Nullable
         @Override
         public RecipeSpiceBottleFilling read(ResourceLocation recipeId, PacketBuffer buffer) {
             String group = buffer.readString(32767);
-            return record(new RecipeSpiceBottleFilling(recipeId, group));
+            return new RecipeSpiceBottleFilling(recipeId, group);
         }
 
         @Override
@@ -128,12 +122,6 @@ public class RecipeSpiceBottleFilling implements ICraftingRecipe {
             buffer.writeString(recipe.group);
         }
 
-        public static RecipeSpiceBottleFilling record(RecipeSpiceBottleFilling recipe) {
-            if (recordRecipes) {
-                recipes.add(recipe);
-            }
-            return recipe;
-        }
     }
 
 }

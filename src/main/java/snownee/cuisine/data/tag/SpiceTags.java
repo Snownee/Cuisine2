@@ -31,7 +31,6 @@ public class SpiceTags {
         return new SpiceTags.Wrapper(new ResourceLocation(p_199901_0_));
     }
 
-
     public static class Wrapper extends Tag<Spice> {
         private int lastKnownGeneration = -1;
         private Tag<Spice> cachedTag;
@@ -40,6 +39,7 @@ public class SpiceTags {
             super(resourceLocationIn);
         }
 
+        @Override
         public boolean contains(Spice spiceIn) {
             if (this.lastKnownGeneration != SpiceTags.generation) {
                 this.cachedTag = SpiceTags.collection.getOrCreate(this.getId());
@@ -49,6 +49,7 @@ public class SpiceTags {
             return this.cachedTag.contains(spiceIn);
         }
 
+        @Override
         public Collection<Spice> getAllElements() {
             if (this.lastKnownGeneration != SpiceTags.generation) {
                 this.cachedTag = SpiceTags.collection.getOrCreate(this.getId());
@@ -58,6 +59,7 @@ public class SpiceTags {
             return this.cachedTag.getAllElements();
         }
 
+        @Override
         public Collection<ITagEntry<Spice>> getEntries() {
             if (this.lastKnownGeneration != SpiceTags.generation) {
                 this.cachedTag = SpiceTags.collection.getOrCreate(this.getId());

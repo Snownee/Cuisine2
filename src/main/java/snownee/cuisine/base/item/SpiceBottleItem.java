@@ -1,4 +1,4 @@
-package snownee.cuisine.item;
+package snownee.cuisine.base.item;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -62,7 +62,7 @@ public class SpiceBottleItem extends ModItem {
             if (nbt.getInt(SPICE_VALUE) == 0) {
                 //获取能装多少
                 int fill_item = Math.min(MAX_VOLUME_ITEM, in.getCount());
-                if (action.execute()){
+                if (action.execute()) {
                     nbt.setString(SPICE_NAME, spice.getRegistryName().toString());
                     nbt.setInt(SPICE_VALUE, fill_item * VOLUME_PER_ITEM);
                 }
@@ -94,7 +94,8 @@ public class SpiceBottleItem extends ModItem {
      */
     public int fill(ItemStack container, FluidStack in, IFluidHandler.FluidAction action) {
         int num = fillFluid(container, in, action);
-        if (num == 0) return 0;
+        if (num == 0)
+            return 0;
         if (action.execute()) {
             CuisineAPI.findSpice(in).ifPresent(spice -> {
                 NBTHelper nbt = NBTHelper.of(container);
@@ -137,9 +138,7 @@ public class SpiceBottleItem extends ModItem {
 
         @Override
         public boolean canFillFluidType(FluidStack fluid) {
-            return !fluid.getFluid().getAttributes().isGaseous(fluid) &&
-                    fluid.getFluid().getAttributes().getTemperature(fluid) < 400 &&
-                    super.canFillFluidType(fluid);
+            return !fluid.getFluid().getAttributes().isGaseous(fluid) && fluid.getFluid().getAttributes().getTemperature(fluid) < 400 && super.canFillFluidType(fluid);
         }
 
         @Override
@@ -150,6 +149,7 @@ public class SpiceBottleItem extends ModItem {
 
     }
 
+    @Override
     public ICapabilityProvider initCapabilities(ItemStack container, @Nullable CompoundNBT nbt) {
         return new SpiceFluidHandler(container, MAX_VOLUME_ITEM * FluidAttributes.BUCKET_VOLUME);
     }
@@ -212,6 +212,7 @@ public class SpiceBottleItem extends ModItem {
         return !hasSpice(stack);
     }
 
+    @Override
     @Nonnull
     public UseAction getUseAction(ItemStack stack) {
         if (hasFluid(stack)) {
@@ -226,6 +227,7 @@ public class SpiceBottleItem extends ModItem {
         return UseAction.NONE;
     }
 
+    @Override
     @Nonnull
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand handIn) {
         ItemStack held = playerIn.getHeldItem(handIn);
@@ -237,10 +239,12 @@ public class SpiceBottleItem extends ModItem {
         return ActionResult.func_226251_d_(held);
     }
 
+    @Override
     public int getUseDuration(ItemStack stack) {
         return 32;
     }
 
+    @Override
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         if (this.isInGroup(group)) {
             ItemStack stack = new ItemStack(this);
@@ -254,6 +258,7 @@ public class SpiceBottleItem extends ModItem {
         }
     }
 
+    @Override
     @Nonnull
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
         NBTHelper nbt = NBTHelper.of(stack);
@@ -264,20 +269,22 @@ public class SpiceBottleItem extends ModItem {
             return new TranslationTextComponent(String.format("spice.%s", name.replace(":", ".")));
 
     }
-    public int getLeft(ItemStack stack){
+
+    public int getLeft(ItemStack stack) {
         NBTHelper nbt = NBTHelper.of(stack);
-        int num  = nbt.getInt(SPICE_VALUE);
-        if (num==0){
+        int num = nbt.getInt(SPICE_VALUE);
+        if (num == 0) {
             nbt.remove(SPICE);
         }
         return num;
     }
+
+    @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        if (isContainerEmpty(stack)){
+        if (isContainerEmpty(stack)) {
             return;
         }
-        tooltip.add(new TranslationTextComponent("cuisine.rest")
-                .appendText(String.format(":%d/%d",getLeft(stack),VOLUME_PER_ITEM*MAX_VOLUME_ITEM)));
+        tooltip.add(new TranslationTextComponent("cuisine.rest").appendText(String.format(":%d/%d", getLeft(stack), VOLUME_PER_ITEM * MAX_VOLUME_ITEM)));
     }
 }

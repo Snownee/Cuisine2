@@ -5,25 +5,25 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import snownee.cuisine.BaseModule;
 import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.CuisineAPI;
+import snownee.cuisine.base.BaseModule;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Mod.EventBusSubscriber(modid = Cuisine.MODID, value = Dist.CLIENT)
 public class CuisineItemRendering {
-    //HELP ME:没调用
+    //FIXME:没调用
     @SubscribeEvent
     public static void onItemColorsInit(ColorHandlerEvent.Item event) {
         ItemColors itemColors = event.getItemColors();
         AtomicInteger ret = new AtomicInteger(0xffffff);
         itemColors.register((stack, tintIndex) -> {
-            if(tintIndex==1){
-                CuisineAPI.findSpice(stack).ifPresent(i->{
+            if (tintIndex == 1) {
+                CuisineAPI.findSpice(stack).ifPresent(i -> {
                     String color = i.getColor();
                     System.out.println(color);
-                    if (color!=null){
+                    if (color != null) {
                         ret.set(Integer.parseInt(color, 16));
                     }
                 });

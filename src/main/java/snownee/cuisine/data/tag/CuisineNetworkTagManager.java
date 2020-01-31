@@ -40,6 +40,7 @@ public class CuisineNetworkTagManager implements IFutureReloadListener {
         this.materials.write(buffer);
     }
 
+    @Override
     public CompletableFuture<Void> reload(IFutureReloadListener.IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
         /* off */
         return stage
