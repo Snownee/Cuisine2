@@ -25,10 +25,12 @@ import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.data.CuisineDataManager;
+import snownee.cuisine.data.DeferredReloadListener;
+import snownee.cuisine.data.DeferredReloadListener.LoadingStage;
+import snownee.cuisine.data.tag.CuisineNetworkTagManager;
 import snownee.cuisine.impl.bonus.EffectsBonus;
 import snownee.cuisine.impl.bonus.NewMaterialBonus;
 import snownee.cuisine.impl.rule.CountRegistryRecipeRule;
-import snownee.cuisine.data.tag.CuisineNetworkTagManager;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.Kiwi;
 import snownee.kiwi.KiwiModule;
@@ -86,11 +88,12 @@ public final class CoreModule extends AbstractModule {
             recipeManager = new CuisineDataManager("cuisine_recipe", CuisineRegistries.RECIPES);
         }
         IReloadableResourceManager manager = event.getServer().getResourceManager();
-        manager.addReloadListener(materialManager);
-        manager.addReloadListener(spiceManager);
-        manager.addReloadListener(foodManager);
-        manager.addReloadListener(cuisineNetworkTagManager);
-        manager.addReloadListener(recipeManager);
+        DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, materialManager);
+        DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, spiceManager);
+        DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, foodManager);
+        DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.TAG, cuisineNetworkTagManager);
+        DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.RECIPE, recipeManager);
+        manager.addReloadListener(DeferredReloadListener.INSTANCE);
     }
 
     static Map<Item, Material> item2Material = Maps.newHashMap();
@@ -111,6 +114,7 @@ public final class CoreModule extends AbstractModule {
                 }
             }
         }
+        DeferredReloadListener.INSTANCE.complete(CuisineRegistries.MATERIALS);
     }
 
     private static void buildSpiceMap() {
@@ -134,6 +138,7 @@ public final class CoreModule extends AbstractModule {
                 }
             }
         }
+        DeferredReloadListener.INSTANCE.complete(CuisineRegistries.SPICES);
     }
 
     private static void buildFoodMap() {

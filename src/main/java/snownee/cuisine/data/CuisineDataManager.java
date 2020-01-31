@@ -81,6 +81,8 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
             }
         });
         registry.freeze();
+        if (noWarning)
+            ctx.setActiveContainer(null, ctx.extension());
         if (callback != null) {
             callback.run();
         }

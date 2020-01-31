@@ -20,7 +20,7 @@ public enum ImmutableSetAdapter implements JsonDeserializer<ImmutableSet<?>> {
         final Type[] typeArguments = ((ParameterizedType) type).getActualTypeArguments();
         final Type parametrizedType = listOf(typeArguments[0]).getType();
         final List<?> list = context.deserialize(json, parametrizedType);
-        return ImmutableSet.copyOf(list);
+        return list.isEmpty() ? ImmutableSet.of() : ImmutableSet.copyOf(list);
     }
 
     private static <E> TypeToken<List<E>> listOf(final Type arg) {

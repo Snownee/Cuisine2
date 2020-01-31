@@ -1,6 +1,10 @@
 package snownee.cuisine.data.tag;
 
+import java.util.Map;
+import java.util.Optional;
+
 import com.google.common.collect.Maps;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
@@ -8,15 +12,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import java.util.Map;
-import java.util.Optional;
-
 public class ForgeNetworkTagCollection<T extends IForgeRegistryEntry<T>> extends TagCollection<T> {
     private final ForgeRegistry<T> registry;
 
-    public ForgeNetworkTagCollection(ForgeRegistry<T> p_i49817_1_, String p_i49817_2_, String p_i49817_3_) {
-        super((i) -> Optional.ofNullable(p_i49817_1_.getValue(i)), p_i49817_2_, false, p_i49817_3_);
-        this.registry = p_i49817_1_;
+    public ForgeNetworkTagCollection(ForgeRegistry<T> registry, String resourceLocationPrefix, String typeName) {
+        super(id -> Optional.ofNullable(registry.getValue(id)), resourceLocationPrefix, false, typeName);
+        this.registry = registry;
     }
 
     public void write(PacketBuffer buf) {

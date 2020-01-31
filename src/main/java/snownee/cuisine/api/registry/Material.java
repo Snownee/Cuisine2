@@ -18,7 +18,7 @@ public class Material extends ForgeRegistryEntry<Material> {
     private ImmutableSet<Item> items = ImmutableSet.of();
     private ImmutableSet<Tag<Item>> tags = ImmutableSet.of();
     private ImmutableListMultimap<Integer, Bonus> stars = ImmutableListMultimap.of();
-    private ReverseTagWrapper<Material> reverseTags = new ReverseTagWrapper<>(this, MaterialTags::getGeneration, MaterialTags::getCollection);
+    private final ReverseTagWrapper<Material> reverseTags = new ReverseTagWrapper<>(this, MaterialTags::getGeneration, MaterialTags::getCollection);
 
     public final ImmutableSet<Item> getItems() {
         return items;
