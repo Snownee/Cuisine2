@@ -2,7 +2,6 @@ package snownee.cuisine.base.item;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,7 +25,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -79,37 +77,6 @@ public class SpiceBottleItem extends ModItem {
         return fill_item * VOLUME_PER_ITEM;
     }
 
-    /**
-     * @param container 被放的东西
-     * @param in        要放的东西
-     * @return 能装多少volume
-     */
-    //FIXME
-    public int fill(ItemStack container, FluidStack in, IFluidHandler.FluidAction action) {
-        int num = fillFluid(container, in, action);
-        if (num == 0)
-            return 0;
-        if (action.execute()) {
-            CuisineAPI.findSpice(in).ifPresent(spice -> {
-                NBTHelper nbt = NBTHelper.of(container);
-                nbt.setString(SPICE_NAME, spice.getRegistryName().toString());
-                nbt.setInt(SPICE_VALUE, num / FluidAttributes.BUCKET_VOLUME);
-            });
-        }
-        return num;
-    }
-
-    private int fillFluid(ItemStack container, FluidStack in, IFluidHandler.FluidAction action) {
-        AtomicInteger num = new AtomicInteger(0);
-        container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null).ifPresent(i -> {
-            if (i instanceof SpiceFluidHandler) {
-                SpiceFluidHandler handler = ((SpiceFluidHandler) i);
-                num.set(handler.fill(in, action));
-            }
-        });
-        return num.get();
-    }
-
     public Optional<Spice> getSpice(ItemStack container) {
         NBTHelper nbt = NBTHelper.of(container);
         return Optional.ofNullable(CuisineRegistries.SPICES.getValue(Util.RL(nbt.getString(SPICE_NAME))));
@@ -131,13 +98,45 @@ public class SpiceBottleItem extends ModItem {
 
         @Override
         public boolean canFillFluidType(FluidStack fluid) {
+            return isFluidValid(0, fluid);
+        }
+
+        @Override
+        public boolean canDrainFluidType(FluidStack fluid) {
+            return isFluidValid(0, fluid);
+        }
+
+        @Override
+        public boolean isFluidValid(int tank, FluidStack fluid) {
             return !fluid.getFluid().getAttributes().isGaseous(fluid) && fluid.getFluid().getAttributes().getTemperature(fluid) < 400 && super.canFillFluidType(fluid);
         }
 
         @Override
         public void setContainerToEmpty() {
-            super.setContainerToEmpty();
-            container.setTag(null);
+            container.removeChildTag(FLUID_NBT_KEY);
+            container.removeChildTag(SPICE);
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction doFill) {
+            int ret = super.fill(resource, doFill);
+            if (doFill.execute() && ret > 0) {
+                updateSpice();
+            }
+            return ret;
+        }
+
+        @Override
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            FluidStack ret = super.drain(maxDrain, action);
+            if (action.execute() && !ret.isEmpty()) {
+                updateSpice();
+            }
+            return ret;
+        }
+
+        private void updateSpice() {
+            //TODO
         }
 
     }
@@ -165,6 +164,7 @@ public class SpiceBottleItem extends ModItem {
         }
     }
 
+    //FIXME add FluidAction (simulate)
     public boolean consume(ItemStack container, int amount) {
         if (amount <= VOLUME_PER_ITEM && amount > 0) {
             if (hasFluid(container)) {
