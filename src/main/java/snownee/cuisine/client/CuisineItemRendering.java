@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Mod.EventBusSubscriber(modid = Cuisine.MODID, value = Dist.CLIENT)
 public class CuisineItemRendering {
+    //HELP ME:没调用
     @SubscribeEvent
     public static void onItemColorsInit(ColorHandlerEvent.Item event) {
         ItemColors itemColors = event.getItemColors();

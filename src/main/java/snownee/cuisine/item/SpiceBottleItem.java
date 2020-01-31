@@ -1,5 +1,6 @@
 package snownee.cuisine.item;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -11,6 +12,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -29,6 +32,7 @@ import snownee.kiwi.util.Util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -205,9 +209,8 @@ public class SpiceBottleItem extends ModItem {
     }
 
     public boolean isContainerEmpty(ItemStack stack) {
-        return !hasFluid(stack) && !hasSpice(stack);
+        return !hasSpice(stack);
     }
-
 
     @Nonnull
     public UseAction getUseAction(ItemStack stack) {
@@ -260,5 +263,21 @@ public class SpiceBottleItem extends ModItem {
         else
             return new TranslationTextComponent(String.format("spice.%s", name.replace(":", ".")));
 
+    }
+    public int getLeft(ItemStack stack){
+        NBTHelper nbt = NBTHelper.of(stack);
+        int num  = nbt.getInt(SPICE_VALUE);
+        if (num==0){
+            nbt.remove(SPICE);
+        }
+        return num;
+    }
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        if (isContainerEmpty(stack)){
+            return;
+        }
+        tooltip.add(new TranslationTextComponent("cuisine.rest")
+                .appendText(String.format(":%d/%d",getLeft(stack),VOLUME_PER_ITEM*MAX_VOLUME_ITEM)));
     }
 }

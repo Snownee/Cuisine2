@@ -2,5 +2,9 @@
   "spice.empty":"空",
   "spice.cuisine.sugar": "糖",
   "spice.cuisine.snow": "雪",
-  "item.cuisine.spice_bottle": "调味瓶"
+  "spice.cuisine.fish": "鱼",
+  "spice.cuisine.dirt": "泥",
+  "spice.cuisine.flower": "花",
+  "item.cuisine.spice_bottle": "调味瓶",
+  "cuisine.rest": "剩余"
 }
