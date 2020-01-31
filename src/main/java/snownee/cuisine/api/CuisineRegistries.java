@@ -15,7 +15,7 @@ public class CuisineRegistries {
     public static final ForgeRegistry<Spice> SPICES = makeRegistry("spice", Spice.class);
     public static final ForgeRegistry<Utensil> UTENSILS = makeRegistry("utensil", Utensil.class);
     public static final ForgeRegistry<CuisineFood> FOODS = makeRegistry("food", CuisineFood.class);
-    public static final ForgeRegistry<CuisineRecipe> RECIPES = makeRegistry("recipe", CuisineRecipe.class);
+    public static final ForgeRegistry<CuisineRecipe> RECIPES = makeRegistry("crafting", CuisineRecipe.class);
 
     private static <T extends IForgeRegistryEntry<T>> ForgeRegistry<T> makeRegistry(String name, Class<T> clazz) {
         return (ForgeRegistry<T>) new RegistryBuilder<T>().setType(clazz).setName(new ResourceLocation("cuisine", name)).allowModification().disableSaving().create();
