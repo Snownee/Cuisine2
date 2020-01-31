@@ -34,8 +34,8 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ItemSpiceBottle extends ModItem {
-    public ItemSpiceBottle(Properties builder) {
+public class SpiceBottleItem extends ModItem {
+    public SpiceBottleItem(Properties builder) {
         super(builder);
         MinecraftForge.EVENT_BUS.register(this);
     }

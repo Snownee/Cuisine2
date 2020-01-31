@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.registry.Spice;
-import snownee.cuisine.item.BaseModule;
+import snownee.cuisine.BaseModule;
 
 import javax.annotation.Nullable;
 import java.util.List;

@@ -2,6 +2,7 @@ package snownee.cuisine.api.registry;
 
 import java.util.Set;
 
+import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.fluid.Fluid;
@@ -14,6 +15,7 @@ import snownee.cuisine.data.tag.SpiceTags;
 
 public class Spice extends ForgeRegistryEntry<Spice> {
 
+    private String color = null;
     private ImmutableSet<Item> items = ImmutableSet.of();
     private ImmutableSet<Tag<Item>> tags = ImmutableSet.of();
     private ImmutableSet<Fluid> fluids = ImmutableSet.of();
@@ -40,6 +42,9 @@ public class Spice extends ForgeRegistryEntry<Spice> {
         return reverseTags.getTagNames();
     }
 
+    public String getColor(){
+        return color;
+    }
     @Override
     public String toString() {
         return "Spice{" + getRegistryName() + "}";
