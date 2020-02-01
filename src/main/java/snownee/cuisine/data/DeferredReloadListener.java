@@ -13,6 +13,8 @@ import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IResourceManager;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import snownee.cuisine.Cuisine;
+import snownee.cuisine.client.ColorLookup;
 
 public enum DeferredReloadListener implements IFutureReloadListener {
     INSTANCE;
@@ -26,16 +28,25 @@ public enum DeferredReloadListener implements IFutureReloadListener {
         registryCompleted = new CompletableFuture<>();
         count = 0;
         Function<IFutureReloadListener, CompletableFuture<?>> mapper = listener -> listener.reload(DummyStage.INSTANCE, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
-        return stage.markCompleteAwaitingOthers(null).thenCompose($ -> make(LoadingStage.REGISTRY, mapper)).thenCompose($ -> registryCompleted).thenCompose($ -> make(LoadingStage.TAG, mapper)).thenCompose($ -> make(LoadingStage.RECIPE, mapper));
+        /* off */
+        return stage
+                .markCompleteAwaitingOthers(null)
+                .thenCompose($ -> make(LoadingStage.REGISTRY, mapper))
+                .thenCompose($ -> registryCompleted)
+                .thenCompose($ -> make(LoadingStage.TAG, mapper))
+                .thenCompose($ -> make(LoadingStage.RECIPE, mapper));
+        /* on */
     }
 
     public synchronized <T extends IForgeRegistryEntry<T>> void complete(IForgeRegistry<T> registry) {
         if (++count >= 2) {
             registryCompleted.complete(null);
+            ColorLookup.invalidateAll();
         }
     }
 
     private CompletableFuture<Void> make(LoadingStage loadingStage, Function<IFutureReloadListener, CompletableFuture<?>> mapper) {
+        Cuisine.logger.info("Loading Data: " + loadingStage);
         CompletableFuture<?>[] futures = {};
         listeners.get(loadingStage).stream().map(mapper).collect(Collectors.toList()).toArray(futures);
         return CompletableFuture.allOf(futures);

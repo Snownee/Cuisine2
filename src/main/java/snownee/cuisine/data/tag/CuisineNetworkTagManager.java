@@ -48,14 +48,14 @@ public class CuisineNetworkTagManager implements IFutureReloadListener {
                 .thenCompose($ -> spices.reload(resourceManager, backgroundExecutor))
                 .thenCompose($ -> materials.reload(resourceManager, backgroundExecutor)
                         .thenCombine(CompletableFuture.completedFuture($), Pair::of))
-                .thenAcceptAsync(wtf -> {
+                .thenAccept(wtf -> {
                     reloadProfiler.startSection("Loading " + wtf.toString());
                     this.materials.registerAll(wtf.getLeft());
                     this.spices.registerAll(wtf.getRight());
                     MaterialTags.setCollection(this.materials);
                     SpiceTags.setCollection(this.spices);
                     reloadProfiler.endSection();
-                }, gameExecutor);
+                });
         /* on */
     }
 

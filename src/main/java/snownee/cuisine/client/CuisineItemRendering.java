@@ -8,7 +8,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import snownee.cuisine.api.CuisineAPI;
-import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.base.BaseModule;
 
 @OnlyIn(Dist.CLIENT)
@@ -21,8 +20,8 @@ public final class CuisineItemRendering {
     public static void onItemColorsInit(ColorHandlerEvent.Item event) {
         ItemColors itemColors = event.getItemColors();
         itemColors.register((stack, tintIndex) -> {
-            if (tintIndex == 0) { //TODO write color in stack NBT //FIXME cannot find spice directly from bottle
-                return CuisineAPI.findSpice(stack).map(Spice::getColor).orElse(-1);
+            if (tintIndex == 0) { //FIXME cannot find spice directly from bottle
+                return CuisineAPI.findSpice(stack).map(ColorLookup::get).orElse(-1);
             }
             return -1;
         }, BaseModule.SPICE_BOTTLE);

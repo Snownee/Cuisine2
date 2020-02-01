@@ -16,6 +16,7 @@ import net.minecraft.tags.TagCollection;
 import net.minecraft.util.JSONUtils;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.RecipeRule;
 import snownee.kiwi.util.Util;
@@ -72,7 +73,7 @@ public class CountRegistryRecipeRule<T extends IForgeRegistryEntry<T>> implement
                 return Collections.EMPTY_LIST;
             }
             if (key.charAt(0) == '#') {
-                Tag<T> tag = tagCollection.get(Util.RL(key.substring(1)));
+                Tag<T> tag = tagCollection.get(Util.RL(key.substring(1), Cuisine.MODID));
                 return tag.getAllElements();
             }
             T go = registry.getValue(Util.RL(key));
