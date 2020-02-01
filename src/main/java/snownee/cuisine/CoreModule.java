@@ -28,6 +28,7 @@ import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
+import snownee.cuisine.cap.CuisineCapabilitiesInternal;
 import snownee.cuisine.data.CuisineDataManager;
 import snownee.cuisine.data.DeferredReloadListener;
 import snownee.cuisine.data.DeferredReloadListener.LoadingStage;
@@ -66,6 +67,7 @@ public final class CoreModule extends AbstractModule {
     protected void preInit() {
         Cuisine.debug = Kiwi.isLoaded(Util.RL("kiwi:test"));
 
+        CuisineCapabilitiesInternal.register();
         CuisineRegistries.class.hashCode();
         cuisineNetworkTagManager = new CuisineNetworkTagManager();
 
