@@ -1,17 +1,14 @@
-package snownee.cuisine;
+package snownee.cuisine.api.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
 
-@EventBusSubscriber(bus = Bus.MOD)
 public final class CuisineCommonConfig {
 
-    static final ForgeConfigSpec spec;
+    public static final ForgeConfigSpec spec;
 
     static {
         spec = new ForgeConfigSpec.Builder().configure(CuisineCommonConfig::new).getRight();

@@ -11,15 +11,19 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.tags.Tag;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.CuisineRegistries;
+import snownee.cuisine.api.config.CuisineClientConfig;
+import snownee.cuisine.api.config.CuisineCommonConfig;
 import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
@@ -49,9 +53,12 @@ public final class CoreModule extends AbstractModule {
     private CuisineNetworkTagManager cuisineNetworkTagManager;
 
     public CoreModule() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CuisineCommonConfig.spec);
+        modEventBus.register(CuisineCommonConfig.class);
         if (FMLEnvironment.dist.isClient()) {
             ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, CuisineClientConfig.spec);
+            modEventBus.register(CuisineClientConfig.class);
         }
     }
 
