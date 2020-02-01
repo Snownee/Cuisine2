@@ -15,6 +15,8 @@ import net.minecraft.util.ResourceLocation;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
+import snownee.cuisine.api.tag.MaterialTags;
+import snownee.cuisine.api.tag.SpiceTags;
 
 public class CuisineNetworkTagManager implements IFutureReloadListener {
     private final ForgeNetworkTagCollection<Spice> spices = new ForgeNetworkTagCollection<>(CuisineRegistries.SPICES, "tags/cuisine_spices", "spice");

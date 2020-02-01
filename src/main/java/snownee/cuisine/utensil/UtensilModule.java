@@ -5,7 +5,7 @@ import snownee.cuisine.utensil.block.OvenBlock;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiModule;
 
-@KiwiModule(name = "utensils")
+@KiwiModule(name = "utensils", dependencies = "@core")
 @KiwiModule.Optional
 @KiwiModule.Group("decorations")
 public final class UtensilModule extends AbstractModule {

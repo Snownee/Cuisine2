@@ -1,17 +1,16 @@
-package snownee.cuisine.data.tag;
+package snownee.cuisine.api.tag;
+
+import java.util.Collection;
+import java.util.Optional;
 
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import snownee.cuisine.api.registry.Spice;
 
-import java.util.Collection;
-import java.util.Optional;
-
 public class SpiceTags {
-    private static TagCollection<Spice> collection = new TagCollection<>((p_203643_0_) -> {
-        return Optional.empty();
-    }, "", false, "");
+
+    private static TagCollection<Spice> collection = new TagCollection<>(id -> Optional.empty(), "", false, "Cuisine spice");
     private static int generation;
 
     public static TagCollection<Spice> getCollection() {
@@ -27,8 +26,8 @@ public class SpiceTags {
         return generation;
     }
 
-    private static Tag<Spice> makeWrapperTag(String p_199901_0_) {
-        return new SpiceTags.Wrapper(new ResourceLocation(p_199901_0_));
+    private static Tag<Spice> makeWrapperTag(String id) {
+        return new SpiceTags.Wrapper(new ResourceLocation(id));
     }
 
     public static class Wrapper extends Tag<Spice> {
@@ -40,13 +39,13 @@ public class SpiceTags {
         }
 
         @Override
-        public boolean contains(Spice spiceIn) {
+        public boolean contains(Spice SpiceIn) {
             if (this.lastKnownGeneration != SpiceTags.generation) {
                 this.cachedTag = SpiceTags.collection.getOrCreate(this.getId());
                 this.lastKnownGeneration = SpiceTags.generation;
             }
 
-            return this.cachedTag.contains(spiceIn);
+            return this.cachedTag.contains(SpiceIn);
         }
 
         @Override

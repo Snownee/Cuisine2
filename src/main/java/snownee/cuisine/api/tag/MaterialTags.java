@@ -1,20 +1,18 @@
-package snownee.cuisine.data.tag;
+package snownee.cuisine.api.tag;
+
+import java.util.Collection;
+import java.util.Optional;
 
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import snownee.cuisine.api.registry.Material;
 
-import java.util.Collection;
-import java.util.Optional;
-
 public class MaterialTags {
 
     public static final Tag<Material> VEGE = makeWrapperTag("vege");
 
-    private static TagCollection<Material> collection = new TagCollection<>((p_203643_0_) -> {
-        return Optional.empty();
-    }, "", false, "");
+    private static TagCollection<Material> collection = new TagCollection<>(id -> Optional.empty(), "", false, "Cuisine material");
     private static int generation;
 
     public static TagCollection<Material> getCollection() {
@@ -30,8 +28,8 @@ public class MaterialTags {
         return generation;
     }
 
-    private static Tag<Material> makeWrapperTag(String p_199901_0_) {
-        return new MaterialTags.Wrapper(new ResourceLocation(p_199901_0_));
+    private static Tag<Material> makeWrapperTag(String id) {
+        return new MaterialTags.Wrapper(new ResourceLocation(id));
     }
 
     public static class Wrapper extends Tag<Material> {
