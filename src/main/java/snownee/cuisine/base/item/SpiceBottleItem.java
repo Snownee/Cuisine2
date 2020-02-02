@@ -28,6 +28,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+import snownee.cuisine.CuisineConst;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.registry.Spice;
@@ -135,10 +136,16 @@ public class SpiceBottleItem extends ModItem {
             return ret;
         }
 
+        //FIXME:CHECK ME
         private void updateSpice() {
-            //TODO
+            FluidStack fl = this.getFluid();
+            NBTHelper nbt = NBTHelper.of(getContainer());
+            Optional<Spice> spice = CuisineAPI.findSpice(fl);
+            spice.ifPresent(i->{
+                nbt.setString(SPICE_NAME,i.getRegistryName().toString());
+                nbt.setInt(SPICE_VALUE,fl.getAmount()/FLUID_PER_VOLUME);
+            });
         }
-
     }
 
     @Override
@@ -249,7 +256,6 @@ public class SpiceBottleItem extends ModItem {
             return new TranslationTextComponent(this.getTranslationKey(stack));
         else
             return new TranslationTextComponent(String.format("spice.%s", name.replace(":", ".")));
-
     }
 
     public int getLeft(ItemStack stack) {
@@ -267,6 +273,6 @@ public class SpiceBottleItem extends ModItem {
         if (isContainerEmpty(stack)) {
             return;
         }
-        tooltip.add(new TranslationTextComponent("cuisine.rest").appendText(String.format(":%d/%d", getLeft(stack), maxVolume)));
+        tooltip.add(new TranslationTextComponent(CuisineConst.REST).appendText(String.format(":%d/%d", getLeft(stack), maxVolume)));
     }
 }
