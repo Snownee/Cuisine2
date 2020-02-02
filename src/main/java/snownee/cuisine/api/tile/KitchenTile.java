@@ -11,7 +11,8 @@ import snownee.kiwi.tile.TextureTile;
 
 public abstract class KitchenTile extends TextureTile {
 
-    protected LazyOptional<ChainMultiblock> multiblock;
+    protected ChainMultiblock multiblock;
+    protected LazyOptional<ChainMultiblock> multiblockOptional = LazyOptional.of(() -> multiblock);
 
     public KitchenTile(TileEntityType<?> tileEntityTypeIn, String... textureKeys) {
         super(tileEntityTypeIn, textureKeys);
@@ -31,7 +32,7 @@ public abstract class KitchenTile extends TextureTile {
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
         if (cap == CuisineCapabilities.MULTIBLOCK) {
-            return LazyOptional.of(() -> multiblock).cast();
+            return multiblockOptional.cast();
         }
         return super.getCapability(cap, side);
     }
@@ -39,16 +40,17 @@ public abstract class KitchenTile extends TextureTile {
     @Override
     public void onLoad() {
         super.onLoad();
-        ChainMultiblock multiblock = new ChainMultiblock(this);
-        this.multiblock = LazyOptional.of(() -> multiblock);
+        this.multiblock = new ChainMultiblock(this);
     }
 
     @Override
     public void remove() {
         super.remove();
-        multiblock.ifPresent(ChainMultiblock::remove);
-        multiblock.invalidate();
-        multiblock = null;
+        multiblockOptional.invalidate();
+        multiblockOptional = null;
+        if (multiblock != null) {
+            multiblock.remove();
+        }
     }
 
 }

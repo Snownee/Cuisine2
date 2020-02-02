@@ -30,7 +30,7 @@ public class ResearchData extends WorldSavedData {
 
     @Override
     public void save(File fileIn) {
-        markDirty(); // for testing
+        //markDirty(); // for testing
         super.save(fileIn);
     }
 

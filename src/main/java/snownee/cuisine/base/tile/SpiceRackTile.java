@@ -1,25 +1,25 @@
 package snownee.cuisine.base.tile;
 
 import net.minecraft.nbt.CompoundNBT;
+import snownee.cuisine.api.tile.KitchenTile;
 import snownee.cuisine.base.BaseModule;
-import snownee.kiwi.tile.BaseTile;
 
-public class SpiceRackTile extends BaseTile {
+public class SpiceRackTile extends KitchenTile {
 
     public SpiceRackTile() {
         super(BaseModule.SPICE_RACK_TILE);
     }
 
     @Override
-    protected void readPacketData(CompoundNBT arg0) {
+    protected void readPacketData(CompoundNBT data) {
         // TODO Auto-generated method stub
-
+        super.readPacketData(data);
     }
 
     @Override
-    protected CompoundNBT writePacketData(CompoundNBT arg0) {
+    protected CompoundNBT writePacketData(CompoundNBT data) {
         // TODO Auto-generated method stub
-        return null;
+        return super.writePacketData(data);
     }
 
 }
