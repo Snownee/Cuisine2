@@ -1,0 +1,13 @@
+{
+  "forge_marker": 1,
+  "variants": {
+    "triggered": {
+      "true": {},
+      "false": {}
+    },
+    "static": {
+      "true": { "model": "cuisine:piston_head" },
+      "false": { "model": "cuisine:piston_extension" }
+    }
+  }
+}

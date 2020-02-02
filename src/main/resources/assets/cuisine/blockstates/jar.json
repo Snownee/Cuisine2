@@ -1,0 +1,13 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "cuisine:jar"
+  },
+  "variants": {
+    "variant=0": [{}],
+    "variant=1": [{}],
+    "variant=2": [{}],
+    "variant=3": [{}],
+    "inventory": [{}]
+  }
+}

@@ -1,0 +1,8 @@
+把需要的材质或json的名字写在这，以便后面删除其他不要的。
+
+PEANUT
+CHILI
+SCALLION
+SPINACH
+SPICE_BOTTLE
+SPICE_RACK_TILE
