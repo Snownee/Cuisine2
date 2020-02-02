@@ -273,6 +273,6 @@ public class SpiceBottleItem extends ModItem {
         if (isContainerEmpty(stack)) {
             return;
         }
-        tooltip.add(new TranslationTextComponent(CuisineConst.REST).appendText(String.format(":%d/%d", getLeft(stack), maxVolume)));
+        tooltip.add(new TranslationTextComponent("cuisine.spice_bottle.rest").appendText(String.format(":%d/%d", getLeft(stack), maxVolume)));
     }
 }
