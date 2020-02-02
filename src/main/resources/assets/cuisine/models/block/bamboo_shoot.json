@@ -1,6 +1,0 @@
-{
-    "parent": "block/cross",
-    "textures": {
-        "cross": "cuisine:block/bamboo_shoot"
-    }
-}
