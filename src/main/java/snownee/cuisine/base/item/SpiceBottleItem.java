@@ -139,11 +139,11 @@ public class SpiceBottleItem extends ModItem {
         //FIXME:CHECK ME
         private void updateSpice() {
             FluidStack fl = this.getFluid();
-            NBTHelper nbt = NBTHelper.of(getContainer());
             Optional<Spice> spice = CuisineAPI.findSpice(fl);
-            spice.ifPresent(i->{
-                nbt.setString(SPICE_NAME,i.getRegistryName().toString());
-                nbt.setInt(SPICE_VALUE,fl.getAmount()/FLUID_PER_VOLUME);
+            spice.ifPresent(i -> {
+                NBTHelper nbt = NBTHelper.of(getContainer());
+                nbt.setString(SPICE_NAME, i.getRegistryName().toString());
+                nbt.setInt(SPICE_VALUE, fl.getAmount() / FLUID_PER_VOLUME);
             });
         }
     }
