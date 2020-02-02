@@ -67,7 +67,6 @@ public final class CoreModule extends AbstractModule {
     protected void preInit() {
         Cuisine.debug = Kiwi.isLoaded(Util.RL("kiwi:test"));
 
-        CuisineCapabilitiesInternal.register();
         CuisineRegistries.class.hashCode();
         cuisineNetworkTagManager = new CuisineNetworkTagManager();
 
@@ -81,6 +80,7 @@ public final class CoreModule extends AbstractModule {
     @Override
     protected void init(FMLCommonSetupEvent event) {
         CuisineCommonConfig.refresh();
+        CuisineCapabilitiesInternal.register();
     }
 
     @Override
