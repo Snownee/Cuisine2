@@ -46,7 +46,7 @@ public enum DeferredReloadListener implements IFutureReloadListener {
     }
 
     private CompletableFuture<Void> make(LoadingStage loadingStage, Function<IFutureReloadListener, CompletableFuture<?>> mapper) {
-        Cuisine.logger.info("Loading Data: " + loadingStage);
+        Cuisine.logger.info("Loading data: " + loadingStage);
         CompletableFuture<?>[] futures = {};
         listeners.get(loadingStage).stream().map(mapper).collect(Collectors.toList()).toArray(futures);
         return CompletableFuture.allOf(futures);

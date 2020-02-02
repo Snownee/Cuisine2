@@ -11,6 +11,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.tags.Tag;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -18,6 +19,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import snownee.cuisine.api.CuisineAPI;
@@ -32,6 +34,7 @@ import snownee.cuisine.cap.CuisineCapabilitiesInternal;
 import snownee.cuisine.data.CuisineDataManager;
 import snownee.cuisine.data.DeferredReloadListener;
 import snownee.cuisine.data.DeferredReloadListener.LoadingStage;
+import snownee.cuisine.data.research.ResearchData;
 import snownee.cuisine.data.tag.CuisineNetworkTagManager;
 import snownee.cuisine.impl.bonus.EffectsBonus;
 import snownee.cuisine.impl.bonus.NewMaterialBonus;
@@ -39,11 +42,10 @@ import snownee.cuisine.impl.rule.CountRegistryRecipeRule;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.Kiwi;
 import snownee.kiwi.KiwiModule;
-import snownee.kiwi.KiwiModule.Subscriber.Bus;
 import snownee.kiwi.util.Util;
 
 @KiwiModule(name = "core")
-@KiwiModule.Subscriber(value = Bus.FORGE)
+@KiwiModule.Subscriber
 public final class CoreModule extends AbstractModule {
 
     private CuisineDataManager<Material> materialManager;
@@ -52,6 +54,8 @@ public final class CoreModule extends AbstractModule {
     private CuisineDataManager<CuisineRecipe> recipeManager;
 
     private CuisineNetworkTagManager cuisineNetworkTagManager;
+
+    private ResearchData researchData = new ResearchData();
 
     public CoreModule() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -86,6 +90,11 @@ public final class CoreModule extends AbstractModule {
     @Override
     protected void clientInit(FMLClientSetupEvent event) {
         CuisineClientConfig.refresh();
+    }
+
+    @Override
+    protected void serverInit(FMLServerStartingEvent event) {
+        event.getServer().getWorld(DimensionType.OVERWORLD).getSavedData().getOrCreate(() -> researchData, researchData.getName());
     }
 
     @SubscribeEvent
