@@ -85,6 +85,8 @@ public final class Cuisine implements ICuisineAPI {
 
     @Override
     public Optional<CuisineFood> findFood(ItemStack stack) {
+        if (stack.isEmpty())
+            return Optional.empty();
         CuisineFood food = CoreModule.item2Food.get(stack.getItem());
         if (food == null) {
             for (Function<ItemStack, Optional<CuisineFood>> func : specialFoodMatchers) {
@@ -104,16 +106,22 @@ public final class Cuisine implements ICuisineAPI {
 
     @Override
     public Optional<Material> findMaterial(ItemStack stack) {
+        if (stack.isEmpty())
+            return Optional.empty();
         return Optional.ofNullable(CoreModule.item2Material.get(stack.getItem()));
     }
 
     @Override
     public Optional<Spice> findSpice(ItemStack stack) {
+        if (stack.isEmpty())
+            return Optional.empty();
         return Optional.ofNullable(CoreModule.item2Spice.get(stack.getItem()));
     }
 
     @Override
     public Optional<Spice> findSpice(FluidStack stack) {
+        if (stack.isEmpty())
+            return Optional.empty();
         return Optional.ofNullable(CoreModule.fluid2Spice.get(stack.getFluid()));
     }
 }
