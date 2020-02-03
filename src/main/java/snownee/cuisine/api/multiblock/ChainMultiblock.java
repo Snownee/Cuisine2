@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
@@ -34,7 +35,7 @@ public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
         this.tile = tile;
         World world = tile.getWorld();
         BlockPos pos = tile.getPos();
-        for (Direction direction : Direction.values()) {
+        for (Direction direction : Direction.values()) { //TODO replace with Direction.VALUES
             TileEntity neighbor = world.getTileEntity(pos.offset(direction));
             if (neighbor == null) {
                 continue;
@@ -47,7 +48,7 @@ public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
                     }
                 } else {
                     multiblock = multiblock.getMaster();
-                    if (master.all.size() + multiblock.getMaster().all.size() >= MAX_BLOCKS) {
+                    if (master.all.size() + multiblock.getMaster().all.size() > MAX_BLOCKS) {
                         destory();
                         return;
                     }
@@ -87,12 +88,13 @@ public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
         return master == null;
     }
 
+    @Nonnull
     public ChainMultiblock getMaster() {
         return isMaster() ? this : master;
     }
 
     public void remove() {
-        if (getMaster().all.size() > 1) {
+        if (getMaster().all != null && getMaster().all.size() > 1) {
             getMaster().all.remove(tile.getPos());
             Map<BlockPos, ChainMultiblock> map = ImmutableMap.copyOf(getMaster().all);
             Set<ChainMultiblock> origins = Sets.newLinkedHashSet();
@@ -134,6 +136,8 @@ public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
     }
 
     public void destory() {
+        TileEntity tile = this.tile;
+        remove();
         if (!tile.isRemoved()) {
             tile.getWorld().destroyBlock(tile.getPos(), true);
         }
