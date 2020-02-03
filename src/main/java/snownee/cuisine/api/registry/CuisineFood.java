@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
@@ -25,6 +27,10 @@ public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
     @Nullable
     public Block getBlock() {
         return block;
+    }
+
+    public ITextComponent getDisplayName() {
+        return new TranslationTextComponent("cuisine.food." + String.valueOf(getRegistryName()).replace(':', '.'));
     }
 
     @Override

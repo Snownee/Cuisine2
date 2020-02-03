@@ -8,6 +8,8 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.item.Item;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import snownee.cuisine.api.Bonus;
@@ -30,6 +32,10 @@ public class Material extends ForgeRegistryEntry<Material> {
 
     public final Set<ResourceLocation> getTags() {
         return reverseTags.getTagNames();
+    }
+
+    public ITextComponent getDisplayName() {
+        return new TranslationTextComponent("cuisine.material." + String.valueOf(getRegistryName()).replace(':', '.'));
     }
 
     @Override

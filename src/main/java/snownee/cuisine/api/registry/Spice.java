@@ -8,6 +8,8 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import snownee.cuisine.api.tag.SpiceTags;
@@ -43,6 +45,10 @@ public class Spice extends ForgeRegistryEntry<Spice> {
 
     public int getColor() {
         return color;
+    }
+
+    public ITextComponent getDisplayName() {
+        return new TranslationTextComponent("cuisine.spice." + String.valueOf(getRegistryName()).replace(':', '.'));
     }
 
     @Override

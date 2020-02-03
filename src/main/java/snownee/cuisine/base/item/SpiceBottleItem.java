@@ -237,11 +237,10 @@ public class SpiceBottleItem extends ModItem {
         if (this.isInGroup(group)) {
             ItemStack stack = new ItemStack(this);
             items.add(stack.copy());
+            NBTHelper nbt = NBTHelper.of(stack);
             CuisineRegistries.SPICES.getKeys().forEach(i -> {
-                ItemStack s = stack.copy();
-                NBTHelper nbt = NBTHelper.of(s);
                 nbt.setString(SPICE_NAME, i.toString());
-                items.add(s);
+                items.add(stack.copy());
             });
         }
     }
@@ -249,12 +248,11 @@ public class SpiceBottleItem extends ModItem {
     @Override
     @Nonnull
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        NBTHelper nbt = NBTHelper.of(stack);
-        String name = nbt.getString(SPICE_NAME);
+        String name = NBTHelper.of(stack).getString(SPICE_NAME);
         if (name == null)
-            return new TranslationTextComponent(this.getTranslationKey(stack));
+            return super.getDisplayName(stack);
         else
-            return new TranslationTextComponent(String.format("spice.%s", name.replace(":", ".")));
+            return new TranslationTextComponent("cuisine.spice." + name.replace(':', '.'));
     }
 
     public int getLeft(ItemStack stack) {
