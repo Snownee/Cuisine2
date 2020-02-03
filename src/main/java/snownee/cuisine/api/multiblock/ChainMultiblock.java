@@ -42,13 +42,13 @@ public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
             }
             ChainMultiblock multiblock = neighbor.getCapability(CuisineCapabilities.MULTIBLOCK, direction.getOpposite()).orElse(null);
             if (multiblock != null) {
-                if (master == null) {
+                multiblock = multiblock.getMaster();
+                if (master == null || multiblock == master) {
                     if (!setMaster(multiblock.getMaster())) {
                         return;
                     }
                 } else {
-                    multiblock = multiblock.getMaster();
-                    if (master.all.size() + multiblock.getMaster().all.size() > MAX_BLOCKS) {
+                    if (master.all.size() + multiblock.all.size() > MAX_BLOCKS) {
                         destory();
                         return;
                     }
