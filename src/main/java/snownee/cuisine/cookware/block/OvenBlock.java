@@ -1,4 +1,4 @@
-package snownee.cuisine.utensil.block;
+package snownee.cuisine.cookware.block;
 
 import net.minecraft.block.HorizontalBlock;
 import snownee.kiwi.block.ModBlock;
