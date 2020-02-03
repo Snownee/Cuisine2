@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.google.common.collect.Maps;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.storage.WorldSavedData;
 
 public class ResearchData extends WorldSavedData {
@@ -24,7 +25,8 @@ public class ResearchData extends WorldSavedData {
 
     @Override
     public CompoundNBT write(CompoundNBT data) {
-        // TODO Auto-generated method stub
+        ListNBT list = new ListNBT();
+        
         return data;
     }
 

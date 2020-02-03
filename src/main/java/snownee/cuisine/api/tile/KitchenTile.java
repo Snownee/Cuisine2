@@ -8,14 +8,37 @@ import net.minecraftforge.common.util.LazyOptional;
 import snownee.cuisine.api.CuisineCapabilities;
 import snownee.cuisine.api.multiblock.ChainMultiblock;
 import snownee.kiwi.tile.TextureTile;
+import snownee.kiwi.util.NBTHelper;
 
 public abstract class KitchenTile extends TextureTile {
 
     protected ChainMultiblock multiblock;
-    protected LazyOptional<ChainMultiblock> multiblockOptional = LazyOptional.of(() -> multiblock);
+    protected LazyOptional<ChainMultiblock> multiblockOptional;
 
     public KitchenTile(TileEntityType<?> tileEntityTypeIn, String... textureKeys) {
         super(tileEntityTypeIn, textureKeys);
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return writePacketData(new CompoundNBT());
+    }
+
+    @Override
+    public void read(CompoundNBT compound) {
+        NBTHelper data = NBTHelper.of(compound);
+        if (world == null) {
+            multiblock = new ChainMultiblock(this, data.getTag("Multiblock"));
+        }
+        super.read(compound);
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT compound) {
+        if (multiblock != null) {
+            compound.put("Multiblock", multiblock.serializeNBT());
+        }
+        return super.write(compound);
     }
 
     @Override
@@ -25,13 +48,12 @@ public abstract class KitchenTile extends TextureTile {
 
     @Override
     protected CompoundNBT writePacketData(CompoundNBT data) {
-
         return super.writePacketData(data);
     }
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        if (cap == CuisineCapabilities.MULTIBLOCK) {
+        if (multiblock != null && cap == CuisineCapabilities.MULTIBLOCK) {
             return multiblockOptional.cast();
         }
         return super.getCapability(cap, side);
@@ -40,16 +62,27 @@ public abstract class KitchenTile extends TextureTile {
     @Override
     public void onLoad() {
         super.onLoad();
-        this.multiblock = new ChainMultiblock(this);
+        if (!world.isRemote) {
+            if (multiblock == null) {
+                multiblock = new ChainMultiblock(this, null);
+            } else {
+                multiblock.onLoad();
+            }
+        }
+        if (multiblock != null) {
+            multiblockOptional = LazyOptional.of(() -> multiblock);
+        }
     }
 
     @Override
     public void remove() {
         super.remove();
-        multiblockOptional.invalidate();
-        multiblockOptional = null;
         if (multiblock != null) {
             multiblock.remove();
+        }
+        if (multiblockOptional != null) {
+            multiblockOptional.invalidate();
+            multiblockOptional = null;
         }
     }
 

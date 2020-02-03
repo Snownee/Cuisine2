@@ -4,7 +4,7 @@ import net.minecraft.block.Blocks;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiModule;
 
-@KiwiModule(name = "farm", dependencies = "@core")
+@KiwiModule(name = "farm")
 @KiwiModule.Group("decorations")
 @KiwiModule.Optional
 public class FarmModule extends AbstractModule {

@@ -34,6 +34,7 @@ public class SpiceRackBlock extends HorizontalBlock {
         setDefaultState(stateContainer.getBaseState().with(LIT, false));
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
     }
@@ -61,7 +62,7 @@ public class SpiceRackBlock extends HorizontalBlock {
                 tile.getCapability(CuisineCapabilities.MULTIBLOCK).ifPresent(m -> {
                     if (!m.isMaster()) {
                         BlockPos pos1 = m.getMaster().getTile().getPos();
-                        LightningBoltEntity lightningboltentity = new LightningBoltEntity(worldIn, (double) pos1.getX() + 0.5D, (double) pos1.getY(), (double) pos1.getZ() + 0.5D, true);
+                        LightningBoltEntity lightningboltentity = new LightningBoltEntity(worldIn, pos1.getX() + 0.5D, pos1.getY(), pos1.getZ() + 0.5D, true);
                         ((ServerWorld) worldIn).addLightningBolt(lightningboltentity);
                     }
                     System.out.println(m.getMaster().all.keySet());

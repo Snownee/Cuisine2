@@ -28,7 +28,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-import snownee.cuisine.CuisineConst;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.registry.Spice;
