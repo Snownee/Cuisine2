@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import static net.minecraftforge.fluids.FluidStack.EMPTY;
 
-public class FluidHelper {
+public final class FluidStackHelper {
     private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -24,14 +24,12 @@ public class FluidHelper {
         try {
             Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(compound.getString("id")));
             if (fluid == null) {
-                throw new RuntimeException("could not found fliud.");
+                throw new RuntimeException("Cannot find fluid.");
             }
             if (compound.contains("tag", 10)) {
-                return new FluidStack(fluid,
-                        compound.getInt("amount"), compound.getCompound("tag"));
+                return new FluidStack(fluid, compound.getInt("amount"), compound.getCompound("tag"));
             } else {
-                return new FluidStack(fluid,
-                        compound.getInt("amount"));
+                return new FluidStack(fluid, compound.getInt("amount"));
             }
         } catch (RuntimeException runtimeexception) {
             LOGGER.debug("Tried to load invalid fluid: {}", compound, runtimeexception);
@@ -70,15 +68,16 @@ public class FluidHelper {
 
         return new FluidStack(fluid, JSONUtils.getInt(json, "amount", FluidAttributes.BUCKET_VOLUME));
     }
+
     public static FluidStack read(PacketBuffer buffer) {
         Fluid fluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
-        int amount  = buffer.readInt();
+        int amount = buffer.readInt();
         CompoundNBT nbt = buffer.readCompoundTag();
-        return new FluidStack(fluid,amount,nbt);
+        return new FluidStack(fluid, amount, nbt);
     }
 
-    public static void write(PacketBuffer buffer,FluidStack fluidStack) {
-        buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS,fluidStack.getFluid());
+    public static void write(PacketBuffer buffer, FluidStack fluidStack) {
+        buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, fluidStack.getFluid());
         buffer.writeInt(fluidStack.getAmount());
         buffer.writeCompoundTag(fluidStack.getTag());
     }

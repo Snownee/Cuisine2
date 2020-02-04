@@ -1,5 +1,4 @@
-package snownee.cuisine.plugin;
-
+package snownee.cuisine.plugin.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -25,7 +24,9 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
-        registration.addRecipeCategories(new MillingCategory(registration.getJeiHelpers().getGuiHelper()));
+        if (Registry.RECIPE_TYPE.containsKey(MILLING)) {
+            registration.addRecipeCategories(new MillingCategory(registration.getJeiHelpers().getGuiHelper()));
+        }
     }
 
     @Override
@@ -33,7 +34,7 @@ public class JEIPlugin implements IModPlugin {
         if (Registry.RECIPE_TYPE.containsKey(MILLING)) {
             ClientWorld world = Minecraft.getInstance().world;
             RecipeManager recipeManager = world.getRecipeManager();
-            registration.addRecipes(recipeManager.getRecipes(ProcessingModule.Mill_RECIPE_TYPE).values(), MILLING);
+            registration.addRecipes(recipeManager.getRecipes(ProcessingModule.MILL_RECIPE_TYPE).values(), MILLING);
         }
     }
 }

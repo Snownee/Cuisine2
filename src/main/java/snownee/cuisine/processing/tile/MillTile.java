@@ -11,15 +11,15 @@ public class MillTile extends BaseTile {
     }
 
     @Override
-    protected void readPacketData(CompoundNBT arg0) {
+    protected void readPacketData(CompoundNBT data) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    protected CompoundNBT writePacketData(CompoundNBT arg0) {
+    protected CompoundNBT writePacketData(CompoundNBT data) {
         // TODO Auto-generated method stub
-        return null;
+        return data;
     }
 
 }

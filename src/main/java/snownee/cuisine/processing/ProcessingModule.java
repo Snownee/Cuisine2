@@ -26,8 +26,8 @@ public final class ProcessingModule extends AbstractModule {
     }
 
     @Name("milling")
-    public static final IRecipeSerializer<?> Mill_RECIPE = new MillingRecipe.Serializer();
+    public static final IRecipeSerializer<?> MILL_RECIPE = new MillingRecipe.Serializer();
 
     @Name("milling")
-    public static final IRecipeType<MillingRecipe> Mill_RECIPE_TYPE = new IRecipeType() {};
+    public static final IRecipeType<MillingRecipe> MILL_RECIPE_TYPE = new IRecipeType() {};
 }
