@@ -20,6 +20,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import snownee.cuisine.processing.ProcessingModule;
 import snownee.cuisine.processing.inventory.MillInventory;
 import snownee.cuisine.util.FluidHelper;
+import snownee.cuisine.util.ingredient.FluidIngredient;
 import snownee.kiwi.crafting.Recipe;
 import snownee.kiwi.util.Util;
 
@@ -31,13 +32,15 @@ import java.util.stream.Collectors;
 
 public class MillingRecipe extends Recipe<MillInventory> {
     private Ingredient item;
+    private FluidIngredient fluid;
     private ItemStack itemOut;
     private FluidStack fluidOut;
 
-    public MillingRecipe(ResourceLocation id, Ingredient item,
+    public MillingRecipe(ResourceLocation id, Ingredient item,FluidIngredient fluid,
                          ItemStack outItem, FluidStack outFluid) {
         super(id);
         this.item = item;
+        this.fluid = fluid;
         this.fluidOut = outFluid;
         this.itemOut = outItem;
     }
@@ -52,7 +55,7 @@ public class MillingRecipe extends Recipe<MillInventory> {
     }
 
     public List<FluidStack> getInputFluidStack(){
-        return new ArrayList<>();
+        return Arrays.stream(fluid.getMatchingFluids()).collect(Collectors.toList());
     }
 
     public ItemStack getOutputItemStack(){
@@ -89,8 +92,9 @@ public class MillingRecipe extends Recipe<MillInventory> {
             if (fluidStack ==null && itemStack == null){
                 throw new JsonSyntaxException("need a result item or fluid.");
             }
-            return new MillingRecipe(recipeId,Ingredient.deserialize(ingredient),itemStack
-                    ,fluidStack);
+            return new MillingRecipe(recipeId,Ingredient.deserialize(ingredient),
+                    FluidIngredient.deserialize(fluid_ingredient),
+                    itemStack ,fluidStack);
 
         }
 
@@ -99,17 +103,17 @@ public class MillingRecipe extends Recipe<MillInventory> {
         public MillingRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
             String group = buffer.readString(32767);
             Ingredient ingredient = Ingredient.read(buffer);
-            ////////////////////////////////////////////////
+            FluidIngredient fluidIngredient = FluidIngredient.read(buffer);
             ItemStack item = buffer.readItemStack();
             FluidStack fluidStack  = FluidHelper.read(buffer);
-            return new MillingRecipe(recipeId, ingredient, item, fluidStack);
+            return new MillingRecipe(recipeId, ingredient,fluidIngredient, item, fluidStack);
         }
 
         @Override
         public void write(PacketBuffer buffer, MillingRecipe recipe) {
             buffer.writeString(recipe.getGroup());
             recipe.item.write(buffer);
-            /////////////////////////////////////////////
+            recipe.fluid.write(buffer);
             buffer.writeItemStack(recipe.itemOut);
             FluidHelper.write(buffer,recipe.fluidOut);
         }

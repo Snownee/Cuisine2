@@ -1,6 +1,5 @@
 package snownee.cuisine.plugin;
 
-import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -29,7 +28,7 @@ public class MillingCategory implements IRecipeCategory<MillingRecipe> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static final int width = 116;
-    public static final int height = 54;
+    public static final int height = 90;
 
     public MillingCategory(IGuiHelper guiHelper) {
         this.guiHelper = guiHelper;
@@ -77,13 +76,19 @@ public class MillingCategory implements IRecipeCategory<MillingRecipe> {
     @Override
     public void setRecipe(IRecipeLayout layout, MillingRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup guiItemStacks = layout.getItemStacks();
-        guiItemStacks.init(0, true, 94, 18);
-        guiItemStacks.set(0, ingredients.getOutputs(VanillaTypes.ITEM).get(0));
-        guiItemStacks.setBackground(0, guiHelper.getSlotDrawable());
         IGuiFluidStackGroup fluidStackGroup = layout.getFluidStacks();
-        fluidStackGroup.init(1,true,20,20);
-        fluidStackGroup.set(1,ingredients.getOutputs(VanillaTypes.FLUID).get(0));
+        guiItemStacks.init(0, true, 74, 20);
+        guiItemStacks.set(0, ingredients.getInputs(VanillaTypes.ITEM).get(0));
+        guiItemStacks.setBackground(0, guiHelper.getSlotDrawable());
+        fluidStackGroup.init(1,true,24,20);
+        fluidStackGroup.set(1,ingredients.getInputs(VanillaTypes.FLUID).get(0));
         fluidStackGroup.setBackground(1, guiHelper.getSlotDrawable());
+        guiItemStacks.init(2, true, 74, 50);
+        guiItemStacks.set(2, ingredients.getOutputs(VanillaTypes.ITEM).get(0));
+        guiItemStacks.setBackground(2, guiHelper.getSlotDrawable());
+        fluidStackGroup.init(3,true,24,50);
+        fluidStackGroup.set(3,ingredients.getOutputs(VanillaTypes.FLUID).get(0));
+        fluidStackGroup.setBackground(3, guiHelper.getSlotDrawable());
 
     }
 }
