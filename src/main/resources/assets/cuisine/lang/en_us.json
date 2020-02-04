@@ -1,4 +1,5 @@
 {
-  "spice.empty":"empty",
-  "spice.cuisine.sugar": "sugar"
+  "cuisine.spice.empty":"empty",
+  "cuisine.spice.cuisine.sugar": "sugar",
+  "cuisine.argument.registry.id.invalid": "Unknown %s '%s'"
 }

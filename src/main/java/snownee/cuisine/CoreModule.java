@@ -5,8 +5,10 @@ import java.util.Map;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.block.Block;
+import net.minecraft.command.CommandSource;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.resources.IReloadableResourceManager;
@@ -95,6 +97,9 @@ public final class CoreModule extends AbstractModule {
     @Override
     protected void serverInit(FMLServerStartingEvent event) {
         event.getServer().getWorld(DimensionType.OVERWORLD).getSavedData().getOrCreate(() -> researchData, researchData.getName());
+
+        LiteralArgumentBuilder<CommandSource> builder = CuisineCommand.init(event.getCommandDispatcher());
+        event.getCommandDispatcher().register(builder);
     }
 
     @SubscribeEvent

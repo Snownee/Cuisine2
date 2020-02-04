@@ -5,7 +5,8 @@
   "refmap": "mixins.cuisine.refmap.json",
   "mixins": [
     "MixinLivingEntity",
-    "MixinFoodStats"
+    "MixinFoodStats",
+    "MixinYggdrasilMinecraftSessionService"
   ],
   "injectors": {
     "defaultRequire": 1

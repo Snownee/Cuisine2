@@ -15,10 +15,8 @@ public class MixinYggdrasilMinecraftSessionService {
 
     @Inject(at = @At("HEAD"), method = "fillGameProfile")
     protected void injectFillGameProfile(final GameProfile profile, final boolean requireSecure, CallbackInfoReturnable<GameProfile> info) {
-        if (Cuisine.debug) {
-            Cuisine.logger.info("Debug mode, bypass network operations");
-            info.setReturnValue(profile);
-        }
+        Cuisine.logger.info("Debug mode, bypass network operations");
+        info.setReturnValue(profile);
     }
 
 }
