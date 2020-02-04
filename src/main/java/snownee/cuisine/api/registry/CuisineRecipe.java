@@ -4,22 +4,26 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.RecipeRule;
 
-public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> implements Comparable<CuisineRecipe> {
+public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
 
     private CuisineFood result;
     private int priority;
-    private Utensil utensil;
+    private Cookware utensil;
     private List<RecipeRule> rules = Collections.EMPTY_LIST;
 
     public int getPriority() {
         return priority;
     }
 
-    @Override
-    public int compareTo(CuisineRecipe o) {
-        return Integer.compare(this.getPriority(), o.getPriority());
+    public CuisineFood getResult() {
+        return result;
+    }
+
+    public boolean matches(FoodBuilder builder) {
+        return rules.stream().allMatch(rule -> rule.test(builder));
     }
 
     @Override

@@ -2,11 +2,11 @@ package snownee.cuisine.api.registry;
 
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class Utensil extends ForgeRegistryEntry<Utensil> {
+public class Cookware extends ForgeRegistryEntry<Cookware> {
 
     @Override
     public String toString() {
-        return "Utensil{" + getRegistryName() + "}";
+        return "Cookware{" + getRegistryName() + "}";
     }
 
 }

@@ -1,10 +1,10 @@
 package snownee.cuisine.data.research;
 
-import snownee.cuisine.api.IResearchInfo;
+import snownee.cuisine.api.ResearchInfo;
 import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.Material;
 
-public class ResearchInfo implements IResearchInfo {
+public class ResearchInfoImpl implements ResearchInfo {
 
     @Override
     public int getStar(Material material) {

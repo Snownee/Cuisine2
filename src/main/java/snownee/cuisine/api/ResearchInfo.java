@@ -3,7 +3,7 @@ package snownee.cuisine.api;
 import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.Material;
 
-public interface IResearchInfo {
+public interface ResearchInfo {
 
     int getStar(Material material);
 

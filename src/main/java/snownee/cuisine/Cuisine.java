@@ -16,11 +16,15 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import snownee.cuisine.api.Bonus;
 import snownee.cuisine.api.CuisineAPI.ICuisineAPI;
+import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.RecipeRule;
+import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.api.registry.CuisineFood;
+import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.data.CuisineDataManager;
+import snownee.cuisine.impl.FoodBuilderImpl;
 import snownee.kiwi.KiwiModule.LoadingCondition;
 import snownee.kiwi.LoadingContext;
 import snownee.kiwi.util.NBTHelper;
@@ -123,5 +127,15 @@ public final class Cuisine implements ICuisineAPI {
         if (stack.isEmpty())
             return Optional.empty();
         return Optional.ofNullable(CoreModule.fluid2Spice.get(stack.getFluid()));
+    }
+
+    @Override
+    public FoodBuilder foodBuilder(Cookware cookware) {
+        return new FoodBuilderImpl(cookware);
+    }
+
+    @Override
+    public Optional<CuisineRecipe> findRecipe(FoodBuilder foodBuilder) {
+        return CoreModule.recipeManager.findRecipe(foodBuilder);
     }
 }

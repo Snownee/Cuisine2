@@ -12,7 +12,7 @@ import net.minecraft.world.storage.WorldSavedData;
 
 public class ResearchData extends WorldSavedData {
 
-    private final Map<UUID, ResearchInfo> players = Maps.newHashMap();
+    private final Map<UUID, ResearchInfoImpl> players = Maps.newHashMap();
 
     public ResearchData() {
         super("cuisine_research");

@@ -1,28 +1,30 @@
 package snownee.cuisine.impl;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.ResourceLocation;
+import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.registry.CuisineFood;
 
 public class IngredientMatcher implements Function<ItemStack, Optional<CuisineFood>> {
 
-    private final Ingredient ingredient;
-    private final CuisineFood food;
+    private final Predicate<ItemStack> ingredient;
+    private final ResourceLocation foodId;
 
-    public IngredientMatcher(Ingredient ingredient, CuisineFood food) {
+    public IngredientMatcher(Predicate<ItemStack> ingredient, ResourceLocation foodId) {
         this.ingredient = ingredient;
-        this.food = food;
+        this.foodId = foodId;
     }
 
     @Override
     public Optional<CuisineFood> apply(ItemStack input) {
         if (ingredient.test(input)) {
-            return Optional.of(food);
+            return Optional.ofNullable(CuisineRegistries.FOODS.getValue(foodId));
         } else {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 

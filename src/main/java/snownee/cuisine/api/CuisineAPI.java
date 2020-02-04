@@ -8,7 +8,9 @@ import com.google.gson.JsonDeserializer;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.api.registry.CuisineFood;
+import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
 
@@ -42,6 +44,11 @@ public final class CuisineAPI {
             INSTANCE.registerRecipeRuleAdapter(key, adapter);
     }
 
+    public static void registerSpecialFoodMatcher(Function<ItemStack, Optional<CuisineFood>> matcher) {
+        if (INSTANCE != null)
+            INSTANCE.registerSpecialFoodMatcher(matcher);
+    }
+
     public static Optional<CuisineFood> findFood(ItemStack stack) {
         return INSTANCE != null ? INSTANCE.findFood(stack) : Optional.empty();
     }
@@ -60,6 +67,14 @@ public final class CuisineAPI {
 
     public static Optional<Spice> findSpice(FluidStack stack) {
         return INSTANCE != null ? INSTANCE.findSpice(stack) : Optional.empty();
+    }
+
+    public static FoodBuilder foodBuilder(Cookware cookware) {
+        return INSTANCE.foodBuilder(cookware);
+    }
+
+    public static Optional<CuisineRecipe> findRecipe(FoodBuilder foodBuilder) {
+        return INSTANCE != null ? INSTANCE.findRecipe(foodBuilder) : Optional.empty();
     }
 
     private static ICuisineAPI INSTANCE = null;
@@ -92,5 +107,9 @@ public final class CuisineAPI {
         Optional<Spice> findSpice(ItemStack stack);
 
         Optional<Spice> findSpice(FluidStack stack);
+
+        FoodBuilder foodBuilder(Cookware cookware);
+
+        Optional<CuisineRecipe> findRecipe(FoodBuilder foodBuilder);
     }
 }

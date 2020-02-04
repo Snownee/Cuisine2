@@ -50,7 +50,7 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
     public static final Map<String, JsonDeserializer<Bonus>> bonusAdapters = Maps.newHashMap();
     public static final Map<String, JsonDeserializer<RecipeRule>> ruleAdapters = Maps.newHashMap();
 
-    private final ForgeRegistry<T> registry;
+    protected final ForgeRegistry<T> registry;
     private Runnable callback;
 
     public CuisineDataManager(String folder, ForgeRegistry<T> registry) {

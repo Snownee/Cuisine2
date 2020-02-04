@@ -29,11 +29,11 @@ import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.config.CuisineClientConfig;
 import snownee.cuisine.api.config.CuisineCommonConfig;
 import snownee.cuisine.api.registry.CuisineFood;
-import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.cap.CuisineCapabilitiesInternal;
 import snownee.cuisine.data.CuisineDataManager;
+import snownee.cuisine.data.CuisineRecipeManager;
 import snownee.cuisine.data.DeferredReloadListener;
 import snownee.cuisine.data.DeferredReloadListener.LoadingStage;
 import snownee.cuisine.data.research.ResearchData;
@@ -50,14 +50,14 @@ import snownee.kiwi.util.Util;
 @KiwiModule.Subscriber
 public final class CoreModule extends AbstractModule {
 
-    private CuisineDataManager<Material> materialManager;
-    private CuisineDataManager<Spice> spiceManager;
-    private CuisineDataManager<CuisineFood> foodManager;
-    private CuisineDataManager<CuisineRecipe> recipeManager;
+    static CuisineDataManager<Material> materialManager;
+    static CuisineDataManager<Spice> spiceManager;
+    static CuisineDataManager<CuisineFood> foodManager;
+    static CuisineRecipeManager recipeManager;
 
-    private CuisineNetworkTagManager cuisineNetworkTagManager;
+    static CuisineNetworkTagManager cuisineNetworkTagManager;
 
-    private ResearchData researchData = new ResearchData();
+    static ResearchData researchData = new ResearchData();
 
     public CoreModule() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -108,7 +108,7 @@ public final class CoreModule extends AbstractModule {
             materialManager = new CuisineDataManager("cuisine_material", CuisineRegistries.MATERIALS).setCallback(CoreModule::buildMaterialMap);
             spiceManager = new CuisineDataManager("cuisine_spice", CuisineRegistries.SPICES).setCallback(CoreModule::buildSpiceMap);
             foodManager = new CuisineDataManager("cuisine_food", CuisineRegistries.FOODS).setCallback(CoreModule::buildFoodMap);
-            recipeManager = new CuisineDataManager("cuisine_recipe", CuisineRegistries.RECIPES);
+            recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES);
         }
         IReloadableResourceManager manager = event.getServer().getResourceManager();
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, materialManager);
