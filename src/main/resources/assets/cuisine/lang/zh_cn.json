@@ -2,5 +2,6 @@
   "spice.empty":"空",
   "spice.cuisine.sugar": "糖",
   "item.cuisine.spice_bottle": "调味瓶",
-  "cuisine.spice_bottle.rest": "剩余"
+  "cuisine.spice_bottle.rest": "剩余",
+  "gui.cuisine.jei.category.milling": "磨"
 }

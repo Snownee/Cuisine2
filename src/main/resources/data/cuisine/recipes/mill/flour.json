@@ -1,0 +1,17 @@
+{
+  "type": "cuisine:milling",
+  "ingredient": {
+    "tag": "forge:crops/wheat"
+  },
+  "fluid_ingredient": {
+    "fluid": "water",
+    "amount": 100
+  },
+  "result": {
+    "item":"cuisine:chili"
+  },
+  "fluid_result": {
+    "fluid": "lava",
+    "amount": 100
+  }
+}
