@@ -1,8 +1,11 @@
 package snownee.cuisine.processing;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tileentity.TileEntityType;
 import snownee.cuisine.processing.block.MillBlock;
+import snownee.cuisine.processing.crafting.MillingRecipe;
 import snownee.cuisine.processing.tile.MillTile;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiModule;
@@ -21,4 +24,10 @@ public final class ProcessingModule extends AbstractModule {
     private static TileEntityType<MillTile> millType() {
         return MILL_TILE;
     }
+
+    @Name("milling")
+    public static final IRecipeSerializer<?> Mill_RECIPE = new MillingRecipe.Serializer();
+
+    @Name("milling")
+    public static final IRecipeType<MillingRecipe> Mill_RECIPE_TYPE = new IRecipeType() {};
 }

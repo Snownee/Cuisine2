@@ -6,8 +6,10 @@
   "fluid_ingredient": {
     "fluid": "water",
     "amount": 100
-  }
-  "result": "cuisine:flour",
+  },
+  "result": {
+    "item":"cuisine:chili"
+  },
   "fluid_result": {
     "fluid": "lava",
     "amount": 100

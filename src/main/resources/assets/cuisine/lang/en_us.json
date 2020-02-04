@@ -2,4 +2,9 @@
   "cuisine.spice.empty":"empty",
   "cuisine.spice.cuisine.sugar": "sugar",
   "cuisine.argument.registry.id.invalid": "Unknown %s '%s'"
+  "spice.empty":"empty",
+  "spice.cuisine.sugar": "sugar",
+  "item.cuisine.spice_bottle": "spice bottle",
+  "cuisine.spice_bottle.rest": "rest",
+  "gui.cuisine.jei.category.milling": "milling"
 }
