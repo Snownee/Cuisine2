@@ -12,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.cookware.CookwareModule;
 import snownee.cuisine.cookware.tile.OvenTile;
 import snownee.kiwi.block.ModBlock;
@@ -41,15 +40,14 @@ public class OvenBlock extends HorizontalBlock {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult p_225533_6_) {
-        TileEntity tile = worldIn.getTileEntity(pos);
-        if (tile instanceof OvenTile) {
-            if (!worldIn.isRemote) {
-                CuisineRecipe recipe = ((OvenTile) tile).cook(player);
-                System.out.println(recipe);
+        if (!worldIn.isRemote) {
+            TileEntity tile = worldIn.getTileEntity(pos);
+            if (tile instanceof OvenTile) {
+                // CuisineRecipe recipe = ((OvenTile) tile).cook(player);
+                player.openContainer((OvenTile) tile);
             }
-            return ActionResultType.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
     }
 
 }

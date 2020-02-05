@@ -23,7 +23,7 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
     }
 
     public boolean isValid() {
-        return rules.stream().allMatch(rule -> rule.acceptCookware(cookware));
+        return getResult() != null && rules.stream().allMatch(rule -> rule.acceptCookware(cookware));
     }
 
     public boolean matches(FoodBuilder<?> builder) {

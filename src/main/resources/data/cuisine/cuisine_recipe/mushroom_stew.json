@@ -1,5 +1,6 @@
 {
   "priority": -1000,
+  "result": "cuisine:mushroom_stew",
   "cookware": "cuisine:oven",
   "rules": [
     {

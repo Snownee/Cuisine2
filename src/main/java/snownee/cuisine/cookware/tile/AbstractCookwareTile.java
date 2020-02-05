@@ -12,6 +12,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.registry.Cookware;
@@ -48,6 +51,26 @@ abstract public class AbstractCookwareTile extends KitchenTile {
             return null;
         }
     }
+
+    public boolean cookAsItem(Entity entity) {
+        CuisineRecipe recipe = cook(entity);
+        if (recipe == null) {
+            return false;
+        }
+        ItemStack result = recipe.getResult().getItemStack();
+        // we assume the amount of result is always 1
+        if (result.isEmpty()) {
+            return false;
+        }
+        IItemHandler output = getOutputHandler();
+        IItemHandler input = getOutputHandler();
+        //TODO consume inputs
+        return ItemHandlerHelper.insertItemStacked(output, result, false).isEmpty();
+    }
+
+    abstract public IItemHandlerModifiable getOutputHandler();
+
+    abstract public IItemHandlerModifiable getInputHandler();
 
     public <C> FoodBuilder<C> foodBuilder(C context, @Nullable Entity cook) {
         FoodBuilder<C> builder = CuisineAPI.foodBuilder(getCookware(), context, cook);
