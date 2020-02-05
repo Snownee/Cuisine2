@@ -1,6 +1,7 @@
 package snownee.cuisine.cookware.tile;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 import snownee.cuisine.cookware.CookwareModule;
 
@@ -12,8 +13,10 @@ public class OvenTile extends CookwareTile {
 
     @Override
     public NonNullList<ItemStack> getMaterialItems() {
-        // TODO Auto-generated method stub
-        return null;
+        NonNullList<ItemStack> items = NonNullList.create();
+        items.add(new ItemStack(Items.RED_MUSHROOM));
+        items.add(new ItemStack(Items.BROWN_MUSHROOM));
+        return items;
     }
 
 }
