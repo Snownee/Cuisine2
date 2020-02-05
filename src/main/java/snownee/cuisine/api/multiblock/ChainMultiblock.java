@@ -98,7 +98,9 @@ public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
         // for testing:
         if (tile.getWorld() != null) {
             BlockState state = tile.getWorld().getBlockState(tile.getPos());
-            tile.getWorld().setBlockState(tile.getPos(), state.with(SpiceRackBlock.LIT, isMaster()));
+            if (state.has(SpiceRackBlock.LIT)) {
+                tile.getWorld().setBlockState(tile.getPos(), state.with(SpiceRackBlock.LIT, isMaster()));
+            }
         }
         return true;
     }

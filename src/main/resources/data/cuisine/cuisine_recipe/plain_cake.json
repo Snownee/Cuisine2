@@ -1,7 +1,7 @@
 {
   "result": "cuisine:plain_cake",
-  "priority": -1000,
-  "utensil": "cuisine:oven",
+  "priority": -10000,
+  "cookware": "cuisine:oven",
   "rules": [
     {
       "type": "material",

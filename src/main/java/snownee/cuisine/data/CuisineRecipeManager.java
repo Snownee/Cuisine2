@@ -21,7 +21,7 @@ public class CuisineRecipeManager extends CuisineDataManager<CuisineRecipe> {
         recipes.addAll(registry.getValues());
     }
 
-    public Optional<CuisineRecipe> findRecipe(FoodBuilder builder) {
+    public Optional<CuisineRecipe> findRecipe(FoodBuilder<?> builder) {
         //TODO hash match
         for (CuisineRecipe recipe : recipes) {
             if (recipe.matches(builder)) {

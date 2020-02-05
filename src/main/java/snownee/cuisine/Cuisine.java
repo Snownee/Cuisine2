@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializer;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
@@ -18,6 +19,7 @@ import snownee.cuisine.api.Bonus;
 import snownee.cuisine.api.CuisineAPI.ICuisineAPI;
 import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.RecipeRule;
+import snownee.cuisine.api.ResearchInfo;
 import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.CuisineRecipe;
@@ -58,16 +60,6 @@ public final class Cuisine implements ICuisineAPI {
     @Override
     public ItemStack setFoodStar(ItemStack stack, int star) {
         return NBTHelper.of(stack).setInt("FoodStar", star).getItem();
-    }
-
-    @Override
-    public int getMaterialStar(ItemStack stack) {
-        return NBTHelper.of(stack).getInt("MaterialStar");
-    }
-
-    @Override
-    public ItemStack setMaterialStar(ItemStack stack, int star) {
-        return NBTHelper.of(stack).setInt("MaterialStar", star).getItem();
     }
 
     @Override
@@ -130,12 +122,17 @@ public final class Cuisine implements ICuisineAPI {
     }
 
     @Override
-    public FoodBuilder foodBuilder(Cookware cookware) {
-        return new FoodBuilderImpl(cookware);
+    public <C> FoodBuilder<C> foodBuilder(Cookware cookware, C context, Entity cook) {
+        return new FoodBuilderImpl<>(cookware, context, cook);
     }
 
     @Override
     public Optional<CuisineRecipe> findRecipe(FoodBuilder foodBuilder) {
         return CoreModule.recipeManager.findRecipe(foodBuilder);
+    }
+
+    @Override
+    public ResearchInfo getResearchInfo(Entity entity) {
+        return CoreModule.researchData.get(entity);
     }
 }

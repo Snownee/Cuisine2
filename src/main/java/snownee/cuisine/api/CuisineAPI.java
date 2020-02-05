@@ -3,9 +3,12 @@ package snownee.cuisine.api;
 import java.util.Optional;
 import java.util.function.Function;
 
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonDeserializer;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import snownee.cuisine.api.registry.Cookware;
@@ -17,14 +20,6 @@ import snownee.cuisine.api.registry.Spice;
 public final class CuisineAPI {
 
     private CuisineAPI() {}
-
-    public static int getMaterialStar(ItemStack stack) {
-        return INSTANCE != null ? INSTANCE.getMaterialStar(stack) : 0;
-    }
-
-    public static ItemStack setMaterialStar(ItemStack stack, int star) {
-        return INSTANCE != null ? INSTANCE.setMaterialStar(stack, star) : stack;
-    }
 
     public static int getFoodStar(ItemStack stack) {
         return INSTANCE != null ? INSTANCE.getFoodStar(stack) : 0;
@@ -69,12 +64,16 @@ public final class CuisineAPI {
         return INSTANCE != null ? INSTANCE.findSpice(stack) : Optional.empty();
     }
 
-    public static FoodBuilder foodBuilder(Cookware cookware) {
-        return INSTANCE.foodBuilder(cookware);
+    public static <C> FoodBuilder<C> foodBuilder(Cookware cookware, C context, Entity cook) {
+        return INSTANCE.foodBuilder(cookware, context, cook);
     }
 
     public static Optional<CuisineRecipe> findRecipe(FoodBuilder foodBuilder) {
         return INSTANCE != null ? INSTANCE.findRecipe(foodBuilder) : Optional.empty();
+    }
+
+    public static ResearchInfo getResearchInfo(Entity entity) {
+        return entity != null && INSTANCE != null ? INSTANCE.getResearchInfo(entity) : ResearchInfo.Empty.INSTANCE;
     }
 
     private static ICuisineAPI INSTANCE = null;
@@ -87,10 +86,6 @@ public final class CuisineAPI {
         int getFoodStar(ItemStack stack);
 
         ItemStack setFoodStar(ItemStack stack, int star);
-
-        int getMaterialStar(ItemStack stack);
-
-        ItemStack setMaterialStar(ItemStack stack, int star);
 
         void registerBonusAdapter(String key, JsonDeserializer<? extends Bonus> adapter);
 
@@ -108,8 +103,10 @@ public final class CuisineAPI {
 
         Optional<Spice> findSpice(FluidStack stack);
 
-        FoodBuilder foodBuilder(Cookware cookware);
+        <C> FoodBuilder<C> foodBuilder(Cookware cookware, C context, @Nullable Entity cook);
 
         Optional<CuisineRecipe> findRecipe(FoodBuilder foodBuilder);
+
+        ResearchInfo getResearchInfo(Entity entity);
     }
 }

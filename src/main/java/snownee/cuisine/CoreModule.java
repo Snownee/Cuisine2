@@ -2,8 +2,6 @@ package snownee.cuisine;
 
 import java.util.Map;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -29,6 +27,7 @@ import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.config.CuisineClientConfig;
 import snownee.cuisine.api.config.CuisineCommonConfig;
 import snownee.cuisine.api.registry.CuisineFood;
+import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.cap.CuisineCapabilitiesInternal;
@@ -108,7 +107,7 @@ public final class CoreModule extends AbstractModule {
             materialManager = new CuisineDataManager("cuisine_material", CuisineRegistries.MATERIALS).setCallback(CoreModule::buildMaterialMap);
             spiceManager = new CuisineDataManager("cuisine_spice", CuisineRegistries.SPICES).setCallback(CoreModule::buildSpiceMap);
             foodManager = new CuisineDataManager("cuisine_food", CuisineRegistries.FOODS).setCallback(CoreModule::buildFoodMap);
-            recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES);
+            recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES).setVerifier(CuisineRecipe::isValid);
         }
         IReloadableResourceManager manager = event.getServer().getResourceManager();
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, materialManager);
@@ -119,11 +118,11 @@ public final class CoreModule extends AbstractModule {
         manager.addReloadListener(DeferredReloadListener.INSTANCE);
     }
 
-    static Map<Item, Material> item2Material = Maps.newHashMap();
-    static Map<Item, Spice> item2Spice = Maps.newHashMap();
-    static Map<Fluid, Spice> fluid2Spice = Maps.newHashMap();
-    static BiMap<Item, CuisineFood> item2Food = HashBiMap.create();
-    static BiMap<Block, CuisineFood> block2Food = HashBiMap.create();
+    static Map<Item, Material> item2Material = Maps.newIdentityHashMap();
+    static Map<Item, Spice> item2Spice = Maps.newIdentityHashMap();
+    static Map<Fluid, Spice> fluid2Spice = Maps.newIdentityHashMap();
+    static Map<Item, CuisineFood> item2Food = Maps.newIdentityHashMap();
+    static Map<Block, CuisineFood> block2Food = Maps.newIdentityHashMap();
 
     private static void buildMaterialMap() {
         item2Material.clear();

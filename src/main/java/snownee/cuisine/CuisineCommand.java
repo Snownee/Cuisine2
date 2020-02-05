@@ -8,6 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import snownee.cuisine.api.CuisineRegistries;
+import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.util.ForgeRegistryArgument;
@@ -34,6 +35,12 @@ public final class CuisineCommand {
                 )
         )
         .then(Commands
+                .literal("food")
+                .then(Commands.argument("name", new ForgeRegistryArgument<>(CuisineRegistries.FOODS))
+                        .executes(CuisineCommand::foodInfo)
+                )
+        )
+        .then(Commands
                 .literal("spice")
                 .then(Commands.argument("name", new ForgeRegistryArgument<>(CuisineRegistries.SPICES))
                         .executes(CuisineCommand::spiceInfo)
@@ -57,6 +64,12 @@ public final class CuisineCommand {
     private static int spiceInfo(CommandContext<CommandSource> ctx) {
         Spice spice = ctx.getArgument("name", Spice.class);
         System.out.println(spice.getRegistryName());
+        return 0;
+    }
+
+    private static int foodInfo(CommandContext<CommandSource> ctx) {
+        CuisineFood food = ctx.getArgument("name", CuisineFood.class);
+        System.out.println(food.getRegistryName());
         return 0;
     }
 }

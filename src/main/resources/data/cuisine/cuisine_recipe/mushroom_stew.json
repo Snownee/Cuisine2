@@ -1,6 +1,6 @@
 {
   "priority": -1000,
-  "utensil": "cuisine:saucepan",
+  "cookware": "cuisine:oven",
   "rules": [
     {
       "type": "material",

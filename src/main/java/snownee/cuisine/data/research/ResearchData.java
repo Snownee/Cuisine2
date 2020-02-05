@@ -6,9 +6,11 @@ import java.util.UUID;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.storage.WorldSavedData;
+import snownee.cuisine.api.ResearchInfo;
 
 public class ResearchData extends WorldSavedData {
 
@@ -26,7 +28,7 @@ public class ResearchData extends WorldSavedData {
     @Override
     public CompoundNBT write(CompoundNBT data) {
         ListNBT list = new ListNBT();
-        
+
         return data;
     }
 
@@ -34,6 +36,11 @@ public class ResearchData extends WorldSavedData {
     public void save(File fileIn) {
         //markDirty(); // for testing
         super.save(fileIn);
+    }
+
+    public ResearchInfo get(Entity entity) {
+        // TODO Auto-generated method stub
+        return ResearchInfo.Empty.INSTANCE;
     }
 
 }

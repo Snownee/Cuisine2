@@ -2,6 +2,15 @@ package snownee.cuisine.api;
 
 import com.google.common.base.Predicate;
 
-public interface RecipeRule extends Predicate<FoodBuilder> {
+import snownee.cuisine.api.registry.Cookware;
+
+public interface RecipeRule<C> extends Predicate<FoodBuilder<C>> {
+
+    default boolean acceptCookware(Cookware cookware) {
+        return true;
+    }
+
+    @Override
+    boolean apply(FoodBuilder<C> input);
 
 }

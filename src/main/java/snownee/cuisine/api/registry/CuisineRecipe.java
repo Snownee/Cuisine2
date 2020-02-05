@@ -11,7 +11,7 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
 
     private CuisineFood result;
     private int priority;
-    private Cookware utensil;
+    private Cookware cookware;
     private List<RecipeRule> rules = Collections.EMPTY_LIST;
 
     public int getPriority() {
@@ -22,7 +22,11 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
         return result;
     }
 
-    public boolean matches(FoodBuilder builder) {
+    public boolean isValid() {
+        return rules.stream().allMatch(rule -> rule.acceptCookware(cookware));
+    }
+
+    public boolean matches(FoodBuilder<?> builder) {
         return rules.stream().allMatch(rule -> rule.test(builder));
     }
 

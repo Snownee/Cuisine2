@@ -13,4 +13,28 @@ public interface ResearchInfo {
 
     int getProgress(CuisineFood food);
 
+    public static enum Empty implements ResearchInfo {
+        INSTANCE;
+
+        @Override
+        public int getStar(Material material) {
+            return 0;
+        }
+
+        @Override
+        public int getStar(CuisineFood food) {
+            return 0;
+        }
+
+        @Override
+        public int getProgress(Material material) {
+            return 0;
+        }
+
+        @Override
+        public int getProgress(CuisineFood food) {
+            return 0;
+        }
+    }
+
 }

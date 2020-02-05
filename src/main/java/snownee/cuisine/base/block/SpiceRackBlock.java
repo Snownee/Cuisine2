@@ -55,7 +55,7 @@ public class SpiceRackBlock extends HorizontalBlock {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult p_225533_6_) {
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult ray) {
         if (!worldIn.isRemote && handIn == Hand.MAIN_HAND) {
             TileEntity tile = worldIn.getTileEntity(pos);
             if (tile instanceof SpiceRackTile) {
@@ -69,6 +69,6 @@ public class SpiceRackBlock extends HorizontalBlock {
                 });
             }
         }
-        return super.onBlockActivated(state, worldIn, pos, player, handIn, p_225533_6_);
+        return ActionResultType.PASS;
     }
 }

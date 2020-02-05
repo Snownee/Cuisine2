@@ -1,6 +1,7 @@
 package snownee.cuisine.data;
 
 import java.util.Map;
+import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
@@ -52,15 +53,21 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
 
     protected final ForgeRegistry<T> registry;
     private Runnable callback;
+    private Predicate<T> verifier;
 
     public CuisineDataManager(String folder, ForgeRegistry<T> registry) {
         super(GSON, folder);
         this.registry = registry;
     }
 
-    public CuisineDataManager<T> setCallback(Runnable callback) {
+    public <R extends CuisineDataManager<T>> R setCallback(Runnable callback) {
         this.callback = callback;
-        return this;
+        return (R) this;
+    }
+
+    public <R extends CuisineDataManager<T>> R setVerifier(Predicate<T> verifier) {
+        this.verifier = verifier;
+        return (R) this;
     }
 
     @Override
@@ -75,6 +82,9 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
                 ctx.setActiveContainer(ModList.get().getModContainerById(id.getNamespace()).orElse(null), ctx.extension());
             try {
                 T go = GSON.fromJson(o, registry.getRegistrySuperType());
+                if (verifier != null && !verifier.test(go)) {
+                    throw new JsonSyntaxException("Failed to verify " + go + " " + id);
+                }
                 registry.register(go.setRegistryName(id));
             } catch (JsonSyntaxException | NullPointerException e) {
                 Cuisine.logger.catching(e);
