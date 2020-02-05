@@ -18,12 +18,12 @@ import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.tile.KitchenTile;
 
-abstract public class CookwareTile extends KitchenTile {
+abstract public class AbstractCookwareTile extends KitchenTile {
 
     protected CuisineRecipe cachedLastRecipe;
     private final Cookware cookware;
 
-    public CookwareTile(TileEntityType<?> tileEntityTypeIn, Cookware cookware, String... textureKeys) {
+    public AbstractCookwareTile(TileEntityType<?> tileEntityTypeIn, Cookware cookware, String... textureKeys) {
         super(tileEntityTypeIn, textureKeys);
         this.cookware = cookware;
     }
@@ -37,7 +37,7 @@ abstract public class CookwareTile extends KitchenTile {
     }
 
     public CuisineRecipe cook(Entity entity) {
-        FoodBuilder<CookwareTile> builder = foodBuilder(this, entity);
+        FoodBuilder<AbstractCookwareTile> builder = foodBuilder(this, entity);
         if (cachedLastRecipe != null && cachedLastRecipe.matches(builder)) {
             return cachedLastRecipe;
         }

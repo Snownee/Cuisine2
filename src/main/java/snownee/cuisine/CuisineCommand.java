@@ -24,25 +24,36 @@ public final class CuisineCommand {
         builder
         .then(Commands
                 .literal("material")
-                .then(Commands.argument("name", new ForgeRegistryArgument<>(CuisineRegistries.MATERIALS))
+                .then(Commands
+                        .argument("name", new ForgeRegistryArgument<>(CuisineRegistries.MATERIALS))
                         .executes(CuisineCommand::materialInfo)
                         .then(Commands
                                 .literal("star")
-                                .then(Commands.argument("star", IntegerArgumentType.integer(0))
-                                        .executes(CuisineCommand::setMaterialStar)
+                                .then(Commands
+                                        .argument("star", IntegerArgumentType.integer(0))
+                                        .executes(CuisineCommand::starMaterial)
                                 )
                         )
                 )
         )
         .then(Commands
                 .literal("food")
-                .then(Commands.argument("name", new ForgeRegistryArgument<>(CuisineRegistries.FOODS))
+                .then(Commands
+                        .argument("name", new ForgeRegistryArgument<>(CuisineRegistries.FOODS))
                         .executes(CuisineCommand::foodInfo)
+                        .then(Commands
+                                .literal("star")
+                                .then(Commands
+                                        .argument("star", IntegerArgumentType.integer(0))
+                                        .executes(CuisineCommand::starFood)
+                                )
+                        )
                 )
         )
         .then(Commands
                 .literal("spice")
-                .then(Commands.argument("name", new ForgeRegistryArgument<>(CuisineRegistries.SPICES))
+                .then(Commands
+                        .argument("name", new ForgeRegistryArgument<>(CuisineRegistries.SPICES))
                         .executes(CuisineCommand::spiceInfo)
                 )
         );
@@ -57,7 +68,7 @@ public final class CuisineCommand {
         return 0;
     }
 
-    private static int setMaterialStar(CommandContext<CommandSource> ctx) {
+    private static int starMaterial(CommandContext<CommandSource> ctx) {
         return 0;
     }
 
@@ -70,6 +81,10 @@ public final class CuisineCommand {
     private static int foodInfo(CommandContext<CommandSource> ctx) {
         CuisineFood food = ctx.getArgument("name", CuisineFood.class);
         System.out.println(food.getRegistryName());
+        return 0;
+    }
+
+    private static int starFood(CommandContext<CommandSource> ctx) {
         return 0;
     }
 }

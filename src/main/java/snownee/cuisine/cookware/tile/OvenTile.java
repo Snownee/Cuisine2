@@ -5,7 +5,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 import snownee.cuisine.cookware.CookwareModule;
 
-public class OvenTile extends CookwareTile {
+public class OvenTile extends AbstractCookwareTile {
 
     public OvenTile() {
         super(CookwareModule.OVEN_TILE, CookwareModule.OVEN_TYPE);
