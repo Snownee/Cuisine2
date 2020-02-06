@@ -24,17 +24,27 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EmptyHandler;
+import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.cookware.CookwareModule;
 import snownee.cuisine.cookware.inventory.container.OvenContainer;
+import snownee.cuisine.util.ExtractOnlyItemHandler;
 import snownee.cuisine.util.InvHandlerWrapper;
 
 public class OvenTile extends AbstractCookwareTile implements INamedContainerProvider {
 
-    private final ItemStackHandler inputHandler = new ItemStackHandler(9);
-    private final ItemStackHandler outputHandler = new ItemStackHandler();
+    private final ItemStackHandler inputHandler = new ItemStackHandler(9) {
+        public boolean isItemValid(int slot, ItemStack stack) {
+            return CuisineAPI.findMaterial(stack).isPresent() || CuisineAPI.findFood(stack).isPresent();
+        }
+    };
+    private final ExtractOnlyItemHandler<ItemStackHandler> outputHandler = new ExtractOnlyItemHandler<>(new ItemStackHandler());
     private final LazyOptional<IItemHandlerModifiable> inputProvider = LazyOptional.of(() -> inputHandler);
-    private final LazyOptional<IItemHandlerModifiable> outputProvider = LazyOptional.of(() -> outputHandler);
-    private final LazyOptional<IItemHandlerModifiable> unsidedProvider = LazyOptional.of(() -> new CombinedInvWrapper(inputHandler, outputHandler));
+    private final LazyOptional<IItemHandler> outputProvider = LazyOptional.of(() -> outputHandler);
+    private final LazyOptional<IItemHandlerModifiable> unsidedProvider = LazyOptional.of(() -> new CombinedInvWrapper(inputHandler, outputHandler.get()) {
+        public boolean isItemValid(int slot, ItemStack stack) {
+            return slot != inputHandler.getSlots() && super.isItemValid(slot, stack);
+        };
+    });
 
     public OvenTile() {
         super(CookwareModule.OVEN_TILE, CookwareModule.OVEN_TYPE);
@@ -67,7 +77,7 @@ public class OvenTile extends AbstractCookwareTile implements INamedContainerPro
 
     @Override
     public IItemHandlerModifiable getOutputHandler() {
-        return outputHandler;
+        return outputHandler.get();
     }
 
     @Override
@@ -100,14 +110,14 @@ public class OvenTile extends AbstractCookwareTile implements INamedContainerPro
     @Override
     public void read(CompoundNBT compound) {
         inputHandler.deserializeNBT(compound.getCompound("Input"));
-        outputHandler.deserializeNBT(compound.getCompound("Output"));
+        outputHandler.get().deserializeNBT(compound.getCompound("Output"));
         super.read(compound);
     }
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         compound.put("Input", inputHandler.serializeNBT());
-        compound.put("Output", outputHandler.serializeNBT());
+        compound.put("Output", outputHandler.get().serializeNBT());
         return super.write(compound);
     }
 

@@ -13,7 +13,7 @@ import snownee.cuisine.Cuisine;
 @Mixin(YggdrasilMinecraftSessionService.class)
 public class MixinYggdrasilMinecraftSessionService {
 
-    @Inject(at = @At("HEAD"), method = "fillGameProfile")
+    @Inject(at = @At("HEAD"), method = "fillGameProfile", remap = false)
     protected void injectFillGameProfile(final GameProfile profile, final boolean requireSecure, CallbackInfoReturnable<GameProfile> info) {
         Cuisine.logger.info("Debug mode, bypass network operations");
         info.setReturnValue(profile);

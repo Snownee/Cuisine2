@@ -54,6 +54,9 @@ abstract public class AbstractCookwareTile extends KitchenTile {
             return false;
         }
         IItemHandlerModifiable output = getOutputHandler();
+        if (!ItemHandlerHelper.insertItemStacked(output, result, true).isEmpty()) {
+            return false;
+        }
         IItemHandlerModifiable input = getInputHandler();
         for (int i = 0; i < input.getSlots(); i++) {
             ItemStack stack = input.getStackInSlot(i);

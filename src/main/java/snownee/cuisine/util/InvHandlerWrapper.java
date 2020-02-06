@@ -74,4 +74,9 @@ public class InvHandlerWrapper implements IInventory {
         return true;
     }
 
+    @Override
+    public boolean isItemValidForSlot(int index, ItemStack stack) {
+        return handler.isItemValid(index, stack);
+    }
+
 }
