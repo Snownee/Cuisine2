@@ -19,7 +19,7 @@ import snownee.cuisine.client.ColorLookup;
 public enum DeferredReloadListener implements IFutureReloadListener {
     INSTANCE;
 
-    public final ListMultimap<LoadingStage, IFutureReloadListener> listeners = ArrayListMultimap.create(3, 4);
+    public final ListMultimap<LoadingStage, IFutureReloadListener> listeners = ArrayListMultimap.create(3, 3);
     private CompletableFuture<Void> registryCompleted;
     private int count;
 
@@ -53,7 +53,7 @@ public enum DeferredReloadListener implements IFutureReloadListener {
     }
 
     public static enum LoadingStage {
-        REGISTRY, // 4
+        REGISTRY, // 3
         TAG, // 1
         RECIPE // 1
     }

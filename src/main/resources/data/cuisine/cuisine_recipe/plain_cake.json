@@ -1,6 +1,6 @@
 {
-  "result": "cuisine:plain_cake",
   "priority": -10000,
+  "result": "cuisine:plain_cake",
   "cookware": "cuisine:oven",
   "rules": [
     {

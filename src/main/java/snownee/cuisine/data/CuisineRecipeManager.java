@@ -1,15 +1,23 @@
 package snownee.cuisine.data;
 
 import java.util.Optional;
-import java.util.TreeSet;
+
+import com.google.common.collect.TreeMultimap;
 
 import net.minecraftforge.registries.ForgeRegistry;
+import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.FoodBuilder;
+import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.api.registry.CuisineRecipe;
 
 public class CuisineRecipeManager extends CuisineDataManager<CuisineRecipe> {
 
-    private final TreeSet<CuisineRecipe> recipes = new TreeSet<>((a, b) -> Integer.compare(a.getPriority(), b.getPriority()));
+    /* off */
+    private final TreeMultimap<Cookware, CuisineRecipe> recipes = TreeMultimap.create(
+            (a, b) -> Integer.compare(CuisineRegistries.COOKWARES.getID(a), CuisineRegistries.COOKWARES.getID(a)),
+            (a, b) -> Integer.compare(a.getPriority(), b.getPriority())
+    );
+    /* on */
 
     public CuisineRecipeManager(String folder, ForgeRegistry<CuisineRecipe> registry) {
         super(folder, registry);
@@ -18,12 +26,12 @@ public class CuisineRecipeManager extends CuisineDataManager<CuisineRecipe> {
 
     private void onComplete() {
         recipes.clear();
-        recipes.addAll(registry.getValues());
+        registry.getValues().stream().forEach(recipe -> recipes.put(recipe.getCookware(), recipe));
     }
 
     public Optional<CuisineRecipe> findRecipe(FoodBuilder<?> builder) {
         //TODO hash match
-        for (CuisineRecipe recipe : recipes) {
+        for (CuisineRecipe recipe : recipes.get(builder.getCookware())) {
             if (recipe.matches(builder)) {
                 return Optional.of(recipe);
             }

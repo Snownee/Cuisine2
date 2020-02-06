@@ -43,7 +43,6 @@ public class OvenBlock extends HorizontalBlock {
         if (!worldIn.isRemote) {
             TileEntity tile = worldIn.getTileEntity(pos);
             if (tile instanceof OvenTile) {
-                // CuisineRecipe recipe = ((OvenTile) tile).cook(player);
                 player.openContainer((OvenTile) tile);
             }
         }

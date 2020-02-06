@@ -22,12 +22,16 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
         return result;
     }
 
+    public Cookware getCookware() {
+        return cookware;
+    }
+
     public boolean isValid() {
         return getResult() != null && rules.stream().allMatch(rule -> rule.acceptCookware(cookware));
     }
 
     public boolean matches(FoodBuilder<?> builder) {
-        return rules.stream().allMatch(rule -> rule.test(builder));
+        return builder.getCookware() == getCookware() && rules.stream().allMatch(rule -> rule.test(builder));
     }
 
     @Override

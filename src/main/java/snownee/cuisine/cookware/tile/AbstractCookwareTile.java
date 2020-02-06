@@ -1,16 +1,15 @@
 package snownee.cuisine.cookware.tile;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -29,14 +28,6 @@ abstract public class AbstractCookwareTile extends KitchenTile {
     public AbstractCookwareTile(TileEntityType<?> tileEntityTypeIn, Cookware cookware, String... textureKeys) {
         super(tileEntityTypeIn, textureKeys);
         this.cookware = cookware;
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-
-        }
-        return super.getCapability(cap, side);
     }
 
     public CuisineRecipe cook(Entity entity) {
@@ -62,9 +53,36 @@ abstract public class AbstractCookwareTile extends KitchenTile {
         if (result.isEmpty()) {
             return false;
         }
-        IItemHandler output = getOutputHandler();
-        IItemHandler input = getOutputHandler();
-        //TODO consume inputs
+        IItemHandlerModifiable output = getOutputHandler();
+        IItemHandlerModifiable input = getInputHandler();
+        for (int i = 0; i < input.getSlots(); i++) {
+            ItemStack stack = input.getStackInSlot(i);
+            ItemStack container = stack.getContainerItem();
+            if (!ItemHandlerHelper.canItemStacksStack(stack, container)) {
+                stack.shrink(1);
+                if (stack.isEmpty()) {
+                    input.setStackInSlot(i, container);
+                } else {
+                    input.setStackInSlot(i, stack);
+                    if (!container.isEmpty()) {
+                        if (entity != null) {
+                            if (entity instanceof PlayerEntity) {
+                                ItemHandlerHelper.giveItemToPlayer((PlayerEntity) entity, container);
+                                container = ItemStack.EMPTY;
+                            } else {
+                                IItemHandler handler = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
+                                if (handler != null) {
+                                    container = ItemHandlerHelper.insertItemStacked(handler, container, false);
+                                }
+                            }
+                        }
+                        if (container != null) {
+                            Block.spawnAsEntity(world, pos, container);
+                        }
+                    }
+                }
+            }
+        }
         return ItemHandlerHelper.insertItemStacked(output, result, false).isEmpty();
     }
 
@@ -84,7 +102,7 @@ abstract public class AbstractCookwareTile extends KitchenTile {
         return builder;
     }
 
-    abstract public NonNullList<ItemStack> getMaterialItems();
+    abstract public List<ItemStack> getMaterialItems();
 
     public Cookware getCookware() {
         return cookware;
