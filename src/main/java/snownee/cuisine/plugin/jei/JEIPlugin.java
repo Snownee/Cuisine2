@@ -4,12 +4,14 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import snownee.cuisine.Cuisine;
+import snownee.cuisine.base.BaseModule;
 import snownee.cuisine.processing.ProcessingModule;
 
 @JeiPlugin
@@ -20,6 +22,11 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
         return MILLING;
+    }
+
+    @Override
+    public void registerItemSubtypes(ISubtypeRegistration registration) {
+
     }
 
     @Override
