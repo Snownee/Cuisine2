@@ -157,7 +157,7 @@ public class SpiceBottleItem extends ModItem {
     }
 
     public int getDurability(ItemStack container) {
-        return NBTHelper.of(container).getInt(SPICE);
+        return NBTHelper.of(container).getInt(SPICE_VALUE);
     }
 
     public void setDurability(ItemStack stack, int durability) {
@@ -170,8 +170,7 @@ public class SpiceBottleItem extends ModItem {
         }
     }
 
-    //FIXME add FluidAction (simulate)
-    public boolean consume(ItemStack container, int amount) {
+    public boolean consume(ItemStack container, int amount, IFluidHandler.FluidAction action) {
         if (amount <= VOLUME_PER_ITEM && amount > 0) {
             if (hasFluid(container)) {
                 LazyOptional<IFluidHandlerItem> handlerOp = FluidUtil.getFluidHandler(container);
@@ -182,13 +181,15 @@ public class SpiceBottleItem extends ModItem {
                 IFluidHandlerItem handler = handlerOp.orElse(null);
                 FluidStack fluidStack = handler.drain(amountFluid, IFluidHandler.FluidAction.SIMULATE);
                 if (fluidStack != FluidStack.EMPTY && fluidStack.getAmount() == amountFluid) {
-                    handler.drain(amountFluid, IFluidHandler.FluidAction.EXECUTE);
+                    if (action.execute())
+                        handler.drain(amountFluid, IFluidHandler.FluidAction.EXECUTE);
                     return true;
                 }
             } else if (hasSpice(container)) {
                 int volume = getDurability(container);
                 if (volume >= amount) {
-                    setDurability(container, volume - amount);
+                    if (action.execute())
+                        setDurability(container, volume - amount);
                     return true;
                 }
             }
@@ -255,21 +256,12 @@ public class SpiceBottleItem extends ModItem {
             return new TranslationTextComponent("cuisine.spice." + name.replace(':', '.'));
     }
 
-    public int getLeft(ItemStack stack) {
-        NBTHelper nbt = NBTHelper.of(stack);
-        int num = nbt.getInt(SPICE_VALUE);
-        if (num == 0) {
-            nbt.remove(SPICE);
-        }
-        return num;
-    }
-
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (isContainerEmpty(stack)) {
             return;
         }
-        tooltip.add(new TranslationTextComponent("cuisine.spice_bottle.rest").appendText(String.format(":%d/%d", getLeft(stack), maxVolume)));
+        tooltip.add(new TranslationTextComponent("cuisine.spice_bottle.rest").appendText(String.format(":%d/%d", getDurability(stack), maxVolume)));
     }
 }
