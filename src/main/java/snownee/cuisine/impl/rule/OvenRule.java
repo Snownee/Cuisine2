@@ -14,7 +14,7 @@ public class OvenRule implements RecipeRule<OvenTile> {
     }
 
     @Override
-    public boolean apply(FoodBuilder<OvenTile> input) {
+    public boolean test(FoodBuilder<OvenTile> input) {
         input.getContext();
         return false;
     }

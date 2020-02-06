@@ -13,8 +13,8 @@ public class NotRecipeRule implements RecipeRule {
     }
 
     @Override
-    public boolean apply(FoodBuilder input) {
-        return !rule.apply(input);
+    public boolean test(FoodBuilder input) {
+        return !rule.test(input);
     }
 
 }

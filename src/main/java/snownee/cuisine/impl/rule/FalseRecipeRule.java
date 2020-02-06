@@ -8,7 +8,7 @@ public enum FalseRecipeRule implements RecipeRule {
     INSTANCE;
 
     @Override
-    public boolean apply(FoodBuilder input) {
+    public boolean test(FoodBuilder input) {
         return false;
     }
 

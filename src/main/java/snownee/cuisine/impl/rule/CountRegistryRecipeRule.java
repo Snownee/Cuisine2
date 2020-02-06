@@ -32,7 +32,7 @@ public class CountRegistryRecipeRule<T extends IForgeRegistryEntry<T>> implement
     }
 
     @Override
-    public boolean apply(FoodBuilder builder) {
+    public boolean test(FoodBuilder builder) {
         int count = 0;
         for (T material : materials) {
             count += builder.count(material);
