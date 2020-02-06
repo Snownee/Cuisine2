@@ -170,8 +170,7 @@ public class SpiceBottleItem extends ModItem {
         }
     }
 
-    //FIXME add FluidAction (simulate)
-    public boolean consume(ItemStack container, int amount) {
+    public boolean consume(ItemStack container, int amount, IFluidHandler.FluidAction action) {
         if (amount <= VOLUME_PER_ITEM && amount > 0) {
             if (hasFluid(container)) {
                 LazyOptional<IFluidHandlerItem> handlerOp = FluidUtil.getFluidHandler(container);
@@ -182,13 +181,15 @@ public class SpiceBottleItem extends ModItem {
                 IFluidHandlerItem handler = handlerOp.orElse(null);
                 FluidStack fluidStack = handler.drain(amountFluid, IFluidHandler.FluidAction.SIMULATE);
                 if (fluidStack != FluidStack.EMPTY && fluidStack.getAmount() == amountFluid) {
-                    handler.drain(amountFluid, IFluidHandler.FluidAction.EXECUTE);
+                    if (action.execute())
+                        handler.drain(amountFluid, IFluidHandler.FluidAction.EXECUTE);
                     return true;
                 }
             } else if (hasSpice(container)) {
                 int volume = getDurability(container);
                 if (volume >= amount) {
-                    setDurability(container, volume - amount);
+                    if (action.execute())
+                        setDurability(container, volume - amount);
                     return true;
                 }
             }
