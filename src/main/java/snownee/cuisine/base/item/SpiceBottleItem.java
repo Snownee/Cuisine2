@@ -2,6 +2,7 @@ package snownee.cuisine.base.item;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,6 +26,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -77,6 +79,21 @@ public class SpiceBottleItem extends ModItem {
         return fill_item * VOLUME_PER_ITEM;
     }
 
+    public int fill(ItemStack container, FluidStack in, IFluidHandler.FluidAction action) {
+        Spice spiceIn = CuisineAPI.findSpice(in).orElse(null);
+        if (spiceIn == null) {
+            return 0;
+        }
+        if (!getSpice(container).map(spiceIn::equals).orElse(true)) {
+            return 0;
+        }
+        AtomicInteger ret = new AtomicInteger();
+        container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(i->{
+            ret.set(i.fill(in, action));
+            ((SpiceFluidHandler)i).updateSpice();
+        });
+        return ret.get();
+    }
     public Optional<Spice> getSpice(ItemStack container) {
         NBTHelper nbt = NBTHelper.of(container);
         return Optional.ofNullable(CuisineRegistries.SPICES.getValue(Util.RL(nbt.getString(SPICE_NAME))));
