@@ -39,10 +39,13 @@ public class SSyncRegistryPacket<T extends IForgeRegistryEntry<T>> extends Packe
     }
 
     public void handle() {
+        registry.unfreeze();
+        registry.clear();
         int n = buf.readVarInt();
         for (int i = 0; i < n; i++) {
             registry.register(serializer.read(buf));
         }
+        registry.freeze();
         DeferredDataReloader.INSTANCE.complete(registry);
     }
 

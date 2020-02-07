@@ -1,6 +1,7 @@
 package snownee.cuisine.data;
 
 import net.minecraftforge.registries.IForgeRegistry;
+import snownee.cuisine.CoreModule;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.data.network.SSyncRegistryPacket;
 import snownee.cuisine.data.network.SSyncTagsPacket;
@@ -32,12 +33,15 @@ public enum DeferredDataReloader {
     public synchronized void complete(IForgeRegistry<?> registry) {
         switch (registry.getRegistryName().getPath()) {
         case "material":
+            CoreModule.buildMaterialMap();
             materialDone = true;
             break;
         case "spice":
+            CoreModule.buildSpiceMap();
             spiceDone = true;
             break;
         case "food":
+            CoreModule.buildFoodMap();
             foodDone = true;
             break;
         case "recipe":

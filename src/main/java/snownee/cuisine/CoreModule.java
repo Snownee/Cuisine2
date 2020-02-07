@@ -49,6 +49,7 @@ import snownee.cuisine.impl.rule.CountRegistryRecipeRule;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.Kiwi;
 import snownee.kiwi.KiwiModule;
+import snownee.kiwi.network.NetworkChannel;
 import snownee.kiwi.util.Util;
 
 @KiwiModule(name = "core")
@@ -79,6 +80,10 @@ public final class CoreModule extends AbstractModule {
         Cuisine.debug = Kiwi.isLoaded(Util.RL("kiwi:test"));
 
         CuisineRegistries.class.hashCode();
+
+        NetworkChannel.register(SSyncRegistryPacket.class, new SSyncRegistryPacket.Handler());
+        NetworkChannel.register(SSyncTagsPacket.class, new SSyncTagsPacket.Handler());
+
         networkTagManager = new CuisineNetworkTagManager();
 
         CuisineAPI.registerBonusAdapter("effect", new EffectsBonus.Adapter());
@@ -130,7 +135,7 @@ public final class CoreModule extends AbstractModule {
     static Map<Item, CuisineFood> item2Food = Maps.newIdentityHashMap();
     static Map<Block, CuisineFood> block2Food = Maps.newIdentityHashMap();
 
-    private static void buildMaterialMap() {
+    public static void buildMaterialMap() {
         item2Material.clear();
         for (Material material : CuisineRegistries.MATERIALS.getValues()) {
             for (Item item : material.getItems()) {
@@ -145,7 +150,7 @@ public final class CoreModule extends AbstractModule {
         DeferredReloadListener.INSTANCE.complete(CuisineRegistries.MATERIALS);
     }
 
-    private static void buildSpiceMap() {
+    public static void buildSpiceMap() {
         item2Spice.clear();
         fluid2Spice.clear();
         for (Spice spice : CuisineRegistries.SPICES.getValues()) {
@@ -169,7 +174,7 @@ public final class CoreModule extends AbstractModule {
         DeferredReloadListener.INSTANCE.complete(CuisineRegistries.SPICES);
     }
 
-    private static void buildFoodMap() {
+    public static void buildFoodMap() {
         item2Food.clear();
         block2Food.clear();
         for (CuisineFood food : CuisineRegistries.FOODS.getValues()) {

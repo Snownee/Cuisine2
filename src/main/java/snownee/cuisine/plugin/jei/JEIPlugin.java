@@ -11,7 +11,6 @@ import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import snownee.cuisine.Cuisine;
-import snownee.cuisine.base.BaseModule;
 import snownee.cuisine.processing.ProcessingModule;
 
 @JeiPlugin

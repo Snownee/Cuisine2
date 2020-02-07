@@ -33,6 +33,7 @@ import snownee.cuisine.util.InvHandlerWrapper;
 public class OvenTile extends AbstractCookwareTile implements INamedContainerProvider {
 
     private final ItemStackHandler inputHandler = new ItemStackHandler(9) {
+        @Override
         public boolean isItemValid(int slot, ItemStack stack) {
             return CuisineAPI.findMaterial(stack).isPresent() || CuisineAPI.findFood(stack).isPresent();
         }
@@ -41,6 +42,7 @@ public class OvenTile extends AbstractCookwareTile implements INamedContainerPro
     private final LazyOptional<IItemHandlerModifiable> inputProvider = LazyOptional.of(() -> inputHandler);
     private final LazyOptional<IItemHandler> outputProvider = LazyOptional.of(() -> outputHandler);
     private final LazyOptional<IItemHandlerModifiable> unsidedProvider = LazyOptional.of(() -> new CombinedInvWrapper(inputHandler, outputHandler.get()) {
+        @Override
         public boolean isItemValid(int slot, ItemStack stack) {
             return slot != inputHandler.getSlots() && super.isItemValid(slot, stack);
         };

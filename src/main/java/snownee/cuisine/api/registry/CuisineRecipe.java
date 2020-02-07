@@ -5,7 +5,9 @@ import java.util.List;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.FoodBuilder;
+import snownee.cuisine.api.LogicalServerSide;
 import snownee.cuisine.api.RecipeRule;
 
 public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
@@ -29,10 +31,12 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
         return cookware;
     }
 
+    @LogicalServerSide
     public boolean isValid() {
         return getResult() != null && rules.stream().allMatch(rule -> rule.acceptCookware(cookware));
     }
 
+    @LogicalServerSide
     public boolean matches(FoodBuilder<?> builder) {
         return builder.getCookware() == getCookware() && rules.stream().allMatch(rule -> rule.test(builder));
     }
@@ -46,13 +50,14 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
 
         @Override
         public CuisineRecipe read(PacketBuffer buf) {
-            // TODO Auto-generated method stub
-            return new CuisineRecipe();
+            CuisineRecipe recipe = new CuisineRecipe();
+            recipe.cookware = buf.readRegistryIdUnsafe(CuisineRegistries.COOKWARES);
+            recipe.result = buf.readRegistryIdUnsafe(CuisineRegistries.FOODS);
+            return recipe.setRegistryName(buf.readResourceLocation());
         }
 
         @Override
         public void write(PacketBuffer buf, CuisineRecipe entry) {
-            // TODO Auto-generated method stub
 
         }
 

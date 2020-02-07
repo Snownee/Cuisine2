@@ -2,7 +2,6 @@ package snownee.cuisine.processing.block;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 import snownee.cuisine.processing.ProcessingModule;

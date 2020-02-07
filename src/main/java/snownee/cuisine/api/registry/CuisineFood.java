@@ -5,19 +5,20 @@ import javax.annotation.Nullable;
 import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
 
-    @Nullable
-    private Item item;
-    @Nullable
-    private Block block;
+    private Item item = Items.AIR;
+    private Block block = Blocks.AIR;
     @SerializedName("max_stars")
     private int maxStars = 2;
 
@@ -25,10 +26,11 @@ public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
 
     @Nullable
     public Item getItem() {
-        if (item != null) {
+        if (item != Items.AIR) {
             return item;
         } else {
-            return block.asItem();
+            Block block = getBlock();
+            return block != null ? block.asItem() : null;
         }
     }
 
@@ -39,7 +41,7 @@ public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
 
     @Nullable
     public Block getBlock() {
-        return block;
+        return block != Blocks.AIR ? block : null;
     }
 
     public ITextComponent getDisplayName() {
@@ -60,14 +62,19 @@ public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
 
         @Override
         public CuisineFood read(PacketBuffer buf) {
-            // TODO Auto-generated method stub
-            return new CuisineFood();
+            CuisineFood food = new CuisineFood();
+            food.item = buf.readRegistryIdUnsafe(ForgeRegistries.ITEMS);
+            food.block = buf.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
+            food.maxStars = buf.readByte();
+            return food.setRegistryName(buf.readResourceLocation());
         }
 
         @Override
         public void write(PacketBuffer buf, CuisineFood entry) {
-            // TODO Auto-generated method stub
-
+            buf.writeRegistryIdUnsafe(ForgeRegistries.ITEMS, entry.item);
+            buf.writeRegistryIdUnsafe(ForgeRegistries.BLOCKS, entry.block);
+            buf.writeByte(entry.maxStars);
+            buf.writeResourceLocation(entry.getRegistryName());
         }
 
     }
