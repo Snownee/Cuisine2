@@ -1,4 +1,4 @@
-package snownee.cuisine.farm;
+package snownee.cuisine.farm.block;
 
 import net.minecraft.block.CropsBlock;
 import net.minecraft.util.IItemProvider;

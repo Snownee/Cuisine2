@@ -1,6 +1,7 @@
 package snownee.cuisine.farm;
 
 import net.minecraft.block.Blocks;
+import snownee.cuisine.farm.block.CuisineCropsBlock;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiModule;
 
