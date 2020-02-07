@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -22,6 +23,8 @@ public class Spice extends ForgeRegistryEntry<Spice> {
     private ImmutableSet<Fluid> fluids = ImmutableSet.of();
     private ImmutableSet<Tag<Fluid>> fluidTags = ImmutableSet.of();
     private ReverseTagWrapper<Spice> reverseTags = new ReverseTagWrapper<>(this, SpiceTags::getGeneration, SpiceTags::getCollection);
+
+    private Spice() {}
 
     public final ImmutableSet<Item> getItems() {
         return items;
@@ -55,4 +58,21 @@ public class Spice extends ForgeRegistryEntry<Spice> {
     public String toString() {
         return "Spice{" + getRegistryName() + "}";
     }
+
+    public static class Serializer implements RegistrySerializer<Spice> {
+
+        @Override
+        public Spice read(PacketBuffer buf) {
+            // TODO Auto-generated method stub
+            return new Spice();
+        }
+
+        @Override
+        public void write(PacketBuffer buf, Spice entry) {
+            // TODO Auto-generated method stub
+
+        }
+
+    }
+
 }

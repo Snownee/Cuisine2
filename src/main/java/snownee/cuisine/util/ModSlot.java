@@ -13,7 +13,6 @@ public class ModSlot extends Slot {
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        System.out.println(inventory.isItemValidForSlot(slotNumber, stack));
         return inventory.isItemValidForSlot(slotNumber, stack);
     }
 

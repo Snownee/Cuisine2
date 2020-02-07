@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.item.Item;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -21,6 +22,8 @@ public class Material extends ForgeRegistryEntry<Material> {
     private ImmutableSet<Tag<Item>> tags = ImmutableSet.of();
     private ImmutableListMultimap<Integer, Bonus> stars = ImmutableListMultimap.of();
     private final ReverseTagWrapper<Material> reverseTags = new ReverseTagWrapper<>(this, MaterialTags::getGeneration, MaterialTags::getCollection);
+
+    private Material() {}
 
     public final ImmutableSet<Item> getItems() {
         return items;
@@ -41,5 +44,21 @@ public class Material extends ForgeRegistryEntry<Material> {
     @Override
     public String toString() {
         return "Material{" + getRegistryName() + "}";
+    }
+
+    public static class Serializer implements RegistrySerializer<Material> {
+
+        @Override
+        public Material read(PacketBuffer buf) {
+            // TODO Auto-generated method stub
+            return new Material();
+        }
+
+        @Override
+        public void write(PacketBuffer buf, Material entry) {
+            // TODO Auto-generated method stub
+
+        }
+
     }
 }

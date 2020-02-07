@@ -7,11 +7,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -35,6 +39,8 @@ import snownee.cuisine.data.CuisineDataManager;
 import snownee.cuisine.data.CuisineRecipeManager;
 import snownee.cuisine.data.DeferredReloadListener;
 import snownee.cuisine.data.DeferredReloadListener.LoadingStage;
+import snownee.cuisine.data.network.SSyncRegistryPacket;
+import snownee.cuisine.data.network.SSyncTagsPacket;
 import snownee.cuisine.data.research.ResearchData;
 import snownee.cuisine.data.tag.CuisineNetworkTagManager;
 import snownee.cuisine.impl.bonus.EffectsBonus;
@@ -54,7 +60,7 @@ public final class CoreModule extends AbstractModule {
     static CuisineDataManager<CuisineFood> foodManager;
     static CuisineRecipeManager recipeManager;
 
-    static CuisineNetworkTagManager cuisineNetworkTagManager;
+    static CuisineNetworkTagManager networkTagManager;
 
     static ResearchData researchData = new ResearchData();
 
@@ -73,13 +79,13 @@ public final class CoreModule extends AbstractModule {
         Cuisine.debug = Kiwi.isLoaded(Util.RL("kiwi:test"));
 
         CuisineRegistries.class.hashCode();
-        cuisineNetworkTagManager = new CuisineNetworkTagManager();
+        networkTagManager = new CuisineNetworkTagManager();
 
         CuisineAPI.registerBonusAdapter("effect", new EffectsBonus.Adapter());
         CuisineAPI.registerBonusAdapter("new_material", new NewMaterialBonus.Adapter());
 
-        CuisineAPI.registerRecipeRuleAdapter("material", new CountRegistryRecipeRule.Adapter<>(cuisineNetworkTagManager.getMaterials(), CuisineRegistries.MATERIALS));
-        CuisineAPI.registerRecipeRuleAdapter("spice", new CountRegistryRecipeRule.Adapter<>(cuisineNetworkTagManager.getSpices(), CuisineRegistries.SPICES));
+        CuisineAPI.registerRecipeRuleAdapter("material", new CountRegistryRecipeRule.Adapter<>(networkTagManager.getMaterials(), CuisineRegistries.MATERIALS));
+        CuisineAPI.registerRecipeRuleAdapter("spice", new CountRegistryRecipeRule.Adapter<>(networkTagManager.getSpices(), CuisineRegistries.SPICES));
     }
 
     @Override
@@ -113,7 +119,7 @@ public final class CoreModule extends AbstractModule {
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, materialManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, spiceManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, foodManager);
-        DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.TAG, cuisineNetworkTagManager);
+        DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.TAG, networkTagManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.RECIPE, recipeManager);
         manager.addReloadListener(DeferredReloadListener.INSTANCE);
     }
@@ -175,4 +181,21 @@ public final class CoreModule extends AbstractModule {
             }
         }
     }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    protected void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        Cuisine.logger.info("Syncing...");
+        ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+        new SSyncRegistryPacket(CuisineRegistries.MATERIALS).send(player);
+        new SSyncRegistryPacket(CuisineRegistries.SPICES).send(player);
+        new SSyncRegistryPacket(CuisineRegistries.FOODS).send(player);
+        new SSyncTagsPacket(networkTagManager).send(player);
+        new SSyncRegistryPacket(CuisineRegistries.RECIPES).send(player);
+    }
+
+    public static void setNetworkTagManager(CuisineNetworkTagManager networkTagManager) {
+        CoreModule.networkTagManager = networkTagManager;
+    }
+
 }
