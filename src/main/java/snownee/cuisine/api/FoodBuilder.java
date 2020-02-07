@@ -8,6 +8,8 @@ import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.entity.Entity;
 import snownee.cuisine.api.registry.Cookware;
+import snownee.cuisine.api.registry.CuisineFood;
+import snownee.cuisine.api.registry.CuisineFoodInstance;
 import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.MaterialInstance;
@@ -19,6 +21,10 @@ public interface FoodBuilder<C> {
 
     void add(Material material);
 
+    void add(CuisineFoodInstance cuisineFoodInstance);
+
+    void add(CuisineFood cuisineFood);
+
     void add(Spice spice, int incr);
 
     void add(Spice spice);
@@ -28,6 +34,8 @@ public interface FoodBuilder<C> {
     int count(Object o);
 
     List<MaterialInstance> getMaterials();
+
+    List<CuisineFoodInstance> getFoods();
 
     Object2IntMap<Spice> getSpices();
 

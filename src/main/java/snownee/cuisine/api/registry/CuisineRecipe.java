@@ -9,6 +9,7 @@ import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.LogicalServerSide;
 import snownee.cuisine.api.RecipeRule;
+import snownee.cuisine.impl.rule.NoFoodRecipeRule;
 
 public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
 
@@ -32,7 +33,10 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
     }
 
     @LogicalServerSide
-    public boolean isValid() {
+    public boolean validate() {
+        if (rules.stream().noneMatch(RecipeRule::isFoodRule)) {
+            rules.add(NoFoodRecipeRule.INSTANCE);
+        }
         return getResult() != null && rules.stream().allMatch(rule -> rule.acceptCookware(cookware));
     }
 
@@ -58,7 +62,9 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
 
         @Override
         public void write(PacketBuffer buf, CuisineRecipe entry) {
-
+            buf.writeRegistryIdUnsafe(CuisineRegistries.COOKWARES, entry.cookware);
+            buf.writeRegistryIdUnsafe(CuisineRegistries.FOODS, entry.result);
+            buf.writeResourceLocation(entry.getRegistryName());
         }
 
     }

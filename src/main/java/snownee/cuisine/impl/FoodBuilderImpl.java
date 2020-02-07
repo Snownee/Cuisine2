@@ -14,6 +14,8 @@ import net.minecraft.entity.Entity;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.registry.Cookware;
+import snownee.cuisine.api.registry.CuisineFood;
+import snownee.cuisine.api.registry.CuisineFoodInstance;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.MaterialInstance;
 import snownee.cuisine.api.registry.Spice;
@@ -23,6 +25,7 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
     private final Cookware cookware;
     private final C context;
     private final List<MaterialInstance> materials = Lists.newArrayList();
+    private final List<CuisineFoodInstance> foods = Lists.newArrayList();
     private final Object2IntOpenHashMap<Spice> spices = new Object2IntOpenHashMap<>();
     private final @Nullable Entity cook;
 
@@ -44,6 +47,17 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
     }
 
     @Override
+    public void add(CuisineFoodInstance foodInstance) {
+        foods.add(foodInstance);
+    }
+
+    @Override
+    public void add(CuisineFood food) {
+        int star = CuisineAPI.getResearchInfo(cook).getStar(food);
+        add(new CuisineFoodInstance(food, star));
+    }
+
+    @Override
     public void add(Spice spice, int incr) {
         spices.addTo(spice, incr);
     }
@@ -58,11 +72,17 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
         if (o instanceof Material) {
             return materials.stream().map($ -> $.material).anyMatch(o::equals);
         }
+        if (o instanceof CuisineFood) {
+            return foods.stream().map($ -> $.food).anyMatch(o::equals);
+        }
         if (o instanceof Spice) {
             return spices.containsKey(o);
         }
         if (o instanceof MaterialInstance) {
             return materials.contains(o);
+        }
+        if (o instanceof CuisineFoodInstance) {
+            return foods.contains(o);
         }
         throw new IllegalArgumentException("Object has to be Material or Spice!");
     }
@@ -71,6 +91,9 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
     public int count(Object o) {
         if (o instanceof Material) {
             return (int) materials.stream().map($ -> $.material).filter(o::equals).count();
+        }
+        if (o instanceof CuisineFood) {
+            return (int) foods.stream().map($ -> $.food).filter(o::equals).count();
         }
         if (o instanceof Spice) {
             return spices.getInt(o);
@@ -81,6 +104,11 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
     @Override
     public List<MaterialInstance> getMaterials() {
         return Collections.unmodifiableList(materials);
+    }
+
+    @Override
+    public List<CuisineFoodInstance> getFoods() {
+        return Collections.unmodifiableList(foods);
     }
 
     @Override
@@ -99,6 +127,7 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
     }
 
     @Override
+    @Nullable
     public Entity getCook() {
         return cook;
     }

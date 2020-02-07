@@ -1,9 +1,5 @@
 package snownee.cuisine.cookware.tile;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -50,12 +46,6 @@ public class OvenTile extends AbstractCookwareTile implements INamedContainerPro
 
     public OvenTile() {
         super(CookwareModule.OVEN_TILE, CookwareModule.OVEN_TYPE);
-    }
-
-    @Override
-    public List<ItemStack> getMaterialItems() {
-        IItemHandler handler = getInputHandler();
-        return IntStream.range(0, handler.getSlots()).mapToObj(handler::getStackInSlot).filter($ -> !$.isEmpty()).collect(Collectors.toList());
     }
 
     @Override

@@ -1,7 +1,8 @@
 package snownee.cuisine.cookware.tile;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
@@ -17,7 +18,10 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.registry.Cookware;
+import snownee.cuisine.api.registry.CuisineFoodInstance;
 import snownee.cuisine.api.registry.CuisineRecipe;
+import snownee.cuisine.api.registry.Material;
+import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.api.tile.KitchenTile;
 
 abstract public class AbstractCookwareTile extends KitchenTile {
@@ -95,17 +99,44 @@ abstract public class AbstractCookwareTile extends KitchenTile {
 
     public <C> FoodBuilder<C> foodBuilder(C context, @Nullable Entity cook) {
         FoodBuilder<C> builder = CuisineAPI.foodBuilder(getCookware(), context, cook);
-        /* off */
-        getMaterialItems().stream()
-                .map(CuisineAPI::findMaterial)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .forEach(builder::add);
-        /* on */
+        getMaterials().forEach(builder::add);
+        getFoods().forEach(builder::add);
+        getSpices().forEach(builder::add);
         return builder;
     }
 
-    abstract public List<ItemStack> getMaterialItems();
+    protected Stream<Material> getMaterials() {
+        IItemHandler handler = getInputHandler();
+        /* off */
+        return IntStream
+                .range(0, handler.getSlots())
+                .mapToObj(handler::getStackInSlot)
+                .filter($ -> !$.isEmpty())
+                .map(CuisineAPI::findMaterial)
+                .filter(Optional::isPresent)
+                .map(Optional::get);
+        /* on */
+    }
+
+    protected Stream<Spice> getSpices() {
+        IItemHandler handler = getInputHandler();
+        /* off */
+        return Stream.empty();
+        /* on */
+    }
+
+    protected Stream<CuisineFoodInstance> getFoods() {
+        IItemHandler handler = getInputHandler();
+        /* off */
+        return IntStream
+                .range(0, handler.getSlots())
+                .mapToObj(handler::getStackInSlot)
+                .filter($ -> !$.isEmpty())
+                .map(CuisineAPI::findFoodInstance)
+                .filter(Optional::isPresent)
+                .map(Optional::get);
+        /* on */
+    }
 
     public Cookware getCookware() {
         return cookware;

@@ -91,6 +91,7 @@ public final class CoreModule extends AbstractModule {
 
         CuisineAPI.registerRecipeRuleAdapter("material", new CountRegistryRecipeRule.Adapter<>(networkTagManager.getMaterials(), CuisineRegistries.MATERIALS));
         CuisineAPI.registerRecipeRuleAdapter("spice", new CountRegistryRecipeRule.Adapter<>(networkTagManager.getSpices(), CuisineRegistries.SPICES));
+        CuisineAPI.registerRecipeRuleAdapter("food", new CountRegistryRecipeRule.Adapter<>(null, CuisineRegistries.SPICES));
     }
 
     @Override
@@ -118,7 +119,7 @@ public final class CoreModule extends AbstractModule {
             materialManager = new CuisineDataManager("cuisine_material", CuisineRegistries.MATERIALS).setCallback(CoreModule::buildMaterialMap);
             spiceManager = new CuisineDataManager("cuisine_spice", CuisineRegistries.SPICES).setCallback(CoreModule::buildSpiceMap);
             foodManager = new CuisineDataManager("cuisine_food", CuisineRegistries.FOODS).setCallback(CoreModule::buildFoodMap);
-            recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES).setVerifier(CuisineRecipe::isValid);
+            recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES).setVerifier(CuisineRecipe::validate);
         }
         IReloadableResourceManager manager = event.getServer().getResourceManager();
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, materialManager);

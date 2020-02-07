@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.api.registry.CuisineFood;
+import snownee.cuisine.api.registry.CuisineFoodInstance;
 import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
@@ -46,6 +47,10 @@ public final class CuisineAPI {
 
     public static Optional<CuisineFood> findFood(ItemStack stack) {
         return INSTANCE != null ? INSTANCE.findFood(stack) : Optional.empty();
+    }
+
+    public static Optional<CuisineFoodInstance> findFoodInstance(ItemStack stack) {
+        return INSTANCE != null ? INSTANCE.findFoodInstance(stack) : Optional.empty();
     }
 
     public static Optional<CuisineFood> findFood(BlockState state) {
@@ -94,6 +99,10 @@ public final class CuisineAPI {
         void registerSpecialFoodMatcher(Function<ItemStack, Optional<CuisineFood>> matcher);
 
         Optional<CuisineFood> findFood(ItemStack stack);
+
+        default Optional<CuisineFoodInstance> findFoodInstance(ItemStack stack) {
+            return findFood(stack).map(food -> new CuisineFoodInstance(food, getFoodStar(stack)));
+        }
 
         Optional<CuisineFood> findFood(BlockState state);
 

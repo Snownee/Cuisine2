@@ -4,6 +4,8 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -17,6 +19,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import snownee.cuisine.Cuisine;
+import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.RecipeRule;
 import snownee.kiwi.util.Util;
@@ -25,10 +28,12 @@ public class CountRegistryRecipeRule<T extends IForgeRegistryEntry<T>> implement
 
     private ImmutableSet<T> materials;
     private int min;
+    private boolean food;
 
-    public CountRegistryRecipeRule(ImmutableSet<T> materials, int min) {
+    public CountRegistryRecipeRule(ImmutableSet<T> materials, int min, boolean food) {
         this.materials = materials;
         this.min = min;
+        this.food = food;
     }
 
     @Override
@@ -43,8 +48,14 @@ public class CountRegistryRecipeRule<T extends IForgeRegistryEntry<T>> implement
         return false;
     }
 
+    @Override
+    public boolean isFoodRule() {
+        return food;
+    }
+
     public static class Adapter<T extends IForgeRegistryEntry<T>> implements JsonDeserializer<CountRegistryRecipeRule> {
 
+        @Nullable
         private final TagCollection<T> tagCollection;
         private final ForgeRegistry<T> registry;
 
@@ -65,14 +76,14 @@ public class CountRegistryRecipeRule<T extends IForgeRegistryEntry<T>> implement
                     builder.addAll(parse(element.getAsString()));
                 }
             }
-            return new CountRegistryRecipeRule(builder.build(), JSONUtils.getInt(o, "min", 1));
+            return new CountRegistryRecipeRule(builder.build(), JSONUtils.getInt(o, "min", 1), registry == CuisineRegistries.FOODS);
         }
 
         private Collection<T> parse(String key) {
             if (key.isEmpty()) {
                 return Collections.EMPTY_LIST;
             }
-            if (key.charAt(0) == '#') {
+            if (tagCollection != null && key.charAt(0) == '#') {
                 Tag<T> tag = tagCollection.get(Util.RL(key.substring(1), Cuisine.MODID));
                 return tag.getAllElements();
             }

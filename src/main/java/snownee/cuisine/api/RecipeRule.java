@@ -8,6 +8,10 @@ public interface RecipeRule<C> {
         return true;
     }
 
+    default boolean isFoodRule() {
+        return false;
+    }
+
     boolean test(FoodBuilder<C> input);
 
 }
