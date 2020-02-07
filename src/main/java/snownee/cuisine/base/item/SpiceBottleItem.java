@@ -1,11 +1,5 @@
 package snownee.cuisine.base.item;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -25,6 +19,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -35,12 +30,18 @@ import snownee.kiwi.item.ModItem;
 import snownee.kiwi.util.NBTHelper;
 import snownee.kiwi.util.Util;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class SpiceBottleItem extends ModItem {
 
     public final int maxVolume;
 
     public static final int VOLUME_PER_ITEM = 10;
-    public static final int FLUID_PER_VOLUME = 100;
+    public static final int FLUID_PER_VOLUME = FluidAttributes.BUCKET_VOLUME / VOLUME_PER_ITEM;
 
     public static final String SPICE = "spice";
     public static final String SPICE_VALUE = "spice.value";
@@ -75,6 +76,22 @@ public class SpiceBottleItem extends ModItem {
             in.shrink(fill_item);
         }
         return fill_item * VOLUME_PER_ITEM;
+    }
+
+    public int fill(ItemStack container, FluidStack in, IFluidHandler.FluidAction action) {
+        Spice spiceIn = CuisineAPI.findSpice(in).orElse(null);
+        if (spiceIn == null) {
+            return 0;
+        }
+        if (!getSpice(container).map(spiceIn::equals).orElse(true)) {
+            return 0;
+        }
+        AtomicInteger ret = new AtomicInteger();
+        container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(i -> {
+            ret.set(i.fill(in, action));
+            ((SpiceFluidHandler) i).updateSpice();
+        });
+        return ret.get();
     }
 
     public Optional<Spice> getSpice(ItemStack container) {
