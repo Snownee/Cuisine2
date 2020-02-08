@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -15,10 +16,13 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.IArgumentSerializer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegistryManager;
 
 public class ForgeRegistryArgument<T extends IForgeRegistryEntry<T>> implements ArgumentType<T> {
 
@@ -63,6 +67,25 @@ public class ForgeRegistryArgument<T extends IForgeRegistryEntry<T>> implements 
             examples = builder.build();
         }
         return examples;
+    }
+
+    public static class Serializer implements IArgumentSerializer<ForgeRegistryArgument> {
+
+        @Override
+        public void write(ForgeRegistryArgument argument, PacketBuffer buffer) {
+            buffer.writeResourceLocation(argument.registry.getRegistryName());
+        }
+
+        @Override
+        public ForgeRegistryArgument read(PacketBuffer buffer) {
+            return new ForgeRegistryArgument(RegistryManager.ACTIVE.getRegistry(buffer.readResourceLocation()));
+        }
+
+        @Override
+        public void write(ForgeRegistryArgument argument, JsonObject json) {
+            json.addProperty("registry", argument.registry.getRegistryName().toString());
+        }
+
     }
 
 }

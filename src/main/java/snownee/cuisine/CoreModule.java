@@ -7,6 +7,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -46,6 +47,7 @@ import snownee.cuisine.data.tag.CuisineNetworkTagManager;
 import snownee.cuisine.impl.bonus.EffectsBonus;
 import snownee.cuisine.impl.bonus.NewMaterialBonus;
 import snownee.cuisine.impl.rule.CountRegistryRecipeRule;
+import snownee.cuisine.util.ForgeRegistryArgument;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.Kiwi;
 import snownee.kiwi.KiwiModule;
@@ -98,6 +100,8 @@ public final class CoreModule extends AbstractModule {
     protected void init(FMLCommonSetupEvent event) {
         CuisineCommonConfig.refresh();
         CuisineCapabilitiesInternal.register();
+
+        ArgumentTypes.register("cuisine:registry", ForgeRegistryArgument.class, new ForgeRegistryArgument.Serializer());
     }
 
     @Override
