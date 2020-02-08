@@ -122,6 +122,7 @@ public final class CoreModule extends AbstractModule {
             recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES).setVerifier(CuisineRecipe::validate);
         }
         IReloadableResourceManager manager = event.getServer().getResourceManager();
+        DeferredReloadListener.INSTANCE.setServer(event.getServer());
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, materialManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, spiceManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, foodManager);
@@ -192,7 +193,10 @@ public final class CoreModule extends AbstractModule {
     @OnlyIn(Dist.DEDICATED_SERVER)
     protected void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         Cuisine.logger.info("Syncing...");
-        ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+        sync((ServerPlayerEntity) event.getPlayer());
+    }
+
+    public static void sync(ServerPlayerEntity player) {
         new SSyncRegistryPacket(CuisineRegistries.MATERIALS).send(player);
         new SSyncRegistryPacket(CuisineRegistries.SPICES).send(player);
         new SSyncRegistryPacket(CuisineRegistries.FOODS).send(player);

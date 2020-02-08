@@ -3,6 +3,7 @@ package snownee.cuisine.data;
 import net.minecraftforge.registries.IForgeRegistry;
 import snownee.cuisine.CoreModule;
 import snownee.cuisine.api.CuisineRegistries;
+import snownee.cuisine.client.ColorLookup;
 import snownee.cuisine.data.network.SSyncRegistryPacket;
 import snownee.cuisine.data.network.SSyncTagsPacket;
 
@@ -76,6 +77,7 @@ public enum DeferredDataReloader {
         tagsDone = false;
         tagsPacket = null;
         recipePacket = null;
+        ColorLookup.invalidateAll();
     }
 
 }

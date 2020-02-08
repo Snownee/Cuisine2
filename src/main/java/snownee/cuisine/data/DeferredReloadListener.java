@@ -1,5 +1,6 @@
 package snownee.cuisine.data;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
@@ -11,9 +12,12 @@ import com.google.common.collect.ListMultimap;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import snownee.cuisine.CoreModule;
 import snownee.cuisine.Cuisine;
+import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.client.ColorLookup;
 
 public enum DeferredReloadListener implements IFutureReloadListener {
@@ -22,6 +26,7 @@ public enum DeferredReloadListener implements IFutureReloadListener {
     public final ListMultimap<LoadingStage, IFutureReloadListener> listeners = ArrayListMultimap.create(3, 3);
     private CompletableFuture<Void> registryCompleted;
     private int count;
+    private WeakReference<MinecraftServer> server;
 
     @Override
     public CompletableFuture<Void> reload(IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
@@ -39,7 +44,14 @@ public enum DeferredReloadListener implements IFutureReloadListener {
     }
 
     public synchronized <T extends IForgeRegistryEntry<T>> void complete(IForgeRegistry<T> registry) {
-        if (++count >= 2) {
+        if (registry == CuisineRegistries.RECIPES) {
+            MinecraftServer server = getServer();
+            if (server != null && server.isDedicatedServer()) {
+                server.getPlayerList().getPlayers().forEach(CoreModule::sync);
+            }
+            return;
+        }
+        if (registryCompleted != null && !registryCompleted.isDone() && ++count >= 2) {
             registryCompleted.complete(null);
             ColorLookup.invalidateAll();
         }
@@ -66,6 +78,14 @@ public enum DeferredReloadListener implements IFutureReloadListener {
             return CompletableFuture.completedFuture(backgroundResult);
         }
 
+    }
+
+    public void setServer(MinecraftServer server) {
+        this.server = new WeakReference<MinecraftServer>(server);
+    }
+
+    public MinecraftServer getServer() {
+        return server == null ? null : server.get();
     }
 
 }

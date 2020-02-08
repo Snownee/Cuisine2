@@ -27,6 +27,7 @@ public class CuisineRecipeManager extends CuisineDataManager<CuisineRecipe> {
     private void onComplete() {
         recipes.clear();
         registry.getValues().stream().forEach(recipe -> recipes.put(recipe.getCookware(), recipe));
+        DeferredReloadListener.INSTANCE.complete(registry);
     }
 
     public Optional<CuisineRecipe> findRecipe(FoodBuilder<?> builder) {
