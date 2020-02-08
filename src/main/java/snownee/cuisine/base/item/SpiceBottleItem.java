@@ -1,5 +1,12 @@
 package snownee.cuisine.base.item;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -30,12 +37,6 @@ import snownee.kiwi.item.ModItem;
 import snownee.kiwi.util.NBTHelper;
 import snownee.kiwi.util.Util;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class SpiceBottleItem extends ModItem {
 
     public final int maxVolume;
@@ -48,34 +49,37 @@ public class SpiceBottleItem extends ModItem {
     public static final String SPICE_NAME = "spice.name";
 
     public SpiceBottleItem(int maxVolume, Properties builder) {
-        super(builder);
+        super(builder.maxStackSize(1));
         this.maxVolume = maxVolume;
     }
 
     /**
      * @param container 被放的东西
      * @param in        要放的东西
-     * @return 能装多少volume
+     * @return 剩余in
      */
-    public int fill(ItemStack container, ItemStack in, IFluidHandler.FluidAction action) {
+    public ItemStack fill(ItemStack container, ItemStack in, boolean simulate) {
         Spice spiceIn = CuisineAPI.findSpice(in).orElse(null);
         if (spiceIn == null) {
-            return 0;
+            return in;
         }
         if (!getSpice(container).map(spiceIn::equals).orElse(true)) {
-            return 0;
+            return in;
         }
         NBTHelper nbt = NBTHelper.of(container);
         int volume = nbt.getInt(SPICE_VALUE);
         int fill_item = (maxVolume - volume) / VOLUME_PER_ITEM;
         fill_item = Math.min(fill_item, in.getCount());
-        volume += fill_item * VOLUME_PER_ITEM;
-        if (action.execute()) {
+        if (simulate) {
+            in = in.copy();
+        }
+        in.shrink(fill_item);
+        if (!simulate) {
+            volume += fill_item * VOLUME_PER_ITEM;
             nbt.setString(SPICE_NAME, spiceIn.getRegistryName().toString());
             nbt.setInt(SPICE_VALUE, volume);
-            in.shrink(fill_item);
         }
-        return fill_item * VOLUME_PER_ITEM;
+        return in;
     }
 
     public int fill(ItemStack container, FluidStack in, IFluidHandler.FluidAction action) {

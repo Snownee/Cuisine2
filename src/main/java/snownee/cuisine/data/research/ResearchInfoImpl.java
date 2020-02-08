@@ -30,4 +30,28 @@ public class ResearchInfoImpl implements ResearchInfo {
         return 0;
     }
 
+    @Override
+    public void setStar(Material material, int star) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setStar(CuisineFood food, int star) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setProgress(Material material, int progress) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setProgress(CuisineFood food, int progress) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

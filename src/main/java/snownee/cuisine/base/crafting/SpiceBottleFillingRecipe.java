@@ -12,7 +12,6 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -55,7 +54,7 @@ public class SpiceBottleFillingRecipe extends DynamicShapedRecipe {
 //                }
 //            });
 //        }
-        return ret.get() || bottle.fill(container, in, IFluidHandler.FluidAction.SIMULATE) > 0;
+        return ret.get() || bottle.fill(container, in, true).isEmpty();
     }
 
     @Override
@@ -85,8 +84,8 @@ public class SpiceBottleFillingRecipe extends DynamicShapedRecipe {
 //        if (ret.get()) {
 //            return container;
 //        }
-        int num = this.bottle.fill(container, in, IFluidHandler.FluidAction.EXECUTE);
-        return num == SpiceBottleItem.VOLUME_PER_ITEM ? container : ItemStack.EMPTY;
+        this.bottle.fill(container, in, false);
+        return in.isEmpty() ? container : ItemStack.EMPTY;
     }
 
     @Override

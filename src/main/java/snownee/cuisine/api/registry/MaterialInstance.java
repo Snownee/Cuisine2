@@ -10,8 +10,8 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
-import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.Bonus;
+import snownee.cuisine.api.CuisineAPI;
 
 public class MaterialInstance extends Pair<Material, Integer> {
 
@@ -46,7 +46,7 @@ public class MaterialInstance extends Pair<Material, Integer> {
         Map<Effect, EffectInstance> map = Maps.newHashMap();
         for (Bonus bonus : getBonus()) {
             for (Pair<EffectInstance, Float> pair : bonus.addEffects()) {
-                if (Cuisine.RAND.nextFloat() < pair.getRight()) {
+                if (CuisineAPI.RAND.nextFloat() < pair.getRight()) {
                     EffectInstance effect = pair.getLeft();
                     if (map.containsKey(effect.getPotion())) {
                         map.get(effect.getPotion()).combine(effect);
