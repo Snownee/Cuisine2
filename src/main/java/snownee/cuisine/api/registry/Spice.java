@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.annotations.SerializedName;
 
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -29,6 +30,7 @@ public class Spice extends ForgeRegistryEntry<Spice> {
     private ImmutableSet<Item> items = ImmutableSet.of();
     private ImmutableSet<Tag<Item>> tags = ImmutableSet.of();
     private ImmutableSet<Fluid> fluids = ImmutableSet.of();
+    @SerializedName("fluid_tags")
     private ImmutableSet<Tag<Fluid>> fluidTags = ImmutableSet.of();
     private ReverseTagWrapper<Spice> reverseTags = new ReverseTagWrapper<>(this, SpiceTags::getGeneration, SpiceTags::getCollection);
 
