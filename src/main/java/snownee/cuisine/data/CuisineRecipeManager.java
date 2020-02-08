@@ -30,6 +30,9 @@ public class CuisineRecipeManager extends CuisineDataManager<CuisineRecipe> {
     }
 
     public Optional<CuisineRecipe> findRecipe(FoodBuilder<?> builder) {
+        if (builder.getMaterials().isEmpty()) {
+            return Optional.empty();
+        }
         //TODO hash match
         for (CuisineRecipe recipe : recipes.get(builder.getCookware())) {
             if (recipe.matches(builder)) {

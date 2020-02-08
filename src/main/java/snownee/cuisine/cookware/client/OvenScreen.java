@@ -1,10 +1,14 @@
 package snownee.cuisine.cookware.client;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import snownee.cuisine.cookware.inventory.container.OvenContainer;
@@ -22,7 +26,10 @@ public class OvenScreen extends ContainerScreen<OvenContainer> {
     protected void init() {
         super.init();
         addButton(new Button(88, 32, 28, 23, "Cook", btn -> {
-            new CBeginCookingPacket().send();
+            List<ItemStack> stacks = container.getInventory();
+            if (!IntStream.range(0, 9).mapToObj(stacks::get).allMatch(ItemStack::isEmpty)) {
+                new CBeginCookingPacket().send();
+            }
         }));
     }
 

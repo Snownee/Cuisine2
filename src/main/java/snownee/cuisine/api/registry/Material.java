@@ -1,5 +1,6 @@
 package snownee.cuisine.api.registry;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -31,17 +32,21 @@ public class Material extends ForgeRegistryEntry<Material> {
 
     private Material() {}
 
-    public final ImmutableSet<Item> getItems() {
+    public ImmutableSet<Item> getItems() {
         return items;
     }
 
     @LogicalServerSide
-    public final ImmutableSet<Tag<Item>> getItemTags() {
+    public ImmutableSet<Tag<Item>> getItemTags() {
         return tags;
     }
 
-    public final Set<ResourceLocation> getTags() {
+    public Set<ResourceLocation> getTags() {
         return reverseTags.getTagNames();
+    }
+
+    public List<Bonus> getBonus(int star) {
+        return stars.get(star);
     }
 
     public ITextComponent getDisplayName() {

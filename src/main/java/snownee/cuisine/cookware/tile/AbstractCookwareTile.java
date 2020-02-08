@@ -34,8 +34,7 @@ abstract public class AbstractCookwareTile extends KitchenTile {
         this.cookware = cookware;
     }
 
-    public CuisineRecipe cook(Entity entity) {
-        FoodBuilder<AbstractCookwareTile> builder = foodBuilder(this, entity);
+    public CuisineRecipe cook(FoodBuilder<?> builder, Entity entity) {
         if (cachedLastRecipe != null && cachedLastRecipe.matches(builder)) {
             return cachedLastRecipe;
         }
@@ -48,11 +47,12 @@ abstract public class AbstractCookwareTile extends KitchenTile {
     }
 
     public boolean cookAsItem(Entity entity) {
-        CuisineRecipe recipe = cook(entity);
+        FoodBuilder<?> builder = foodBuilder(this, entity);
+        CuisineRecipe recipe = cook(builder, entity);
         if (recipe == null) {
             return false;
         }
-        ItemStack result = recipe.getResult().getItemStack();
+        ItemStack result = builder.build(recipe);
         // we assume the amount of result is always 1
         if (result.isEmpty()) {
             return false;

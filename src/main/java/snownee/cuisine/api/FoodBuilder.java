@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.CuisineFoodInstance;
@@ -49,5 +50,7 @@ public interface FoodBuilder<C> {
     default Optional<CuisineRecipe> findRecipe() {
         return CuisineAPI.findRecipe(this);
     }
+
+    ItemStack build(CuisineRecipe recipe);
 
 }

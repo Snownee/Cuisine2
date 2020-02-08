@@ -2,6 +2,7 @@ package snownee.cuisine;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
@@ -39,6 +40,7 @@ public final class Cuisine implements ICuisineAPI {
     public static boolean mixin;
     public static boolean debug;
     public static Logger logger = LogManager.getLogger(Cuisine.NAME);
+    public static final Random RAND = new Random(114514);
 
     public Cuisine() {
         set(this);

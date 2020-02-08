@@ -2,20 +2,27 @@ package snownee.cuisine.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.PotionUtils;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.CuisineFoodInstance;
+import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.MaterialInstance;
 import snownee.cuisine.api.registry.Spice;
@@ -130,6 +137,22 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
     @Nullable
     public Entity getCook() {
         return cook;
+    }
+
+    @Override
+    public ItemStack build(CuisineRecipe recipe) {
+        ItemStack stack = recipe.getResult().getItemStack();
+        Map<Effect, EffectInstance> map = Maps.newHashMap();
+        for (MaterialInstance material : materials) {
+            materials.stream().flatMap($ -> $.getEffects().stream()).forEach($ -> {
+                if (map.containsKey($.getPotion())) {
+                    map.get($.getPotion()).combine($);
+                } else {
+                    map.put($.getPotion(), $);
+                }
+            });
+        }
+        return PotionUtils.appendEffects(stack, map.values());
     }
 
 }
