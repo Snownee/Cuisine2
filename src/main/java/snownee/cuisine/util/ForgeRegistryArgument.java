@@ -69,20 +69,20 @@ public class ForgeRegistryArgument<T extends IForgeRegistryEntry<T>> implements 
         return examples;
     }
 
-    public static class Serializer implements IArgumentSerializer<ForgeRegistryArgument> {
+    public static class Serializer implements IArgumentSerializer<ForgeRegistryArgument<? extends IForgeRegistryEntry>> {
 
         @Override
-        public void write(ForgeRegistryArgument argument, PacketBuffer buffer) {
+        public void write(ForgeRegistryArgument<? extends IForgeRegistryEntry> argument, PacketBuffer buffer) {
             buffer.writeResourceLocation(argument.registry.getRegistryName());
         }
 
         @Override
-        public ForgeRegistryArgument read(PacketBuffer buffer) {
+        public ForgeRegistryArgument<? extends IForgeRegistryEntry> read(PacketBuffer buffer) {
             return new ForgeRegistryArgument(RegistryManager.ACTIVE.getRegistry(buffer.readResourceLocation()));
         }
 
         @Override
-        public void write(ForgeRegistryArgument argument, JsonObject json) {
+        public void write(ForgeRegistryArgument<? extends IForgeRegistryEntry> argument, JsonObject json) {
             json.addProperty("registry", argument.registry.getRegistryName().toString());
         }
 

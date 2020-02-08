@@ -8,6 +8,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraft.command.arguments.IArgumentSerializer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -101,7 +102,7 @@ public final class CoreModule extends AbstractModule {
         CuisineCommonConfig.refresh();
         CuisineCapabilitiesInternal.register();
 
-        ArgumentTypes.register("cuisine:registry", ForgeRegistryArgument.class, new ForgeRegistryArgument.Serializer());
+        ArgumentTypes.register("cuisine:registry", ForgeRegistryArgument.class, (IArgumentSerializer<ForgeRegistryArgument>) (IArgumentSerializer) new ForgeRegistryArgument.Serializer());
     }
 
     @Override
