@@ -57,14 +57,13 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
             CuisineRecipe recipe = new CuisineRecipe();
             recipe.cookware = buf.readRegistryIdUnsafe(CuisineRegistries.COOKWARES);
             recipe.result = buf.readRegistryIdUnsafe(CuisineRegistries.FOODS);
-            return recipe.setRegistryName(buf.readResourceLocation());
+            return recipe;
         }
 
         @Override
         public void write(PacketBuffer buf, CuisineRecipe entry) {
             buf.writeRegistryIdUnsafe(CuisineRegistries.COOKWARES, entry.cookware);
             buf.writeRegistryIdUnsafe(CuisineRegistries.FOODS, entry.result);
-            buf.writeResourceLocation(entry.getRegistryName());
         }
 
     }

@@ -66,7 +66,7 @@ public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
             food.item = buf.readRegistryIdUnsafe(ForgeRegistries.ITEMS);
             food.block = buf.readRegistryIdUnsafe(ForgeRegistries.BLOCKS);
             food.maxStars = buf.readByte();
-            return food.setRegistryName(buf.readResourceLocation());
+            return food;
         }
 
         @Override
@@ -74,7 +74,6 @@ public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
             buf.writeRegistryIdUnsafe(ForgeRegistries.ITEMS, entry.item);
             buf.writeRegistryIdUnsafe(ForgeRegistries.BLOCKS, entry.block);
             buf.writeByte(entry.maxStars);
-            buf.writeResourceLocation(entry.getRegistryName());
         }
 
     }

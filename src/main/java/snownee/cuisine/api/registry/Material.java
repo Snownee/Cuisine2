@@ -70,7 +70,7 @@ public class Material extends ForgeRegistryEntry<Material> {
                 builder.add(registry.getValue(id));
             }
             material.items = builder.build();
-            return material.setRegistryName(buf.readResourceLocation());
+            return material;
         }
 
         @Override
@@ -87,7 +87,6 @@ public class Material extends ForgeRegistryEntry<Material> {
                 }
             }
             buf.writeVarIntArray(set.toIntArray());
-            buf.writeResourceLocation(entry.getRegistryName());
         }
 
     }

@@ -5,6 +5,9 @@ import java.util.function.Supplier;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistry;
@@ -39,13 +42,20 @@ public class SSyncRegistryPacket<T extends IForgeRegistryEntry<T>> extends Packe
     }
 
     public void handle() {
+        boolean noWarning = true;
+        ModLoadingContext ctx = ModLoadingContext.get();
         registry.unfreeze();
         registry.clear();
         int n = buf.readVarInt();
         for (int i = 0; i < n; i++) {
-            registry.register(serializer.read(buf));
+            ResourceLocation id = buf.readResourceLocation();
+            if (noWarning)
+                ctx.setActiveContainer(ModList.get().getModContainerById(id.getNamespace()).orElse(null), ctx.extension());
+            registry.register(serializer.read(buf).setRegistryName(id));
         }
         registry.freeze();
+        if (noWarning)
+            ctx.setActiveContainer(null, ctx.extension());
         DeferredDataReloader.INSTANCE.complete(registry);
     }
 
@@ -62,7 +72,10 @@ public class SSyncRegistryPacket<T extends IForgeRegistryEntry<T>> extends Packe
             buf.writeResourceLocation(pkt.registry.getRegistryName());
             Collection<IForgeRegistryEntry> values = pkt.registry.getValues();
             buf.writeVarInt(values.size());
-            values.forEach($ -> pkt.serializer.write(buf, $));
+            values.forEach($ -> {
+                buf.writeResourceLocation($.getRegistryName());
+                pkt.serializer.write(buf, $);
+            });
         }
 
         @Override

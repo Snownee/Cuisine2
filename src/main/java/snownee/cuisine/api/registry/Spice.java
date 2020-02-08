@@ -88,7 +88,7 @@ public class Spice extends ForgeRegistryEntry<Spice> {
                 fluidBuilder.add(fluidRegistry.getValue(id));
             }
             spice.fluids = fluidBuilder.build();
-            return spice.setRegistryName(buf.readResourceLocation());
+            return spice;
         }
 
         @Override
@@ -117,7 +117,6 @@ public class Spice extends ForgeRegistryEntry<Spice> {
                 }
             }
             buf.writeVarIntArray(set.toIntArray());
-            buf.writeResourceLocation(entry.getRegistryName());
         }
 
     }
