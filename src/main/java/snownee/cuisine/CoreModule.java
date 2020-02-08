@@ -102,7 +102,7 @@ public final class CoreModule extends AbstractModule {
         CuisineCommonConfig.refresh();
         CuisineCapabilitiesInternal.register();
 
-        ArgumentTypes.register("cuisine:registry", ForgeRegistryArgument.class, (IArgumentSerializer<ForgeRegistryArgument>) (IArgumentSerializer) new ForgeRegistryArgument.Serializer());
+        ArgumentTypes.register("cuisine:registry", ForgeRegistryArgument.class, (IArgumentSerializer) new ForgeRegistryArgument.Serializer());
     }
 
     @Override
