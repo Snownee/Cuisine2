@@ -65,7 +65,7 @@ abstract public class AbstractCookwareTile extends KitchenTile {
         for (int i = 0; i < input.getSlots(); i++) {
             ItemStack stack = input.getStackInSlot(i);
             ItemStack container = stack.getContainerItem();
-            if (!ItemHandlerHelper.canItemStacksStack(stack, container)) {
+            if (!stack.isEmpty() && !ItemHandlerHelper.canItemStacksStack(stack, container)) {
                 stack.shrink(1);
                 if (stack.isEmpty()) {
                     input.setStackInSlot(i, container);
