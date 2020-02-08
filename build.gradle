@@ -79,9 +79,9 @@ task deobfJar(type: Jar) {
     archiveName = "${archivesBaseName}-${version}-deobf.${extension}"
 }
 
-artifacts {
-    archives deobfJar
-}
+//artifacts {
+//    archives deobfJar
+//}
 
 repositories {
     maven {
