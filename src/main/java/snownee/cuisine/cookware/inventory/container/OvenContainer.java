@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 import snownee.cuisine.cookware.CookwareModule;
 import snownee.cuisine.cookware.tile.AbstractCookwareTile;
 import snownee.cuisine.cookware.tile.OvenTile;
@@ -35,12 +36,6 @@ public class OvenContainer extends Container {
             }
         }
 
-        //        this.addSlot(new Slot(inventory, 9, 124, 35) {
-        //            @Override
-        //            public boolean isItemValid(ItemStack stack) {
-        //                return false;
-        //            }
-        //        });
         this.addSlot(new ModSlot(inventory, 9, 124, 35));
 
         for (int k = 0; k < 3; ++k) {
@@ -53,6 +48,32 @@ public class OvenContainer extends Container {
             this.addSlot(new Slot(playerInventory, l, 8 + l * 18, 142));
         }
 
+    }
+
+    @Override
+    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+        ItemStack itemstack = ItemStack.EMPTY;
+        Slot slot = this.inventorySlots.get(index);
+        if (slot != null && slot.getHasStack()) {
+            ItemStack itemstack1 = slot.getStack();
+            itemstack = itemstack1.copy();
+            int size = this.inventorySlots.size() - playerIn.inventory.mainInventory.size();
+            if (index < size) {
+                if (!this.mergeItemStack(itemstack1, size, this.inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.mergeItemStack(itemstack1, 0, size, false)) {
+                return ItemStack.EMPTY;
+            }
+
+            if (itemstack1.isEmpty()) {
+                slot.putStack(ItemStack.EMPTY);
+            } else {
+                slot.onSlotChanged();
+            }
+        }
+
+        return itemstack;
     }
 
     @Override
