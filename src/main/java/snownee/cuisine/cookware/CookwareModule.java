@@ -10,7 +10,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.cookware.block.OvenBlock;
 import snownee.cuisine.cookware.client.OvenScreen;
-import snownee.cuisine.cookware.inventory.container.OvenContainer;
+import snownee.cuisine.cookware.container.OvenContainer;
 import snownee.cuisine.cookware.network.CBeginCookingPacket;
 import snownee.cuisine.cookware.tile.OvenTile;
 import snownee.kiwi.AbstractModule;

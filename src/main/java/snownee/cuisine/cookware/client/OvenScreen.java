@@ -11,9 +11,12 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import snownee.cuisine.cookware.inventory.container.OvenContainer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import snownee.cuisine.cookware.container.OvenContainer;
 import snownee.cuisine.cookware.network.CBeginCookingPacket;
 
+@OnlyIn(Dist.CLIENT)
 public class OvenScreen extends ContainerScreen<OvenContainer> {
 
     private static final ResourceLocation CRAFTING_TABLE_GUI_TEXTURES = new ResourceLocation("textures/gui/container/crafting_table.png");

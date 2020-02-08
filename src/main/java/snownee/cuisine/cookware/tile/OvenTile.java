@@ -22,7 +22,7 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.cookware.CookwareModule;
-import snownee.cuisine.cookware.inventory.container.OvenContainer;
+import snownee.cuisine.cookware.container.OvenContainer;
 import snownee.cuisine.util.ExtractOnlyItemHandler;
 import snownee.cuisine.util.InvHandlerWrapper;
 

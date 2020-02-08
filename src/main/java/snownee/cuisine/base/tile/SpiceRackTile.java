@@ -2,15 +2,24 @@ package snownee.cuisine.base.tile;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import snownee.cuisine.api.tile.KitchenTile;
 import snownee.cuisine.base.BaseModule;
+import snownee.cuisine.base.container.SpiceRackContainer;
+import snownee.cuisine.util.InvHandlerWrapper;
 
-public class SpiceRackTile extends KitchenTile {
+public class SpiceRackTile extends KitchenTile implements INamedContainerProvider {
 
     protected LazyOptional<SpiceHandler> itemHandler = LazyOptional.of(() -> new SpiceHandler(6));
 
@@ -54,6 +63,20 @@ public class SpiceRackTile extends KitchenTile {
     public void read(CompoundNBT compound) {
         super.read(compound);
         itemHandler.orElse(null).deserializeNBT(compound.getCompound("Inv"));
+    }
+
+    public IInventory getInventory() {
+        return new InvHandlerWrapper(itemHandler.orElse(null).getHandler());
+    }
+
+    @Override
+    public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+        return new SpiceRackContainer(id, playerInventory, this);
+    }
+
+    @Override
+    public ITextComponent getDisplayName() {
+        return new TranslationTextComponent("container.cuisine.spice_rack");
     }
 
 }

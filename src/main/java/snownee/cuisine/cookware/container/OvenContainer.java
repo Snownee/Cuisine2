@@ -1,4 +1,4 @@
-package snownee.cuisine.cookware.inventory.container;
+package snownee.cuisine.cookware.container;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

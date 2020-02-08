@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
-import snownee.cuisine.cookware.inventory.container.OvenContainer;
+import snownee.cuisine.cookware.container.OvenContainer;
 import snownee.kiwi.network.ClientPacket;
 
 public class CBeginCookingPacket extends ClientPacket {

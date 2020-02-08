@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.RedstoneTorchBlock;
-import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
@@ -17,8 +16,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import snownee.cuisine.api.CuisineCapabilities;
 import snownee.cuisine.base.BaseModule;
 import snownee.cuisine.base.tile.SpiceRackTile;
 import snownee.kiwi.block.ModBlock;
@@ -56,19 +53,26 @@ public class SpiceRackBlock extends HorizontalBlock {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult ray) {
-        if (!worldIn.isRemote && handIn == Hand.MAIN_HAND) {
+        //        if (!worldIn.isRemote && handIn == Hand.MAIN_HAND) {
+        //            TileEntity tile = worldIn.getTileEntity(pos);
+        //            if (tile instanceof SpiceRackTile) {
+        //                tile.getCapability(CuisineCapabilities.MULTIBLOCK).ifPresent(m -> {
+        //                    if (!m.isMaster()) {
+        //                        BlockPos pos1 = m.getMaster().getTile().getPos();
+        //                        LightningBoltEntity lightningboltentity = new LightningBoltEntity(worldIn, pos1.getX() + 0.5D, pos1.getY(), pos1.getZ() + 0.5D, true);
+        //                        ((ServerWorld) worldIn).addLightningBolt(lightningboltentity);
+        //                    }
+        //                    System.out.println(m.getMaster().all.keySet());
+        //                });
+        //            }
+        //        }
+        //        return ActionResultType.PASS;
+        if (!worldIn.isRemote) {
             TileEntity tile = worldIn.getTileEntity(pos);
             if (tile instanceof SpiceRackTile) {
-                tile.getCapability(CuisineCapabilities.MULTIBLOCK).ifPresent(m -> {
-                    if (!m.isMaster()) {
-                        BlockPos pos1 = m.getMaster().getTile().getPos();
-                        LightningBoltEntity lightningboltentity = new LightningBoltEntity(worldIn, pos1.getX() + 0.5D, pos1.getY(), pos1.getZ() + 0.5D, true);
-                        ((ServerWorld) worldIn).addLightningBolt(lightningboltentity);
-                    }
-                    System.out.println(m.getMaster().all.keySet());
-                });
+                player.openContainer((SpiceRackTile) tile);
             }
         }
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
     }
 }
