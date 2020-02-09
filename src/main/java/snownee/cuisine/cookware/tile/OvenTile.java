@@ -41,7 +41,7 @@ public class OvenTile extends AbstractCookwareTile implements INamedContainerPro
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
             return slot != inputHandler.getSlots() && super.isItemValid(slot, stack);
-        };
+        }
     });
 
     public OvenTile() {

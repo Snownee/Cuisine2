@@ -1,43 +1,80 @@
 package snownee.cuisine.base.tile;
 
-import java.util.Optional;
+import java.util.LinkedList;
 
-import javax.annotation.Nonnull;
+import org.apache.commons.lang3.tuple.Pair;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraft.item.Items;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import snownee.cuisine.api.CuisineAPI;
-import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.base.item.SpiceBottleItem;
 
-public class SpiceHandler implements IItemHandler, INBTSerializable<CompoundNBT> {
-    private final ItemStackHandler handler;
-    private final NonNullList<ItemStack> stacks;
+public class SpiceHandler implements IItemHandler {
+    private final LinkedList<ItemStackHandler> handlers = Lists.newLinkedList();
+    private int slotCount;
 
-    public SpiceHandler(int size) {
-        handler = new ItemStackHandler(stacks = NonNullList.withSize(size, ItemStack.EMPTY)) {
-            @Override
-            public boolean isItemValid(int slot, ItemStack stack) {
-                return stack.getItem() instanceof SpiceBottleItem;
-            }
-        };
+    public SpiceHandler() {}
+
+    public void addSubHandler(ItemStackHandler handler) {
+        if (handlers.contains(handler)) {
+            return;
+        }
+        handlers.add(handler);
+        slotCount += handler.getSlots();
+    }
+
+    public void removeSubHandler(ItemStackHandler handler) {
+        if (handlers.remove(handler)) {
+            slotCount -= handler.getSlots();
+        }
     }
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        return stack.getItem() instanceof SpiceBottleItem || CuisineAPI.findSpice(stack).isPresent();
+        if (slot != slotCount && stack.getItem() instanceof SpiceBottleItem) {
+            return true;
+        }
+        return false /*CuisineAPI.findSpice(stack).isPresent()*/;
+    }
+
+    @Override
+    public int getSlots() {
+        return slotCount + 1;
+    }
+
+    private Pair<ItemStackHandler, Integer> getLocalSlot(int slot) {
+        if (slot < 0 || slot >= slotCount) {
+            throw new RuntimeException("Slot " + slot + " not in valid range - [0," + slotCount + ")");
+        }
+        int i = 0;
+        for (ItemStackHandler handler : handlers) {
+            if (i + handler.getSlots() > slot) {
+                return Pair.of(handler, slot - i);
+            }
+            i += handler.getSlots();
+        }
+        return null; // should never reach
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int slot) {
+        if (slot == slotCount) {
+            return ItemStack.EMPTY;
+        }
+        Pair<ItemStackHandler, Integer> pair = getLocalSlot(slot);
+        return pair.getLeft().getStackInSlot(pair.getRight());
     }
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        Optional<Spice> spice = CuisineAPI.findSpice(stack);
         if (simulate) {
             stack = stack.copy();
         }
+        /*
+        Optional<Spice> spice = CuisineAPI.findSpice(stack);
         if (spice.isPresent()) {
             for (ItemStack container : stacks) {
                 if (!(container.getItem() instanceof SpiceBottleItem)) {
@@ -49,50 +86,30 @@ public class SpiceHandler implements IItemHandler, INBTSerializable<CompoundNBT>
             }
             return stack;
         }
-        if (slot == stacks.size()) {
+*/
+        if (slot == slotCount) {
             return stack;
         }
-        return handler.insertItem(slot, stack, simulate);
-    }
-
-    @Override
-    public int getSlots() {
-        return stacks.size() + 1;
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getStackInSlot(int slot) {
-        if (slot == stacks.size()) {
-            return ItemStack.EMPTY;
-        }
-        return handler.getStackInSlot(slot);
+        Pair<ItemStackHandler, Integer> pair = getLocalSlot(slot);
+        return pair.getLeft().insertItem(pair.getRight(), stack, simulate);
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot == stacks.size()) {
+        if (slot == slotCount) {
             return ItemStack.EMPTY;
         }
-        return handler.extractItem(slot, amount, simulate);
+        Pair<ItemStackHandler, Integer> pair = getLocalSlot(slot);
+        return pair.getLeft().extractItem(pair.getRight(), amount, simulate);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int getSlotLimit(int slot) {
-        return handler.getSlotLimit(slot);
-    }
-
-    public ItemStackHandler getHandler() {
-        return handler;
-    }
-
-    @Override
-    public CompoundNBT serializeNBT() {
-        return handler.serializeNBT();
-    }
-
-    @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-        handler.deserializeNBT(nbt);
+        if (slot == slotCount) {
+            return Items.AIR.getMaxStackSize();
+        }
+        Pair<ItemStackHandler, Integer> pair = getLocalSlot(slot);
+        return pair.getLeft().getSlotLimit(pair.getRight());
     }
 }

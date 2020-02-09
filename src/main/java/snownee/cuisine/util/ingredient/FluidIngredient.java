@@ -270,6 +270,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         JsonObject serialize();
     }
 
+    @SuppressWarnings("deprecation")
     private static int pack(FluidStack stack) {
         return Registry.FLUID.getId(stack.getFluid());
     }

@@ -2,8 +2,6 @@ package snownee.cuisine.api.registry;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.IntStream;
-
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableSet;
 
@@ -75,7 +73,6 @@ public class Material extends ForgeRegistryEntry<Material> {
 
         @Override
         public void write(PacketBuffer buf, Material entry) {
-            IntStream.Builder builder = IntStream.builder();
             ForgeRegistry<Item> registry = (ForgeRegistry<Item>) ForgeRegistries.ITEMS;
             IntSet set = new IntArraySet();
             for (Item item : entry.items) {

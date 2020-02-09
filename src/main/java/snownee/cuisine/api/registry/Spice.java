@@ -1,8 +1,6 @@
 package snownee.cuisine.api.registry;
 
 import java.util.Set;
-import java.util.stream.IntStream;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.annotations.SerializedName;
 
@@ -95,7 +93,6 @@ public class Spice extends ForgeRegistryEntry<Spice> {
 
         @Override
         public void write(PacketBuffer buf, Spice entry) {
-            IntStream.Builder builder = IntStream.builder();
             ForgeRegistry<Item> itemRegistry = (ForgeRegistry<Item>) ForgeRegistries.ITEMS;
             IntSet set = new IntArraySet();
             for (Item item : entry.items) {
@@ -107,7 +104,6 @@ public class Spice extends ForgeRegistryEntry<Spice> {
                 }
             }
             buf.writeVarIntArray(set.toIntArray());
-            builder = IntStream.builder();
             ForgeRegistry<Fluid> fluidRegistry = (ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS;
             set = new IntArraySet();
             for (Fluid fluid : entry.fluids) {
