@@ -37,7 +37,6 @@ public final class Cuisine implements ICuisineAPI {
     public static final String NAME = "Cuisine";
 
     public static boolean mixin;
-    public static boolean debug;
     public static Logger logger = LogManager.getLogger(Cuisine.NAME);
 
     public Cuisine() {

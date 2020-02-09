@@ -1,6 +1,6 @@
 package snownee.cuisine;
 
-//公共常量
+//Common constants
 public class CuisineConst {
     public static final String MATERIAL = "material";
     public static final String SPICE = "spice";

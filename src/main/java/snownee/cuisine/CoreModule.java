@@ -1,5 +1,7 @@
 package snownee.cuisine;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -45,6 +47,7 @@ import snownee.cuisine.data.network.SSyncRegistryPacket;
 import snownee.cuisine.data.network.SSyncTagsPacket;
 import snownee.cuisine.data.research.ResearchData;
 import snownee.cuisine.data.tag.CuisineNetworkTagManager;
+import snownee.cuisine.debug.DebugItemGroup;
 import snownee.cuisine.impl.bonus.EffectsBonus;
 import snownee.cuisine.impl.bonus.NewMaterialBonus;
 import snownee.cuisine.impl.rule.CountRegistryRecipeRule;
@@ -80,7 +83,9 @@ public final class CoreModule extends AbstractModule {
 
     @Override
     protected void preInit() {
-        Cuisine.debug = Kiwi.isLoaded(Util.RL("kiwi:test"));
+        if (Kiwi.isLoaded(Util.RL("kiwi:test"))) {
+            CuisineCommonConfig.debug = true;
+        }
 
         CuisineRegistries.class.hashCode();
 
@@ -101,6 +106,10 @@ public final class CoreModule extends AbstractModule {
     protected void init(FMLCommonSetupEvent event) {
         CuisineCommonConfig.refresh();
         CuisineCapabilitiesInternal.register();
+
+        if (CuisineCommonConfig.debug) {
+            DebugItemGroup.init();
+        }
 
         ArgumentTypes.register("cuisine:registry", ForgeRegistryArgument.class, (IArgumentSerializer) new ForgeRegistryArgument.Serializer());
     }
@@ -211,6 +220,18 @@ public final class CoreModule extends AbstractModule {
 
     public static void setNetworkTagManager(CuisineNetworkTagManager networkTagManager) {
         CoreModule.networkTagManager = networkTagManager;
+    }
+
+    public static Collection<Item> getAllMaterialItems() {
+        return Collections.unmodifiableCollection(item2Material.keySet());
+    }
+
+    public static Collection<Item> getAllSpiceItems() {
+        return Collections.unmodifiableCollection(item2Spice.keySet());
+    }
+
+    public static Collection<Item> getAllFoodItems() {
+        return Collections.unmodifiableCollection(item2Food.keySet());
     }
 
 }

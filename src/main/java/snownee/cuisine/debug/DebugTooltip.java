@@ -16,8 +16,8 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.CuisineAPI;
+import snownee.cuisine.api.config.CuisineCommonConfig;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
 
@@ -28,7 +28,7 @@ public final class DebugTooltip {
 
     @SubscribeEvent
     public static void onTooltip(ItemTooltipEvent event) {
-        if (!Cuisine.debug || !event.getFlags().isAdvanced()) {
+        if (!CuisineCommonConfig.debug || !event.getFlags().isAdvanced()) {
             return;
         }
         List<ITextComponent> tooltip = event.getToolTip();
