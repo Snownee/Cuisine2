@@ -88,7 +88,10 @@ public class CountRegistryRecipeRule<T extends IForgeRegistryEntry<T>> implement
                 return tag.getAllElements();
             }
             T go = registry.getValue(Util.RL(key));
-            return go == null ? Collections.EMPTY_SET : Collections.singleton(go);
+            if (go == null) {
+                throw new NullPointerException(String.format("Cannot find %s: \"%s\"", registry.getRegistryName().getPath(), key));
+            }
+            return Collections.singleton(go);
         }
 
     }
