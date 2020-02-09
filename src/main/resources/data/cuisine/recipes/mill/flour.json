@@ -9,9 +9,5 @@
   },
   "result": {
     "item":"cuisine:chili"
-  },
-  "fluid_result": {
-    "fluid": "lava",
-    "amount": 100
   }
 }

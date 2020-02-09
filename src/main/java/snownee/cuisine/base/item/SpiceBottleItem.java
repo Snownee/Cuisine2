@@ -98,7 +98,7 @@ public class SpiceBottleItem extends ModItem {
         return ret.get();
     }
 
-    public Optional<Spice> getSpice(ItemStack container) {
+    public static Optional<Spice> getSpice(ItemStack container) {
         NBTHelper nbt = NBTHelper.of(container);
         return Optional.ofNullable(CuisineRegistries.SPICES.getValue(Util.RL(nbt.getString(SPICE_NAME))));
     }

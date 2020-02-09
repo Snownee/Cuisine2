@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -74,9 +75,20 @@ public class MillingRecipe extends Recipe<MillInventory> {
 
         @Override
         public MillingRecipe read(ResourceLocation recipeId, JsonObject json) {
-            String group = JSONUtils.getString(json, "group", ""); //FIXME
-            JsonObject ingredient = JSONUtils.getJsonObject(json, "ingredient");
-            JsonObject fluid_ingredient = JSONUtils.getJsonObject(json, "fluid_ingredient");
+            Ingredient ingredient = Ingredient.EMPTY;
+            if (JSONUtils.hasField(json,"ingredient")){
+                ingredient = Ingredient.deserialize(JSONUtils.getJsonObject(json, "ingredient"));
+                if (ingredient.getMatchingStacks()[0].getItem().equals(Blocks.BARRIER.asItem())){
+                    throw new JsonSyntaxException("An error item tag. Could not find any item.");
+                }
+            }
+            FluidIngredient fluid_ingredient = FluidIngredient.EMPTY;
+            if (JSONUtils.hasField(json,"fluid_ingredient")){
+                fluid_ingredient = FluidIngredient.deserialize(JSONUtils.getJsonObject(json, "fluid_ingredient"));
+                if (fluid_ingredient.getMatchingFluids().length==0){
+                    throw new JsonSyntaxException("An error fluid tag. Could not find any Fluid.");
+                }
+            }
             ItemStack itemStack = null;
             if (JSONUtils.hasField(json, "result")) {
                 itemStack = CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, "result"), true);
@@ -88,14 +100,14 @@ public class MillingRecipe extends Recipe<MillInventory> {
             if (fluidStack == null && itemStack == null) {
                 throw new JsonSyntaxException("need a result item or fluid.");
             }
-            return new MillingRecipe(recipeId, Ingredient.deserialize(ingredient), FluidIngredient.deserialize(fluid_ingredient), itemStack, fluidStack);
+//            return null;
+            return new MillingRecipe(recipeId, ingredient, fluid_ingredient, itemStack, fluidStack);
 
         }
 
         @Nullable
         @Override
         public MillingRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-            String group = buffer.readString(32767); //FIXME
             Ingredient ingredient = Ingredient.read(buffer);
             FluidIngredient fluidIngredient = FluidIngredient.read(buffer);
             ItemStack item = buffer.readItemStack();
@@ -105,7 +117,6 @@ public class MillingRecipe extends Recipe<MillInventory> {
 
         @Override
         public void write(PacketBuffer buffer, MillingRecipe recipe) {
-            buffer.writeString(recipe.getGroup()); //FIXME
             recipe.item.write(buffer);
             recipe.fluid.write(buffer);
             buffer.writeItemStack(recipe.itemOut);

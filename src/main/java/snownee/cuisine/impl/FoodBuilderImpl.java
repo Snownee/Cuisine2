@@ -143,15 +143,13 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
     public ItemStack build(CuisineRecipe recipe) {
         ItemStack stack = recipe.getResult().getItemStack();
         Map<Effect, EffectInstance> map = Maps.newHashMap();
-        for (MaterialInstance material : materials) {
-            materials.stream().flatMap($ -> $.getEffects().stream()).forEach($ -> {
-                if (map.containsKey($.getPotion())) {
-                    map.get($.getPotion()).combine($);
-                } else {
-                    map.put($.getPotion(), $);
-                }
-            });
-        }
+        materials.stream().flatMap($ -> $.getEffects().stream()).forEach($ -> {
+            if (map.containsKey($.getPotion())) {
+                map.get($.getPotion()).combine($);
+            } else {
+                map.put($.getPotion(), $);
+            }
+        });
         return PotionUtils.appendEffects(stack, map.values());
     }
 

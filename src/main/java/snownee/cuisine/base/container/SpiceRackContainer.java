@@ -29,8 +29,6 @@ public class SpiceRackContainer extends Container {
         assertInventorySize(inventory, 6);
         this.player = playerInventory.player;
 
-        int i = 51;
-
         for (int j = 0; j < 6; ++j) {
             this.addSlot(new ModSlot(inventory, j, 44 + j * 18, 20));
         }

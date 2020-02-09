@@ -26,7 +26,7 @@ public class SpiceTags {
         return generation;
     }
 
-    private static Tag<Spice> makeWrapperTag(String id) {
+    public static Tag<Spice> makeWrapperTag(String id) {
         return new SpiceTags.Wrapper(new ResourceLocation(id));
     }
 

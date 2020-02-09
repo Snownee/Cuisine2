@@ -25,6 +25,7 @@ import com.google.gson.JsonSyntaxException;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.fluid.EmptyFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
@@ -43,7 +44,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
     private static final Predicate<? super IFluidList> IS_EMPTY = fluidList -> {
         return !fluidList.getStacks().stream().allMatch(FluidStack::isEmpty);
     };
-
+    public static final Fluid NONE = new EmptyFluid();
     public static final FluidIngredient EMPTY = new FluidIngredient(Stream.empty());
     private final IFluidList[] acceptedFluids;
     private FluidStack[] matchingFluids;
@@ -164,6 +165,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         throw new JsonSyntaxException("Expected fluid to be object or array of objects");
     }
 
+    @SuppressWarnings("deprecation")
     public static IFluidList deserializeFluidList(JsonObject json) {
         if (json.has("fluid") && json.has("tag")) {
             throw new JsonParseException("A FluidIngredient entry should be a Tag or Fluid, not both");
@@ -226,7 +228,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
             }
 
             if (list.isEmpty() && !ForgeConfig.SERVER.treatEmptyTagsAsAir.get()) {
-                list.add(FluidStack.EMPTY); //FIXME 与Ingredient逻辑不一致
+//                list.add(FluidStack.EMPTY); //FIXME 与Ingredient逻辑不一致
             }
 
             return list;
@@ -254,6 +256,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
             return Collections.singleton(this.stack);
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public JsonObject serialize() {
             JsonObject json = new JsonObject();
@@ -275,6 +278,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         return Registry.FLUID.getId(stack.getFluid());
     }
 
+    @SuppressWarnings("deprecation")
     private static Fluid unpack(int packedFluid) {
         return packedFluid == 0 ? Fluids.EMPTY : Registry.FLUID.getByValue(packedFluid);
     }
