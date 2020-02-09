@@ -28,6 +28,7 @@ import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiManager;
 import snownee.kiwi.KiwiModule;
 import snownee.kiwi.Name;
+import snownee.kiwi.item.ModItem;
 
 @KiwiModule(name = "base", dependencies = "@core")
 @KiwiModule.Group("cuisine:base")
@@ -54,10 +55,15 @@ public class BaseModule extends AbstractModule {
     @Name("spice_rack")
     public static final ContainerType<SpiceRackContainer> SPICE_RACK_CONTAINER = new ContainerType<>(SpiceRackContainer::new);
 
+    public static final ModItem SALT = new ModItem(itemProp());
+    public static final ModItem BROWN_SUGAR = new ModItem(itemProp());
+    public static final ModItem FLOUR = new ModItem(itemProp());
+    public static final ModItem DOUGH = new ModItem(itemProp());
+
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void clientInit(FMLClientSetupEvent event) {
         ScreenManager.registerFactory(SPICE_RACK_CONTAINER, SpiceRackScreen::new);
     }
-    
+
 }
