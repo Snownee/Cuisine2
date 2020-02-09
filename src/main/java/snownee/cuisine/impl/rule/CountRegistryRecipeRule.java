@@ -88,7 +88,7 @@ public class CountRegistryRecipeRule<T extends IForgeRegistryEntry<T>> implement
                 return tag.getAllElements();
             }
             T go = registry.getValue(Util.RL(key));
-            return Collections.singleton(go);
+            return go == null ? Collections.EMPTY_SET : Collections.singleton(go);
         }
 
     }
