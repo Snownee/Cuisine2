@@ -74,7 +74,6 @@ public class MillingRecipe extends Recipe<MillInventory> {
 
         @Override
         public MillingRecipe read(ResourceLocation recipeId, JsonObject json) {
-            String group = JSONUtils.getString(json, "group", ""); //FIXME
             JsonObject ingredient = JSONUtils.getJsonObject(json, "ingredient");
             JsonObject fluid_ingredient = JSONUtils.getJsonObject(json, "fluid_ingredient");
             ItemStack itemStack = null;
@@ -95,7 +94,6 @@ public class MillingRecipe extends Recipe<MillInventory> {
         @Nullable
         @Override
         public MillingRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-            String group = buffer.readString(32767); //FIXME
             Ingredient ingredient = Ingredient.read(buffer);
             FluidIngredient fluidIngredient = FluidIngredient.read(buffer);
             ItemStack item = buffer.readItemStack();
@@ -105,7 +103,6 @@ public class MillingRecipe extends Recipe<MillInventory> {
 
         @Override
         public void write(PacketBuffer buffer, MillingRecipe recipe) {
-            buffer.writeString(recipe.getGroup()); //FIXME
             recipe.item.write(buffer);
             recipe.fluid.write(buffer);
             buffer.writeItemStack(recipe.itemOut);
