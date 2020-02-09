@@ -16,8 +16,6 @@ public class SpiceHandler implements IItemHandler {
     private final LinkedList<ItemStackHandler> handlers = Lists.newLinkedList();
     private int slotCount;
 
-    public SpiceHandler() {}
-
     public void addSubHandler(ItemStackHandler handler) {
         if (handlers.contains(handler)) {
             return;
@@ -70,12 +68,12 @@ public class SpiceHandler implements IItemHandler {
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        if (simulate) {
-            stack = stack.copy();
-        }
         /*
         Optional<Spice> spice = CuisineAPI.findSpice(stack);
         if (spice.isPresent()) {
+            if (simulate) {
+                stack = stack.copy();
+            }
             for (ItemStack container : stacks) {
                 if (!(container.getItem() instanceof SpiceBottleItem)) {
                     continue;
@@ -86,7 +84,7 @@ public class SpiceHandler implements IItemHandler {
             }
             return stack;
         }
-*/
+         */
         if (slot == slotCount) {
             return stack;
         }

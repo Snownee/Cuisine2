@@ -30,15 +30,17 @@ import snownee.cuisine.base.block.SpiceRackBlock;
 import snownee.kiwi.schedule.Scheduler;
 import snownee.kiwi.schedule.impl.SimpleWorldTask;
 
-public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
+public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<CompoundNBT> {
 
     public static final int MAX_BLOCKS = 5;
 
     protected TileEntity tile;
     @Nullable
-    protected ChainMultiblock master;
+    protected T t;
     @Nullable
-    public HashMap<BlockPos, Supplier<ChainMultiblock>> all;
+    protected ChainMultiblock<T> master;
+    @Nullable
+    public HashMap<BlockPos, Supplier<ChainMultiblock<T>>> all;
 
     public ChainMultiblock(TileEntity tile, CompoundNBT compound) {
         this.tile = tile;
@@ -57,7 +59,7 @@ public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
             if (neighbor == null) {
                 continue;
             }
-            ChainMultiblock multiblock = neighbor.getCapability(CuisineCapabilities.MULTIBLOCK).orElse(null);
+            ChainMultiblock<T> multiblock = neighbor.getCapability(CuisineCapabilities.MULTIBLOCK).orElse(null);
             if (multiblock != null) {
                 multiblock = multiblock.getMaster();
                 if (master == null || multiblock == master) {
@@ -106,7 +108,7 @@ public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
     }
 
     private void addSelf() {
-        ChainMultiblock master = getMaster();
+        ChainMultiblock<T> master = getMaster();
         if (tile.hasWorld() && master.all != null && !master.all.containsKey(tile.getPos())) {
             master.all.put(tile.getPos(), () -> this);
         }
@@ -117,7 +119,7 @@ public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
     }
 
     @Nonnull
-    public ChainMultiblock getMaster() {
+    public ChainMultiblock<T> getMaster() {
         return isMaster() ? this : master;
     }
 
@@ -177,7 +179,7 @@ public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
         CompoundNBT data = new CompoundNBT();
         if (isMaster()) {
             ListNBT list = new ListNBT();
-            for (Entry<BlockPos, Supplier<ChainMultiblock>> e : all.entrySet()) {
+            for (Entry<BlockPos, Supplier<ChainMultiblock<T>>> e : all.entrySet()) {
                 CompoundNBT element = NBTUtil.writeBlockPos(e.getKey());
                 list.add(element);
             }
@@ -196,7 +198,7 @@ public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
         for (INBT e : list) {
             CompoundNBT element = (CompoundNBT) e;
             BlockPos pos = NBTUtil.readBlockPos(element);
-            Supplier<ChainMultiblock> multiblock = Lazy.of(() -> {
+            Supplier<ChainMultiblock<T>> multiblock = Lazy.of(() -> {
                 TileEntity tile = this.tile.getWorld().getTileEntity(pos);
                 if (tile != null) {
                     return tile.getCapability(CuisineCapabilities.MULTIBLOCK).orElse(null);
@@ -224,6 +226,11 @@ public class ChainMultiblock implements INBTSerializable<CompoundNBT> {
             });
             return true;
         }));
+    }
+
+    @Override
+    public T get() {
+        return getMaster().t;
     }
 
 }
