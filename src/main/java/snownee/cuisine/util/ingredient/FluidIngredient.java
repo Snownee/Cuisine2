@@ -25,6 +25,7 @@ import com.google.gson.JsonSyntaxException;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.fluid.EmptyFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
@@ -43,7 +44,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
     private static final Predicate<? super IFluidList> IS_EMPTY = fluidList -> {
         return !fluidList.getStacks().stream().allMatch(FluidStack::isEmpty);
     };
-
+    public static final Fluid NONE = new EmptyFluid();
     public static final FluidIngredient EMPTY = new FluidIngredient(Stream.empty());
     private final IFluidList[] acceptedFluids;
     private FluidStack[] matchingFluids;
@@ -226,7 +227,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
             }
 
             if (list.isEmpty() && !ForgeConfig.SERVER.treatEmptyTagsAsAir.get()) {
-                list.add(FluidStack.EMPTY); //FIXME 与Ingredient逻辑不一致
+//                list.add(FluidStack.EMPTY); //FIXME 与Ingredient逻辑不一致
             }
 
             return list;
