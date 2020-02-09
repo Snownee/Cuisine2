@@ -25,6 +25,8 @@ import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
+import snownee.cuisine.api.tile.ISpiceHandler;
+import snownee.cuisine.base.tile.SpiceHandler;
 import snownee.cuisine.data.CuisineDataManager;
 import snownee.cuisine.impl.FoodBuilderImpl;
 import snownee.kiwi.KiwiModule.LoadingCondition;
@@ -133,5 +135,10 @@ public final class Cuisine implements ICuisineAPI {
     @Override
     public ResearchInfo getResearchInfo(Entity entity) {
         return CoreModule.researchData.get(entity);
+    }
+
+    @Override
+    public ISpiceHandler newSpiceHandler() {
+        return new SpiceHandler();
     }
 }

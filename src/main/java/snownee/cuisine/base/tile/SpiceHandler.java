@@ -8,14 +8,15 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import snownee.cuisine.api.tile.ISpiceHandler;
 import snownee.cuisine.base.item.SpiceBottleItem;
 
-public class SpiceHandler implements IItemHandler {
+public class SpiceHandler implements ISpiceHandler {
     private final LinkedList<ItemStackHandler> handlers = Lists.newLinkedList();
     private int slotCount;
 
+    @Override
     public void addSubHandler(ItemStackHandler handler) {
         if (handlers.contains(handler)) {
             return;
@@ -24,6 +25,7 @@ public class SpiceHandler implements IItemHandler {
         slotCount += handler.getSlots();
     }
 
+    @Override
     public void removeSubHandler(ItemStackHandler handler) {
         if (handlers.remove(handler)) {
             slotCount -= handler.getSlots();

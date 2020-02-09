@@ -18,6 +18,7 @@ import snownee.cuisine.api.registry.CuisineFoodInstance;
 import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
+import snownee.cuisine.api.tile.ISpiceHandler;
 
 public final class CuisineAPI {
     public static final Random RAND = new Random(114514);
@@ -83,6 +84,10 @@ public final class CuisineAPI {
         return entity != null && INSTANCE != null ? INSTANCE.getResearchInfo(entity) : ResearchInfo.Empty.INSTANCE;
     }
 
+    public static ISpiceHandler newSpiceHandler() {
+        return INSTANCE != null ? INSTANCE.newSpiceHandler() : null;
+    }
+
     private static ICuisineAPI INSTANCE = null;
 
     public interface ICuisineAPI {
@@ -119,5 +124,7 @@ public final class CuisineAPI {
         Optional<CuisineRecipe> findRecipe(FoodBuilder foodBuilder);
 
         ResearchInfo getResearchInfo(Entity entity);
+
+        ISpiceHandler newSpiceHandler();
     }
 }

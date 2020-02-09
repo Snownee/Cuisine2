@@ -24,6 +24,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.event.TickEvent.Phase;
 import snownee.cuisine.api.CuisineCapabilities;
 import snownee.cuisine.base.block.SpiceRackBlock;
@@ -36,18 +38,21 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
 
     protected TileEntity tile;
     @Nullable
-    protected T t;
+    protected LazyOptional<T> tCap;
     @Nullable
     protected ChainMultiblock<T> master;
     @Nullable
     public HashMap<BlockPos, Supplier<ChainMultiblock<T>>> all;
 
-    public ChainMultiblock(TileEntity tile, CompoundNBT compound) {
+    public ChainMultiblock(TileEntity tile, NonNullSupplier<T> ctxFactory, CompoundNBT compound) {
         this.tile = tile;
         if (compound == null) {
             init();
         } else {
             deserializeNBT(compound);
+        }
+        if (all == null) {
+            tCap = LazyOptional.of(ctxFactory);
         }
     }
 
@@ -230,7 +235,11 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
 
     @Override
     public T get() {
-        return getMaster().t;
+        return getMaster().tCap.orElse(null);
+    }
+
+    public LazyOptional<T> getCap() {
+        return getMaster().tCap;
     }
 
 }

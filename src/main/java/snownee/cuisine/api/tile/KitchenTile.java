@@ -5,6 +5,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.CuisineCapabilities;
 import snownee.cuisine.api.multiblock.ChainMultiblock;
 import snownee.kiwi.tile.TextureTile;
@@ -12,8 +13,8 @@ import snownee.kiwi.util.NBTHelper;
 
 public abstract class KitchenTile extends TextureTile {
 
-    protected ChainMultiblock multiblock;
-    protected LazyOptional<ChainMultiblock> multiblockOptional;
+    protected ChainMultiblock<ISpiceHandler> multiblock;
+    protected LazyOptional<ChainMultiblock<ISpiceHandler>> multiblockOptional;
 
     public KitchenTile(TileEntityType<?> tileEntityTypeIn, String... textureKeys) {
         super(tileEntityTypeIn, textureKeys);
@@ -28,7 +29,7 @@ public abstract class KitchenTile extends TextureTile {
     public void read(CompoundNBT compound) {
         NBTHelper data = NBTHelper.of(compound);
         if (world == null) {
-            multiblock = new ChainMultiblock(this, data.getTag("Multiblock"));
+            multiblock = new ChainMultiblock(this, CuisineAPI::newSpiceHandler, data.getTag("Multiblock"));
         }
         super.read(compound);
     }
@@ -64,7 +65,7 @@ public abstract class KitchenTile extends TextureTile {
         super.onLoad();
         if (!world.isRemote) {
             if (multiblock == null) {
-                multiblock = new ChainMultiblock(this, null);
+                multiblock = new ChainMultiblock(this, CuisineAPI::newSpiceHandler, null);
             } else {
                 multiblock.onLoad();
             }
