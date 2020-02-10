@@ -59,6 +59,7 @@ public class BaseModule extends AbstractModule {
     public static final ModItem BROWN_SUGAR = new ModItem(itemProp());
     public static final ModItem FLOUR = new ModItem(itemProp());
     public static final ModItem DOUGH = new ModItem(itemProp());
+    public static final ModItem PLAIN_CAKE = new ModItem(itemProp());
 
     @Override
     @OnlyIn(Dist.CLIENT)
