@@ -27,7 +27,7 @@ import net.minecraftforge.registries.RegistryManager;
 public class ForgeRegistryArgument<T extends IForgeRegistryEntry<T>> implements ArgumentType<T> {
 
     public static final DynamicCommandExceptionType BAD_ID = new DynamicCommandExceptionType(pair -> {
-        return new TranslationTextComponent("cuisine.argument.registry.id.invalid", ((Pair) pair).getLeft(), ((Pair) pair).getRight());
+        return new TranslationTextComponent("argument.cuisine.registry.id.invalid", ((Pair) pair).getLeft(), ((Pair) pair).getRight());
     });
 
     private final IForgeRegistry<T> registry;
@@ -45,7 +45,7 @@ public class ForgeRegistryArgument<T extends IForgeRegistryEntry<T>> implements 
             return registry.getValue(resourcelocation);
         }
         reader.setCursor(i);
-        throw BAD_ID.createWithContext(reader, Pair.of(registry.getRegistryName().getPath(), resourcelocation.toString()));
+        throw BAD_ID.createWithContext(reader, Pair.of(registry.getRegistryName().getPath(), resourcelocation));
     }
 
     @Override

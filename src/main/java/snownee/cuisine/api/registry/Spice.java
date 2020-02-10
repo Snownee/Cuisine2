@@ -80,7 +80,7 @@ public class Spice extends ForgeRegistryEntry<Spice> {
             if (translationKey == null) {
                 if (!fluids.isEmpty()) {
                     translationKey = fluids.asList().get(0).getAttributes().getTranslationKey();
-                } else if (!tags.isEmpty()) {
+                } else if (!fluidTags.isEmpty()) {
                     for (Tag<Fluid> tag : fluidTags) {
                         if (!tag.getAllElements().isEmpty()) {
                             Fluid item = tag.getRandomElement(CuisineAPI.RAND);

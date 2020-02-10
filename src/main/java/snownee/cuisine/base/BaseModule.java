@@ -22,6 +22,7 @@ import snownee.cuisine.base.block.SpiceRackBlock;
 import snownee.cuisine.base.client.SpiceRackScreen;
 import snownee.cuisine.base.container.SpiceRackContainer;
 import snownee.cuisine.base.crafting.SpiceBottleFillingRecipe;
+import snownee.cuisine.base.item.ManualItem;
 import snownee.cuisine.base.item.SpiceBottleItem;
 import snownee.cuisine.base.tile.SpiceRackTile;
 import snownee.kiwi.AbstractModule;
@@ -35,7 +36,7 @@ import snownee.kiwi.item.ModItem;
 @KiwiModule.Optional
 public class BaseModule extends AbstractModule {
     static {
-        KiwiManager.addItemGroup(Cuisine.MODID, "base", new ItemGroup("base") {
+        KiwiManager.addItemGroup(Cuisine.MODID, "base", new ItemGroup("cuisine") {
             @Override
             @Nonnull
             public ItemStack createIcon() {
@@ -55,6 +56,7 @@ public class BaseModule extends AbstractModule {
     @Name("spice_rack")
     public static final ContainerType<SpiceRackContainer> SPICE_RACK_CONTAINER = new ContainerType<>(SpiceRackContainer::new);
 
+    public static final ManualItem MANUAL = new ManualItem();
     public static final ModItem SALT = new ModItem(itemProp());
     public static final ModItem BROWN_SUGAR = new ModItem(itemProp());
     public static final ModItem FLOUR = new ModItem(itemProp());
