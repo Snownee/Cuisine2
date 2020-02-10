@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#cuisine:leafy_vege",
     "cuisine:potato"
   ]
 }
