@@ -27,6 +27,7 @@ import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.Bonus;
 import snownee.cuisine.api.RecipeRule;
 import snownee.cuisine.data.adapter.ForgeRegistryAdapterFactory;
+import snownee.cuisine.data.adapter.ForgeRegistryAdapterFactory.ConditionsNotMetException;
 import snownee.cuisine.data.adapter.ImmutableSetAdapter;
 import snownee.cuisine.data.adapter.RecipeRuleAdapter;
 import snownee.cuisine.data.adapter.StarsAdapter;
@@ -82,10 +83,15 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
                 ctx.setActiveContainer(ModList.get().getModContainerById(id.getNamespace()).orElse(null), ctx.extension());
             try {
                 T go = GSON.fromJson(o, registry.getRegistrySuperType());
+                if (go == null) {
+                    return;
+                }
                 if (verifier != null && !verifier.test(go)) {
                     throw new JsonSyntaxException("Failed to verify " + go + " " + id);
                 }
                 registry.register(go.setRegistryName(id));
+            } catch (ConditionsNotMetException e) {
+                Cuisine.logger.info("Skipping loading {} {} as it's conditions were not met", registry.getRegistryName().getPath(), id);
             } catch (JsonSyntaxException | NullPointerException e) {
                 Cuisine.logger.catching(e);
             }

@@ -12,6 +12,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
@@ -56,6 +57,9 @@ public class ForgeRegistryAdapterFactory implements TypeAdapterFactory {
                 return null;
             }
             if (json.isJsonObject()) {
+                if (!CraftingHelper.processConditions(json.getAsJsonObject(), "conditions")) {
+                    throw new ConditionsNotMetException();
+                }
                 return delegate().fromJsonTree(json);
             } else {
                 ResourceLocation id = Util.RL(json.getAsString());
@@ -69,4 +73,6 @@ public class ForgeRegistryAdapterFactory implements TypeAdapterFactory {
         }
 
     }
+
+    public static final class ConditionsNotMetException extends RuntimeException {}
 }
