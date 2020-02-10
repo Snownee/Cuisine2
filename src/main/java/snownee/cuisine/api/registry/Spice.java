@@ -1,6 +1,7 @@
 package snownee.cuisine.api.registry;
 
 import java.util.Set;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.annotations.SerializedName;
 
@@ -17,6 +18,7 @@ import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.LogicalServerSide;
 import snownee.cuisine.api.tag.SpiceTags;
 
@@ -31,6 +33,8 @@ public class Spice extends ForgeRegistryEntry<Spice> {
     @SerializedName("fluid_tags")
     private ImmutableSet<Tag<Fluid>> fluidTags = ImmutableSet.of();
     private ReverseTagWrapper<Spice> reverseTags = new ReverseTagWrapper<>(this, SpiceTags::getGeneration, SpiceTags::getCollection);
+    @SerializedName("translation_key")
+    private String translationKey;
 
     private Spice() {}
 
@@ -61,7 +65,36 @@ public class Spice extends ForgeRegistryEntry<Spice> {
     }
 
     public ITextComponent getDisplayName() {
-        return new TranslationTextComponent("cuisine.spice." + String.valueOf(getRegistryName()).replace(':', '.'));
+        if (translationKey == null) {
+            if (!items.isEmpty()) {
+                translationKey = items.asList().get(0).getTranslationKey();
+            } else if (!tags.isEmpty()) {
+                for (Tag<Item> tag : tags) {
+                    if (!tag.getAllElements().isEmpty()) {
+                        Item item = tag.getRandomElement(CuisineAPI.RAND);
+                        translationKey = item.getTranslationKey();
+                        break;
+                    }
+                }
+            }
+            if (translationKey == null) {
+                if (!fluids.isEmpty()) {
+                    translationKey = fluids.asList().get(0).getAttributes().getTranslationKey();
+                } else if (!tags.isEmpty()) {
+                    for (Tag<Fluid> tag : fluidTags) {
+                        if (!tag.getAllElements().isEmpty()) {
+                            Fluid item = tag.getRandomElement(CuisineAPI.RAND);
+                            translationKey = item.getAttributes().getTranslationKey();
+                            break;
+                        }
+                    }
+                }
+                if (translationKey == null) {
+                    translationKey = "cuisine.spice." + String.valueOf(getRegistryName()).replace(':', '.');
+                }
+            }
+        }
+        return new TranslationTextComponent(translationKey);
     }
 
     @Override

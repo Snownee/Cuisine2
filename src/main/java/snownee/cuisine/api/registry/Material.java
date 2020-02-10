@@ -2,8 +2,10 @@ package snownee.cuisine.api.registry;
 
 import java.util.List;
 import java.util.Set;
+
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.annotations.SerializedName;
 
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -18,6 +20,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import snownee.cuisine.api.Bonus;
+import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.LogicalServerSide;
 import snownee.cuisine.api.tag.MaterialTags;
 
@@ -26,6 +29,8 @@ public class Material extends ForgeRegistryEntry<Material> {
     private ImmutableSet<Item> items = ImmutableSet.of();
     private ImmutableSet<Tag<Item>> tags = ImmutableSet.of();
     private ImmutableListMultimap<Integer, Bonus> stars = ImmutableListMultimap.of();
+    @SerializedName("translation_key")
+    private String translationKey;
     private final ReverseTagWrapper<Material> reverseTags = new ReverseTagWrapper<>(this, MaterialTags::getGeneration, MaterialTags::getCollection);
 
     private Material() {}
@@ -48,7 +53,23 @@ public class Material extends ForgeRegistryEntry<Material> {
     }
 
     public ITextComponent getDisplayName() {
-        return new TranslationTextComponent("cuisine.material." + String.valueOf(getRegistryName()).replace(':', '.'));
+        if (translationKey == null) {
+            if (!items.isEmpty()) {
+                translationKey = items.asList().get(0).getTranslationKey();
+            } else if (!tags.isEmpty()) {
+                for (Tag<Item> tag : tags) {
+                    if (!tag.getAllElements().isEmpty()) {
+                        Item item = tag.getRandomElement(CuisineAPI.RAND);
+                        translationKey = item.getTranslationKey();
+                        break;
+                    }
+                }
+            }
+            if (translationKey == null) {
+                translationKey = "cuisine.material." + String.valueOf(getRegistryName()).replace(':', '.');
+            }
+        }
+        return new TranslationTextComponent(translationKey);
     }
 
     @Override
