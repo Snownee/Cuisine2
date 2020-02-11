@@ -7,7 +7,6 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.base.BaseModule;
 import snownee.cuisine.base.item.SpiceBottleItem;
 
@@ -21,7 +20,7 @@ public final class CuisineItemRendering {
     public static void onItemColorsInit(ColorHandlerEvent.Item event) {
         ItemColors itemColors = event.getItemColors();
         itemColors.register((stack, tintIndex) -> {
-            if (tintIndex == 0) { //FIXME:CHACK ME
+            if (tintIndex == 0) {
                 return SpiceBottleItem.getSpice(stack).map(ColorLookup::get).orElse(-1);
             }
             return -1;

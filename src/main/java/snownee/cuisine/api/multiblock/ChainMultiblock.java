@@ -143,10 +143,12 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
                     origins.add(map.get(pos));
                 }
             }
-            Set<BlockPos> added = Sets.newHashSet();
-            for (ChainMultiblock origin : origins) {
-                if (!added.contains(origin.tile.getPos())) {
-                    origin.search(null, origin, map, added);
+            if (origins.size() > 1 || !origins.contains(master)) {
+                Set<BlockPos> added = Sets.newHashSet();
+                for (ChainMultiblock origin : origins) {
+                    if (!added.contains(origin.tile.getPos())) {
+                        origin.search(null, origin, map, added);
+                    }
                 }
             }
         }
