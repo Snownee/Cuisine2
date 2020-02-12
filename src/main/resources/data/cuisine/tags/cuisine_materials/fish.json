@@ -1,5 +1,8 @@
 {
   "replace": false,
   "values": [
+    "cuisine:cod",
+    "cuisine:pufferfish",
+    "cuisine:salmon"
   ]
 }
