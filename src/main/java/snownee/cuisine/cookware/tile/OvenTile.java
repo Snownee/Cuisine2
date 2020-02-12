@@ -8,6 +8,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
@@ -19,8 +20,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.EmptyHandler;
 import snownee.cuisine.api.CuisineAPI;
+import snownee.cuisine.base.item.RecipeItem;
 import snownee.cuisine.cookware.CookwareModule;
 import snownee.cuisine.cookware.container.OvenContainer;
 import snownee.cuisine.util.ExtractOnlyItemHandler;
@@ -35,8 +36,25 @@ public class OvenTile extends AbstractCookwareTile implements INamedContainerPro
         }
     };
     private final ExtractOnlyItemHandler<ItemStackHandler> outputHandler = new ExtractOnlyItemHandler<>(new ItemStackHandler());
-    private final LazyOptional<IItemHandlerModifiable> inputProvider = LazyOptional.of(() -> inputHandler);
+    private final LazyOptional<ItemStackHandler> inputProvider = LazyOptional.of(() -> inputHandler);
     private final LazyOptional<IItemHandler> outputProvider = LazyOptional.of(() -> outputHandler);
+    private final ItemStackHandler paperHandler = new ItemStackHandler() {
+        @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+            return stack.getItem() == Items.PAPER;
+        }
+    };
+    private final ItemStackHandler recipeHandler = new ItemStackHandler() {
+        @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+            return stack.getItem() instanceof RecipeItem;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 1;
+        }
+    };
     private final LazyOptional<IItemHandlerModifiable> unsidedProvider = LazyOptional.of(() -> new CombinedInvWrapper(inputHandler, outputHandler.get()) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
@@ -59,7 +77,7 @@ public class OvenTile extends AbstractCookwareTile implements INamedContainerPro
     }
 
     public IInventory getInventory() {
-        return new InvHandlerWrapper(unsidedProvider.orElseGet(EmptyHandler::new));
+        return new InvHandlerWrapper(new CombinedInvWrapper(inputHandler, outputHandler.get(), paperHandler, recipeHandler));
     }
 
     @Override
@@ -103,6 +121,8 @@ public class OvenTile extends AbstractCookwareTile implements INamedContainerPro
     public void read(CompoundNBT compound) {
         inputHandler.deserializeNBT(compound.getCompound("Input"));
         outputHandler.get().deserializeNBT(compound.getCompound("Output"));
+        recipeHandler.deserializeNBT(compound.getCompound("Recipe"));
+        paperHandler.deserializeNBT(compound.getCompound("Paper"));
         super.read(compound);
     }
 
@@ -110,7 +130,19 @@ public class OvenTile extends AbstractCookwareTile implements INamedContainerPro
     public CompoundNBT write(CompoundNBT compound) {
         compound.put("Input", inputHandler.serializeNBT());
         compound.put("Output", outputHandler.get().serializeNBT());
+        compound.put("Recipe", recipeHandler.serializeNBT());
+        compound.put("Paper", paperHandler.serializeNBT());
         return super.write(compound);
+    }
+
+    @Override
+    public IItemHandler getPaperHandler() {
+        return paperHandler;
+    }
+
+    @Override
+    public IItemHandler getRecipeHandler() {
+        return recipeHandler;
     }
 
 }

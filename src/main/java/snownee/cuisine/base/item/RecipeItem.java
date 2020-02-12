@@ -17,14 +17,14 @@ public class RecipeItem extends ModItem {
     }
 
     public ItemStack make(MinecraftServer server, FoodBuilder<?> builder) {
-        DimensionSavedDataManager savedData = server.getWorld(DimensionType.OVERWORLD).getSavedData();
-        MapIdTracker tracker = savedData.getOrCreate(MapIdTracker::new, "idcounts");
+        DimensionSavedDataManager dataManager = server.getWorld(DimensionType.OVERWORLD).getSavedData();
+        MapIdTracker tracker = dataManager.getOrCreate(MapIdTracker::new, "idcounts");
         int i = tracker.field_215163_a.getInt("cuisine.recipe") + 1;
         tracker.field_215163_a.put("cuisine.recipe", i);
         tracker.markDirty();
         RecipeData recipeData = new RecipeData("cuisine/recipe_" + i);
         recipeData.put(builder);
-        savedData.set(recipeData);
+        dataManager.set(recipeData);
         ItemStack stack = new ItemStack(this);
         stack.getOrCreateTag().putInt("id", i);
         return stack;

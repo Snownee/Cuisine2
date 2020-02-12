@@ -27,7 +27,7 @@ public class OvenContainer extends Container {
 
     public OvenContainer(int id, PlayerInventory playerInventory, IInventory inventory) {
         super(CookwareModule.OVEN_CONTAINER, id);
-        assertInventorySize(inventory, 10);
+        assertInventorySize(inventory, 12);
         this.player = playerInventory.player;
 
         for (int i = 0; i < 3; ++i) {
@@ -37,6 +37,8 @@ public class OvenContainer extends Container {
         }
 
         this.addSlot(new ModSlot(inventory, 9, 124, 35));
+        this.addSlot(new ModSlot(inventory, 10, 114, 5));
+        this.addSlot(new ModSlot(inventory, 11, 134, 5));
 
         for (int k = 0; k < 3; ++k) {
             for (int i1 = 0; i1 < 9; ++i1) {
