@@ -59,7 +59,7 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
     private void init() {
         World world = tile.getWorld();
         BlockPos pos = tile.getPos();
-        for (Direction direction : Direction.values()) { //TODO replace with Direction.VALUES
+        for (Direction direction : Direction.VALUES) {
             TileEntity neighbor = world.getTileEntity(pos.offset(direction));
             if (neighbor == null) {
                 continue;
@@ -137,7 +137,7 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
             if (!isMaster()) {
                 origins.add(master);
             }
-            for (Direction direction : Direction.values()) {
+            for (Direction direction : Direction.VALUES) {
                 BlockPos pos = tile.getPos().offset(direction);
                 if (map.containsKey(pos)) {
                     origins.add(map.get(pos));
@@ -161,7 +161,7 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
             master.all.clear();
         }
         setMaster(master);
-        for (Direction direction : Direction.values()) {
+        for (Direction direction : Direction.VALUES) {
             if (from == direction) {
                 continue;
             }
