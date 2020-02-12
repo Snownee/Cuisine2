@@ -1,57 +1,138 @@
 package snownee.cuisine.data.research;
 
+import com.google.common.collect.Maps;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
+import snownee.cuisine.api.CuisineAPI;
+import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.ResearchInfo;
 import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.Material;
 
+import java.util.Map;
+
 public class ResearchInfoImpl implements ResearchInfo {
+    private final Map<Material, Integer> materialStars = Maps.newHashMap();
+    private final Map<CuisineFood, Integer> foodStars = Maps.newHashMap();
+    private final Map<Material, Integer> materialProgresses = Maps.newHashMap();
+    private final Map<CuisineFood, Integer> foodProgresses = Maps.newHashMap();
 
     @Override
     public int getStar(Material material) {
-        // TODO Auto-generated method stub
-        return 0;
+        return materialStars.getOrDefault(material, 0);
     }
 
     @Override
     public int getStar(CuisineFood food) {
-        // TODO Auto-generated method stub
-        return 0;
+        return foodStars.getOrDefault(food, 0);
     }
 
     @Override
     public int getProgress(Material material) {
-        // TODO Auto-generated method stub
-        return 0;
+        return materialProgresses.getOrDefault(material, 0);
     }
 
     @Override
     public int getProgress(CuisineFood food) {
-        // TODO Auto-generated method stub
-        return 0;
+        return foodProgresses.getOrDefault(food, 0);
     }
 
     @Override
     public void setStar(Material material, int star) {
-        // TODO Auto-generated method stub
-        
+        if (star <= 0)
+            materialStars.remove(material);
+        else
+            materialStars.put(material, star);
     }
 
     @Override
     public void setStar(CuisineFood food, int star) {
-        // TODO Auto-generated method stub
-        
+        if (star <= 0)
+            foodStars.remove(food);
+        else
+            foodStars.put(food, star);
     }
 
     @Override
     public void setProgress(Material material, int progress) {
-        // TODO Auto-generated method stub
-        
+        if (progress <= 0)
+            materialProgresses.remove(material);
+        else
+            materialProgresses.put(material, progress);
     }
 
     @Override
     public void setProgress(CuisineFood food, int progress) {
-        // TODO Auto-generated method stub
-        
+        if (progress <= 0)
+            foodProgresses.remove(food);
+        else
+            foodProgresses.put(food, progress);
+    }
+
+    @Override
+    public void read(CompoundNBT data) {
+        ListNBT list = data.getList("material_progresses",10);
+        for (INBT i : list){
+            CompoundNBT nbt = (CompoundNBT)i;
+            Material material = CuisineRegistries.MATERIALS.getValue(nbt.getInt("k"));
+            setProgress(material,nbt.getInt("v"));
+        }
+        list = data.getList("material_stars",10);
+        for (INBT i : list){
+            CompoundNBT nbt = (CompoundNBT)i;
+            Material material = CuisineRegistries.MATERIALS.getValue(nbt.getInt("k"));
+            setStar(material,nbt.getInt("v"));
+        }
+        list = data.getList("food_progresses",10);
+        for (INBT i : list){
+            CompoundNBT nbt = (CompoundNBT)i;
+            CuisineFood material = CuisineRegistries.FOODS.getValue(nbt.getInt("k"));
+            setProgress(material,nbt.getInt("v"));
+        }
+        list = data.getList("food_stars",10);
+        for (INBT i : list){
+            CompoundNBT nbt = (CompoundNBT)i;
+            CuisineFood material = CuisineRegistries.FOODS.getValue(nbt.getInt("k"));
+            setStar(material,nbt.getInt("v"));
+        }
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT data) {
+        ListNBT list1 = new ListNBT();
+        for (Material material : materialProgresses.keySet()) {
+            CompoundNBT compoundNBT = new CompoundNBT();
+            compoundNBT.putInt("k",CuisineRegistries.MATERIALS.getID(material));
+            compoundNBT.putInt("v",getStar(material));
+            list1.add(compoundNBT);
+        }
+        data.put("material_progresses",list1);
+        ListNBT list2 = new ListNBT();
+        for (Material material : materialStars.keySet()) {
+            CompoundNBT compoundNBT = new CompoundNBT();
+            compoundNBT.putInt("k",CuisineRegistries.MATERIALS.getID(material));
+            compoundNBT.putInt("v",getProgress(material));
+        }
+        ListNBT list3 = new ListNBT();
+        data.put("material_stars",list2);
+
+        for (CuisineFood food : foodProgresses.keySet()) {
+            CompoundNBT compoundNBT = new CompoundNBT();
+            compoundNBT.putInt("k",CuisineRegistries.FOODS.getID(food));
+            compoundNBT.putInt("v",getProgress(food));
+        }
+        ListNBT list4 = new ListNBT();
+        data.put("food_progresses",list3);
+
+        for (CuisineFood food : foodStars.keySet()) {
+            CompoundNBT compoundNBT = new CompoundNBT();
+            compoundNBT.putInt("k",CuisineRegistries.FOODS.getID(food));
+            compoundNBT.putInt("v",getStar(food));
+        }
+        data.put("food_starts",list4);
+
+        return data;
     }
 
 }

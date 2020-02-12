@@ -1,5 +1,6 @@
 package snownee.cuisine.api;
 
+import net.minecraft.nbt.CompoundNBT;
 import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.Material;
 
@@ -20,6 +21,14 @@ public interface ResearchInfo {
     void setProgress(Material material, int progress);
 
     void setProgress(CuisineFood food, int progress);
+
+    default void read(CompoundNBT data){
+
+    }
+
+    default CompoundNBT write(CompoundNBT data){
+        return data;
+    }
 
     public static enum Empty implements ResearchInfo {
         INSTANCE;
