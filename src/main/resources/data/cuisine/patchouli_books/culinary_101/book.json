@@ -1,0 +1,17 @@
+{
+  "name": "item.cuisine.manual",
+  "landing_text": "manual.cuisine.subtitle",
+  "edition": -1,
+  "creative_tab": "cuisine",
+  "dont_generate_book": false,
+  "show_progress": false,
+  "custom_book_item": "cuisine:manual",
+  "book_texture": "cuisine:textures/gui/patchouli.png",
+  "model": "cuisine:manual",
+  "advancement_namespaces": [
+    "cuisine"
+  ],
+  "macros": {
+    "$(em)": "$(#388e3c)"
+  }
+}

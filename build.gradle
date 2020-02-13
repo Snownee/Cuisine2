@@ -116,6 +116,8 @@ dependencies {
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     exclude "**/*.bat"
+    exclude "**/*.psd"
+    exclude "**/*.d"
     manifest {
         attributes([
             "Implementation-Title": project.name,
