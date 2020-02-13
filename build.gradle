@@ -95,7 +95,7 @@ repositories {
     // yarn2mcp
 	// maven { url "https://maven.tterrag.com/" }
 	// patchouli
-	// maven { url 'https://maven.blamejared.com' }
+	maven { url 'https://maven.blamejared.com' }
 }
 
 dependencies {
@@ -108,7 +108,7 @@ dependencies {
     
     compile 'org.spongepowered:mixin:0.8'
     
-    // compile fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+    compile fg.deobf("vazkii.patchouli:Patchouli:${minecraft_version}-${patchouli_version}")
     
     compile files("Kiwi-${minecraft_version}-${kiwi_version}-deobf.jar")
 }
