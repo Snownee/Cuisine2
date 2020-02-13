@@ -10,13 +10,13 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import snownee.cuisine.Cuisine;
+import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.processing.ProcessingModule;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
 
-    public static final ResourceLocation MILLING = new ResourceLocation(Cuisine.MODID, "milling");
+    public static final ResourceLocation MILLING = new ResourceLocation(CuisineAPI.MODID, "milling");
 
     @Override
     public ResourceLocation getPluginUid() {

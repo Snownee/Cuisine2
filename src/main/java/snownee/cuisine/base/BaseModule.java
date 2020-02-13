@@ -17,7 +17,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import snownee.cuisine.Cuisine;
+import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.base.block.SpiceRackBlock;
 import snownee.cuisine.base.client.SpiceRackScreen;
 import snownee.cuisine.base.container.SpiceRackContainer;
@@ -37,7 +37,7 @@ import snownee.kiwi.item.ModItem;
 @KiwiModule.Optional
 public class BaseModule extends AbstractModule {
     static {
-        KiwiManager.addItemGroup(Cuisine.MODID, "base", new ItemGroup("cuisine") {
+        KiwiManager.addItemGroup(CuisineAPI.MODID, "base", new ItemGroup("cuisine") {
             @Override
             @Nonnull
             public ItemStack createIcon() {

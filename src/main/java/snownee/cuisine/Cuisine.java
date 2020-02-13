@@ -33,9 +33,8 @@ import snownee.kiwi.KiwiModule.LoadingCondition;
 import snownee.kiwi.LoadingContext;
 import snownee.kiwi.util.NBTHelper;
 
-@Mod(Cuisine.MODID)
+@Mod("cuisine")
 public final class Cuisine implements ICuisineAPI {
-    public static final String MODID = "cuisine";
     public static final String NAME = "Cuisine";
 
     public static boolean mixin;

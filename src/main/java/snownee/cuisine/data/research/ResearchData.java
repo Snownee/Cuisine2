@@ -23,12 +23,12 @@ public class ResearchData extends WorldSavedData {
 
     @Override
     public void read(CompoundNBT data) {
-        ListNBT listNBT = data.getList("research_data",10);
+        ListNBT listNBT = data.getList("ResearchData",10);
         for (INBT i : listNBT){
             CompoundNBT nbt = (CompoundNBT)i;
             ResearchInfoImpl info = new ResearchInfoImpl();
             info.read(nbt);
-            UUID id = nbt.getUniqueId("id");
+            UUID id = nbt.getUniqueId("Id");
             players.put(id,info);
         }
     }
@@ -39,11 +39,11 @@ public class ResearchData extends WorldSavedData {
         for (UUID id : players.keySet()){
             ResearchInfo info = players.getOrDefault(id,ResearchInfo.Empty.INSTANCE);
             CompoundNBT nbt = new CompoundNBT();
-            nbt.putUniqueId("id",id);
+            nbt.putUniqueId("Id",id);
             info.write(nbt);
             list.add(nbt);
         }
-        data.put("research_data",list);
+        data.put("ResearchData",list);
         return data;
     }
 

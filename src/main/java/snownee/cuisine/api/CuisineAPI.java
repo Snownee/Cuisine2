@@ -21,6 +21,7 @@ import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.api.tile.ISpiceHandler;
 
 public final class CuisineAPI {
+    public static final String MODID = "cuisine";
     public static final Random RAND = new Random(114514);
 
     private CuisineAPI() {}

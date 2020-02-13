@@ -36,7 +36,12 @@ public class OvenContainer extends Container {
             }
         }
 
-        this.addSlot(new ModSlot(inventory, 9, 124, 35));
+        this.addSlot(new ModSlot(inventory, 9, 124, 35) {
+            @Override
+            public boolean isItemValid(ItemStack stack) {
+                return false;
+            }
+        });
         this.addSlot(new ModSlot(inventory, 10, 114, 5));
         this.addSlot(new ModSlot(inventory, 11, 134, 5));
 

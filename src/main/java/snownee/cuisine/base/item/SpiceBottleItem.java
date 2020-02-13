@@ -31,6 +31,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import snownee.cuisine.api.CuisineAPI;
+import snownee.cuisine.api.CuisineConst;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.registry.Spice;
 import snownee.kiwi.item.ModItem;
@@ -44,9 +45,8 @@ public class SpiceBottleItem extends ModItem {
     public static final int VOLUME_PER_ITEM = 10;
     public static final int FLUID_PER_VOLUME = FluidAttributes.BUCKET_VOLUME / VOLUME_PER_ITEM;
 
-    public static final String SPICE = "spice";
-    public static final String SPICE_VALUE = "spice.value";
-    public static final String SPICE_NAME = "spice.name";
+    public static final String SPICE_VALUE = "Spice.Value";
+    public static final String SPICE_NAME = "Spice.Name";
 
     public SpiceBottleItem(int maxVolume, Properties builder) {
         super(builder.maxStackSize(1));
@@ -106,7 +106,7 @@ public class SpiceBottleItem extends ModItem {
     public boolean hasSpice(ItemStack container) {
         NBTHelper nbt = NBTHelper.of(container);
         if (nbt.getInt(SPICE_VALUE) == 0) {
-            nbt.remove(SPICE);
+            nbt.remove(CuisineConst.SPICE);
             return false;
         }
         return true;
@@ -135,7 +135,7 @@ public class SpiceBottleItem extends ModItem {
         @Override
         public void setContainerToEmpty() {
             container.removeChildTag(FLUID_NBT_KEY);
-            container.removeChildTag(SPICE);
+            container.removeChildTag(CuisineConst.SPICE);
         }
 
         @Override

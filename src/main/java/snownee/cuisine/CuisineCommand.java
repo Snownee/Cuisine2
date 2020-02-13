@@ -25,7 +25,7 @@ public final class CuisineCommand {
     private CuisineCommand() {}
 
     public static LiteralArgumentBuilder<CommandSource> init(CommandDispatcher<CommandSource> dispatcher) {
-        LiteralArgumentBuilder<CommandSource> builder = Commands.literal(Cuisine.MODID);
+        LiteralArgumentBuilder<CommandSource> builder = Commands.literal(CuisineAPI.MODID);
 
         /* off */
         builder
