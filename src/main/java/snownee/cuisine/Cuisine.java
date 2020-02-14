@@ -13,6 +13,7 @@ import com.google.gson.JsonDeserializer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import snownee.cuisine.api.Bonus;
@@ -39,9 +40,14 @@ public final class Cuisine implements ICuisineAPI {
 
     public static boolean mixin;
     public static Logger logger = LogManager.getLogger(Cuisine.NAME);
+    static MinecraftServer server;
 
     public Cuisine() {
         set(this);
+    }
+
+    public static MinecraftServer getServer() {
+        return server;
     }
 
     @LoadingCondition("core")

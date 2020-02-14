@@ -104,7 +104,7 @@ abstract public class AbstractCookwareTile extends KitchenTile {
             for (int i = 0; i < paperHandler.getSlots(); i++) {
                 /* on */
                 if (!paperHandler.getStackInSlot(i).isEmpty()) {
-                    ItemStack recipeItem = BaseModule.RECIPE.make(world.getServer(), builder, recipe);
+                    ItemStack recipeItem = BaseModule.RECIPE.make(builder, recipe);
                     ItemHandlerHelper.insertItem(recipeHandler, recipeItem, false);
                     paperHandler.extractItem(i, 1, false);
                 }

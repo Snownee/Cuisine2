@@ -1,15 +1,20 @@
 package snownee.cuisine.data;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 import com.google.common.collect.ImmutableList;
 
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 import snownee.cuisine.api.CuisineAPI;
@@ -32,9 +37,11 @@ public class RecordData extends WorldSavedData {
     private ImmutableList<Material> materials;
     private ImmutableList<CuisineFood> foods;
     private Object2IntMap<Spice> spices;
+    // https://stackoverflow.com/questions/4062919/why-does-exist-weakhashmap-but-absent-weakset
+    public final Set<PlayerEntity> syncedPlayers = Collections.newSetFromMap(new WeakHashMap<>());
 
-    public RecordData(String name) {
-        super(name);
+    public RecordData(int id) {
+        super("cuisine/recipe_" + id);
     }
 
     @Override
@@ -42,12 +49,12 @@ public class RecordData extends WorldSavedData {
         cookware = CuisineRegistries.COOKWARES.getValue(Util.RL(data.getString(CuisineConst.COOKWARE), CuisineAPI.MODID));
         result = CuisineRegistries.FOODS.getValue(Util.RL(data.getString(CuisineConst.FOOD), CuisineAPI.MODID));
 
-        ListNBT materialList = data.getList(CuisineConst.MATERIALS, Constants.NBT.TAG_STRING);
-        ImmutableList.Builder<Material> materialBuilder = ImmutableList.builder();
-        for (INBT tag : materialList) {
-            materialBuilder.add(CuisineRegistries.MATERIALS.getValue(Util.RL(tag.getString(), CuisineAPI.MODID)));
+        ListNBT matList = data.getList(CuisineConst.MATERIALS, Constants.NBT.TAG_STRING);
+        ImmutableList.Builder<Material> matBuilder = ImmutableList.builder();
+        for (INBT tag : matList) {
+            matBuilder.add(CuisineRegistries.MATERIALS.getValue(Util.RL(tag.getString(), CuisineAPI.MODID)));
         }
-        materials = materialBuilder.build();
+        materials = matBuilder.build();
 
         ListNBT foodList = data.getList(CuisineConst.FOODS, Constants.NBT.TAG_STRING);
         ImmutableList.Builder<CuisineFood> foodBuilder = ImmutableList.builder();
@@ -69,11 +76,11 @@ public class RecordData extends WorldSavedData {
     public CompoundNBT write(CompoundNBT data) {
         data.putString(CuisineConst.COOKWARE, Util.trimRL(cookware.getRegistryName(), CuisineAPI.MODID));
         data.putString("Result", Util.trimRL(result.getRegistryName(), CuisineAPI.MODID));
-        ListNBT materialList = new ListNBT();
+        ListNBT matList = new ListNBT();
         for (Material material : materials) {
-            materialList.add(StringNBT.valueOf(Util.trimRL(material.getRegistryName(), CuisineAPI.MODID)));
+            matList.add(StringNBT.valueOf(Util.trimRL(material.getRegistryName(), CuisineAPI.MODID)));
         }
-        data.put(CuisineConst.MATERIALS, materialList);
+        data.put(CuisineConst.MATERIALS, matList);
         ListNBT foodList = new ListNBT();
         for (CuisineFood food : foods) {
             foodList.add(StringNBT.valueOf(Util.trimRL(food.getRegistryName(), CuisineAPI.MODID)));
@@ -109,6 +116,54 @@ public class RecordData extends WorldSavedData {
         foods = builder.getFoods().stream().map(CuisineFoodInstance::getLeft).collect(ImmutableList.toImmutableList());
         spices = new Object2IntArrayMap<>(builder.getSpices());
         markDirty();
+    }
+
+    public static RecordData read(PacketBuffer buf, int rid) {
+        RecordData data = new RecordData(rid);
+        data.cookware = buf.readRegistryIdUnsafe(CuisineRegistries.COOKWARES);
+        data.result = buf.readRegistryIdUnsafe(CuisineRegistries.FOODS);
+
+        ImmutableList.Builder<Material> matBuilder = ImmutableList.builder();
+        for (int id : buf.readVarIntArray(16)) {
+            matBuilder.add(CuisineRegistries.MATERIALS.getValue(id));
+        }
+        data.materials = matBuilder.build();
+
+        ImmutableList.Builder<CuisineFood> foodBuilder = ImmutableList.builder();
+        for (int id : buf.readVarIntArray(16)) {
+            foodBuilder.add(CuisineRegistries.FOODS.getValue(id));
+        }
+        data.foods = foodBuilder.build();
+
+        int size = buf.readVarInt();
+        data.spices = new Object2IntArrayMap<>(size);
+        for (int i = 0; i < size; i++) {
+            data.spices.put(CuisineRegistries.SPICES.getValue(buf.readVarInt()), buf.readVarInt());
+        }
+        data.markDirty();
+        return data;
+    }
+
+    public void write(PacketBuffer buf, int id) {
+        buf.writeVarInt(id);
+        buf.writeRegistryIdUnsafe(CuisineRegistries.COOKWARES, cookware);
+        buf.writeRegistryIdUnsafe(CuisineRegistries.FOODS, result);
+
+        buf.writeVarInt(materials.size());
+        for (Material material : materials) {
+            buf.writeRegistryIdUnsafe(CuisineRegistries.MATERIALS, material);
+        }
+
+        buf.writeVarInt(foods.size());
+        for (CuisineFood food : foods) {
+            buf.writeRegistryIdUnsafe(CuisineRegistries.FOODS, food);
+        }
+
+        buf.writeVarInt(spices.size());
+        for (Spice spice : spices.keySet()) {
+            buf.writeRegistryIdUnsafe(CuisineRegistries.SPICES, spice);
+            buf.writeVarInt(spices.getInt(spice));
+        }
     }
 
 }

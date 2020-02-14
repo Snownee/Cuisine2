@@ -28,6 +28,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import snownee.cuisine.api.CuisineAPI;
@@ -43,6 +44,7 @@ import snownee.cuisine.data.CuisineDataManager;
 import snownee.cuisine.data.CuisineRecipeManager;
 import snownee.cuisine.data.DeferredReloadListener;
 import snownee.cuisine.data.DeferredReloadListener.LoadingStage;
+import snownee.cuisine.data.network.SSyncRecordPacket;
 import snownee.cuisine.data.network.SSyncRegistryPacket;
 import snownee.cuisine.data.network.SSyncTagsPacket;
 import snownee.cuisine.data.research.ResearchData;
@@ -91,6 +93,7 @@ public final class CoreModule extends AbstractModule {
 
         NetworkChannel.register(SSyncRegistryPacket.class, new SSyncRegistryPacket.Handler());
         NetworkChannel.register(SSyncTagsPacket.class, new SSyncTagsPacket.Handler());
+        NetworkChannel.register(SSyncRecordPacket.class, new SSyncRecordPacket.Handler());
 
         networkTagManager = new CuisineNetworkTagManager();
 
@@ -128,7 +131,13 @@ public final class CoreModule extends AbstractModule {
     }
 
     @SubscribeEvent
+    protected void serverStopped(FMLServerStoppedEvent event) {
+        Cuisine.server = null;
+    }
+
+    @SubscribeEvent
     protected void serverInit(FMLServerAboutToStartEvent event) {
+        Cuisine.server = event.getServer();
         if (materialManager == null) {
             materialManager = new CuisineDataManager("cuisine_material", CuisineRegistries.MATERIALS).setCallback(CoreModule::buildMaterialMap);
             spiceManager = new CuisineDataManager("cuisine_spice", CuisineRegistries.SPICES).setCallback(CoreModule::buildSpiceMap);
@@ -136,7 +145,6 @@ public final class CoreModule extends AbstractModule {
             recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES).setVerifier(CuisineRecipe::validate);
         }
         IReloadableResourceManager manager = event.getServer().getResourceManager();
-        DeferredReloadListener.INSTANCE.setServer(event.getServer());
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, materialManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, spiceManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, foodManager);

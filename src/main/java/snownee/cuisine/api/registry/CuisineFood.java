@@ -45,12 +45,16 @@ public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
     }
 
     public ITextComponent getDisplayName() {
+        return new TranslationTextComponent(getTranslationKey());
+    }
+
+    public String getTranslationKey() {
         if (getItem() != null) {
-            return new TranslationTextComponent(getItem().getTranslationKey());
+            return getItem().getTranslationKey();
         } else if (getBlock() != null) {
-            return new TranslationTextComponent(getBlock().getTranslationKey());
+            return getBlock().getTranslationKey();
         }
-        return new TranslationTextComponent("cuisine.food." + String.valueOf(getRegistryName()).replace(':', '.'));
+        return "cuisine.food." + String.valueOf(getRegistryName()).replace(':', '.');
     }
 
     @Override

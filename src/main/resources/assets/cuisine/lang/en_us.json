@@ -2,6 +2,7 @@
   "cuisine.spice.empty":"empty",
   "cuisine.spice_bottle.rest": "rest",
   
+  "cuisine.unknown": "Unknown",
   
   "__comment": "GUI",
   "container.cuisine.oven": "Oven",
@@ -28,6 +29,7 @@
   "item.cuisine.salt": "Salt",
   "item.cuisine.brown_sugar": "Brown Sugar",
   "item.cuisine.manual": "Culinary Manual",
+  "item.cuisine.recipe": "Recipe: %s",
   "block.cuisine.peanut": "Peanut",
   "block.cuisine.chili": "Chili",
   "block.cuisine.onion": "Onion",

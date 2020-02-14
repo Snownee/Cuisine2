@@ -1,6 +1,5 @@
 package snownee.cuisine.data;
 
-import java.lang.ref.WeakReference;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
@@ -26,7 +25,6 @@ public enum DeferredReloadListener implements IFutureReloadListener {
     public final ListMultimap<LoadingStage, IFutureReloadListener> listeners = ArrayListMultimap.create(3, 3);
     private CompletableFuture<Void> registryCompleted;
     private int count;
-    private WeakReference<MinecraftServer> server;
 
     @Override
     public CompletableFuture<Void> reload(IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
@@ -45,7 +43,7 @@ public enum DeferredReloadListener implements IFutureReloadListener {
 
     public synchronized <T extends IForgeRegistryEntry<T>> void complete(IForgeRegistry<T> registry) {
         if (registry == CuisineRegistries.RECIPES) {
-            MinecraftServer server = getServer();
+            MinecraftServer server = Cuisine.getServer();
             if (server != null && server.isDedicatedServer()) {
                 server.getPlayerList().getPlayers().forEach(CoreModule::sync);
             }
@@ -78,14 +76,6 @@ public enum DeferredReloadListener implements IFutureReloadListener {
             return CompletableFuture.completedFuture(backgroundResult);
         }
 
-    }
-
-    public void setServer(MinecraftServer server) {
-        this.server = new WeakReference<MinecraftServer>(server);
-    }
-
-    public MinecraftServer getServer() {
-        return server == null ? null : server.get();
     }
 
 }
