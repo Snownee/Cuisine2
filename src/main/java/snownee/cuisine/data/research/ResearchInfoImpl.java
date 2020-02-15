@@ -18,24 +18,22 @@ public class ResearchInfoImpl implements ResearchInfo {
 
     @Override
     public int getStar(Material material) {
-        return materialStars.getOrDefault(material.getRegistryName(), 0);
+        return materialStars.getInt(material.getRegistryName());
     }
 
     @Override
     public int getStar(CuisineFood food) {
-        return foodStars.getOrDefault(food.getRegistryName(), 0);
+        return foodStars.getInt(food.getRegistryName());
     }
 
     @Override
     public int getProgress(Material material) {
-        System.out.println(materialProgresses.getOrDefault(material.getRegistryName(), 0));
-        System.out.println(material);
-        return materialProgresses.getOrDefault(material.getRegistryName(), 0);
+        return materialProgresses.getInt(material.getRegistryName());
     }
 
     @Override
     public int getProgress(CuisineFood food) {
-        return foodProgresses.getOrDefault(food.getRegistryName(), 0);
+        return foodProgresses.getInt(food.getRegistryName());
     }
 
     @Override
