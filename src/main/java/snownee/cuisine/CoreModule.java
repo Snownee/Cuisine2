@@ -151,7 +151,7 @@ public final class CoreModule extends AbstractModule {
         manager.addReloadListener(DeferredReloadListener.INSTANCE);
     }
 
-    //TODO Snownee: will we keep the insert order?
+    //Snownee: will we keep the insert order?
     static Map<Item, Material> item2Material = Maps.newIdentityHashMap();
     static Map<Item, Spice> item2Spice = Maps.newIdentityHashMap();
     static Map<Fluid, Spice> fluid2Spice = Maps.newIdentityHashMap();

@@ -10,11 +10,11 @@ import net.minecraft.util.IntReferenceHolder;
 import snownee.cuisine.base.item.RecipeItem;
 import snownee.cuisine.cookware.CookwareModule;
 import snownee.cuisine.cookware.tile.AbstractCookwareTile;
-import snownee.cuisine.cookware.tile.OvenTile;
+import snownee.cuisine.cookware.tile.CookwareTile;
 import snownee.cuisine.data.RecordData;
 import snownee.cuisine.util.ModSlot;
 
-public class OvenContainer extends Container {
+public class CookwareContainer extends Container {
 
     protected AbstractCookwareTile tile;
     public final PlayerEntity player;
@@ -23,34 +23,32 @@ public class OvenContainer extends Container {
 
     public static final int COOK_TIME = 20;
 
-    public OvenContainer(int id, PlayerInventory playerInventory) {
+    public CookwareContainer(int id, PlayerInventory playerInventory) {
         this(id, playerInventory, CookwareModule.OVEN_TILE.create().getInventory());
     }
 
-    public OvenContainer(int id, PlayerInventory playerInventory, OvenTile tile) {
+    public CookwareContainer(int id, PlayerInventory playerInventory, CookwareTile tile) {
         this(id, playerInventory, tile.getInventory());
         this.tile = tile;
     }
 
-    public OvenContainer(int id, PlayerInventory playerInventory, IInventory inventory) {
+    public CookwareContainer(int id, PlayerInventory playerInventory, IInventory inventory) {
         super(CookwareModule.OVEN_CONTAINER, id);
-        assertInventorySize(inventory, 12);
         this.player = playerInventory.player;
+        addSlots(playerInventory, inventory);
+    }
 
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
-                this.addSlot(new ModSlot(inventory, j + i * 3, 30 + j * 18, 17 + i * 18));
-            }
-        }
+    protected void addSlots(PlayerInventory playerInventory, IInventory inventory) {
+        int slot = addInputSlots(inventory);
 
-        this.addSlot(new ModSlot(inventory, 9, 124, 35) {
+        this.addSlot(new ModSlot(inventory, ++slot, 124, 35) {
             @Override
             public boolean isItemValid(ItemStack stack) {
                 return false;
             }
         });
-        this.addSlot(new ModSlot(inventory, 10, 114, 5));
-        this.addSlot(new ModSlot(inventory, 11, 134, 5));
+        this.addSlot(new ModSlot(inventory, ++slot, 114, 5));
+        this.addSlot(new ModSlot(inventory, ++slot, 134, 5));
 
         for (int k = 0; k < 3; ++k) {
             for (int i1 = 0; i1 < 9; ++i1) {
@@ -73,6 +71,16 @@ public class OvenContainer extends Container {
                 return cookTime;
             }
         });
+    }
+
+    protected int addInputSlots(IInventory inventory) {
+        assertInventorySize(inventory, 12);
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                this.addSlot(new ModSlot(inventory, j + i * 3, 30 + j * 18, 17 + i * 18));
+            }
+        }
+        return 8;
     }
 
     @Override

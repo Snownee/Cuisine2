@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -57,7 +58,7 @@ public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
             } else if (getBlock() != null) {
                 translationKey = getBlock().getTranslationKey();
             } else {
-                translationKey = "cuisine.food." + String.valueOf(getRegistryName()).replace(':', '.');
+                translationKey = Util.makeTranslationKey("cuisine.food", getRegistryName());
             }
         }
         return translationKey;

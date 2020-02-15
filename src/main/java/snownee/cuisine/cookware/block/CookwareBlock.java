@@ -6,19 +6,21 @@ import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import snownee.cuisine.cookware.CookwareModule;
-import snownee.cuisine.cookware.tile.OvenTile;
+import snownee.cuisine.cookware.tile.CookwareTile;
 import snownee.kiwi.block.ModBlock;
 
-public class OvenBlock extends HorizontalBlock {
+public class CookwareBlock extends HorizontalBlock {
 
-    public OvenBlock(Properties builder) {
+    private TileEntityType<?> tileType;
+
+    public CookwareBlock(Properties builder) {
         super(builder);
         ModBlock.deduceSoundAndHardness(this);
     }
@@ -28,22 +30,26 @@ public class OvenBlock extends HorizontalBlock {
         builder.add(HORIZONTAL_FACING);
     }
 
+    public void setTileType(TileEntityType<?> tileType) {
+        this.tileType = tileType;
+    }
+
     @Override
     public boolean hasTileEntity(BlockState state) {
-        return true;
+        return tileType != null;
     }
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return CookwareModule.OVEN_TILE.create();
+        return tileType != null ? tileType.create() : null;
     }
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult p_225533_6_) {
         if (!worldIn.isRemote) {
             TileEntity tile = worldIn.getTileEntity(pos);
-            if (tile instanceof OvenTile) {
-                player.openContainer((OvenTile) tile);
+            if (tile instanceof CookwareTile) {
+                player.openContainer((CookwareTile) tile);
             }
         }
         return ActionResultType.SUCCESS;

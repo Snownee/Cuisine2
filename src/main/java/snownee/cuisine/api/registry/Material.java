@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
@@ -66,7 +67,7 @@ public class Material extends ForgeRegistryEntry<Material> {
                 }
             }
             if (translationKey == null) {
-                translationKey = "cuisine.material." + String.valueOf(getRegistryName()).replace(':', '.');
+                translationKey = Util.makeTranslationKey("cuisine.material", getRegistryName());
             }
         }
         return new TranslationTextComponent(translationKey);
