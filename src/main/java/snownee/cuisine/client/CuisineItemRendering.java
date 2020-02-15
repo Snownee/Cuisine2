@@ -32,6 +32,7 @@ import snownee.cuisine.base.item.RecipeItem;
 import snownee.cuisine.base.item.SpiceBottleItem;
 import snownee.cuisine.data.RecordData;
 
+@SuppressWarnings("deprecation")
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(bus = Bus.MOD, value = Dist.CLIENT)
 public final class CuisineItemRendering {
@@ -95,7 +96,6 @@ public final class CuisineItemRendering {
         matrixStackIn.pop();
     }
 
-    @SuppressWarnings("deprecation")
     private static void renderMapFirstPerson(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, ItemStack stack) {
         matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F));
         matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180.0F));
