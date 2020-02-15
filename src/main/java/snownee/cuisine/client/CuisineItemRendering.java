@@ -1,6 +1,5 @@
 package snownee.cuisine.client;
 
-import com.google.common.base.MoreObjects;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -66,11 +65,8 @@ public final class CuisineItemRendering {
         }
         event.setCanceled(true);
         HandSide handside = event.getHand() == Hand.MAIN_HAND ? MC.player.getPrimaryHand() : MC.player.getPrimaryHand().opposite();
-        // https://github.com/MinecraftForge/MinecraftForge/pull/6496
-        Hand hand = MoreObjects.firstNonNull(MC.player.swingingHand, Hand.MAIN_HAND);
-        float swingProgress = hand == event.getHand() ? MC.player.getSwingProgress(event.getPartialTicks()) : 0;
         event.getMatrixStack().push();
-        renderMapFirstPersonSide(event.getMatrixStack(), event.getBuffers(), event.getLight(), event.getEquipProgress(), handside, swingProgress, stack);
+        renderMapFirstPersonSide(event.getMatrixStack(), event.getBuffers(), event.getLight(), event.getEquipProgress(), handside, event.getSwingProgress(), stack);
         event.getMatrixStack().pop();
         //TODO
     }
@@ -99,6 +95,7 @@ public final class CuisineItemRendering {
         matrixStackIn.pop();
     }
 
+    @SuppressWarnings("deprecation")
     private static void renderMapFirstPerson(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, ItemStack stack) {
         matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F));
         matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180.0F));
