@@ -6,15 +6,22 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IntReferenceHolder;
+import snownee.cuisine.base.item.RecipeItem;
 import snownee.cuisine.cookware.CookwareModule;
 import snownee.cuisine.cookware.tile.AbstractCookwareTile;
 import snownee.cuisine.cookware.tile.OvenTile;
+import snownee.cuisine.data.RecordData;
 import snownee.cuisine.util.ModSlot;
 
 public class OvenContainer extends Container {
 
     protected AbstractCookwareTile tile;
-    protected final PlayerEntity player;
+    public final PlayerEntity player;
+    protected int cookTime;
+    protected boolean cycle;
+
+    public static final int COOK_TIME = 20;
 
     public OvenContainer(int id, PlayerInventory playerInventory) {
         this(id, playerInventory, CookwareModule.OVEN_TILE.create().getInventory());
@@ -55,6 +62,17 @@ public class OvenContainer extends Container {
             this.addSlot(new Slot(playerInventory, l, 8 + l * 18, 142));
         }
 
+        trackInt(new IntReferenceHolder() {
+            @Override
+            public void set(int value) {
+                cookTime = value;
+            }
+
+            @Override
+            public int get() {
+                return cookTime;
+            }
+        });
     }
 
     @Override
@@ -88,10 +106,50 @@ public class OvenContainer extends Container {
         return !tile.isRemoved() && !(player.getDistanceSq(tile.getPos().getX() + 0.5D, tile.getPos().getY() + 0.5D, tile.getPos().getZ() + 0.5D) > 64.0D);
     }
 
-    public void cook() {
-        if (tile != null && !tile.isRemoved()) {
-            tile.cookAsItem(player);
+    public void startCooking(boolean cycle) {
+        if (tile == null || tile.isRemoved() || !cycle && !tile.canCook()) {
+            return;
         }
+        if (tile.getCookingPlayer() != null && tile.getCookingPlayer() != player) {
+            return;
+        }
+        tile.startCooking(this);
+        this.cycle = cycle;
+        cookTime = COOK_TIME;
+    }
+
+    public void tick() {
+        if (cookTime == 0) {
+            return;
+        }
+        if (--cookTime == 0) {
+            updateProgressBar(0, cookTime);
+            ItemStack recipe = tile.getRecipeHandler().getStackInSlot(0);
+            if (!recipe.isEmpty()) {
+                RecordData data = RecipeItem.getData(recipe);
+                if (data != null && data.getCookware() == tile.getCookware()) {
+                    //TODO
+                }
+            }
+            if (tile.cookAsItem(player, cycle) && cycle) {
+                startCooking(true);
+            } else {
+                tile.stopCooking();
+            }
+        }
+    }
+
+    @Override
+    public void onContainerClosed(PlayerEntity playerIn) {
+        super.onContainerClosed(playerIn);
+        if (tile != null) {
+            tile.stopCooking();
+        }
+    }
+
+    public int getCookProgressionScaled() {
+        int i = COOK_TIME - cookTime;
+        return COOK_TIME != 0 && cookTime != 0 ? i * 24 / COOK_TIME : 0;
     }
 
 }

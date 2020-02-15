@@ -166,4 +166,12 @@ public class RecordData extends WorldSavedData {
         }
     }
 
+    public Cookware getCookware() {
+        return cookware;
+    }
+
+    public CuisineFood getResult() {
+        return result;
+    }
+
 }

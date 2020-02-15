@@ -46,13 +46,21 @@ public class RecipeItem extends ModItem {
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         if (!worldIn.isRemote && entityIn instanceof ServerPlayerEntity && stack.hasTag() && stack.getTag().contains("Id", Constants.NBT.TAG_INT)) {
             int id = stack.getTag().getInt("Id");
-            RecordData data = Cuisine.getServer().getWorld(DimensionType.OVERWORLD).getSavedData().get(() -> new RecordData(id), "cuisine/recipe_" + id);
+            RecordData data = getData(id);
             if (data != null && !data.syncedPlayers.contains(entityIn)) {
                 ServerPlayerEntity player = (ServerPlayerEntity) entityIn;
                 new SSyncRecordPacket(data, id).send(player);
                 data.syncedPlayers.add(player);
             }
         }
+    }
+
+    public static RecordData getData(ItemStack stack) {
+        return getData(NBTHelper.of(stack).getInt("Id"));
+    }
+
+    public static RecordData getData(int id) {
+        return Cuisine.getServer().getWorld(DimensionType.OVERWORLD).getSavedData().get(() -> new RecordData(id), "cuisine/recipe_" + id);
     }
 
     @Override

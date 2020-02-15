@@ -21,6 +21,8 @@ public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
     private Block block = Blocks.AIR;
     @SerializedName("max_stars")
     private int maxStars = 2;
+    @SerializedName("translation_key")
+    private String translationKey;
 
     private CuisineFood() {}
 
@@ -49,12 +51,16 @@ public class CuisineFood extends ForgeRegistryEntry<CuisineFood> {
     }
 
     public String getTranslationKey() {
-        if (getItem() != null) {
-            return getItem().getTranslationKey();
-        } else if (getBlock() != null) {
-            return getBlock().getTranslationKey();
+        if (translationKey == null) {
+            if (getItem() != null) {
+                translationKey = getItem().getTranslationKey();
+            } else if (getBlock() != null) {
+                translationKey = getBlock().getTranslationKey();
+            } else {
+                translationKey = "cuisine.food." + String.valueOf(getRegistryName()).replace(':', '.');
+            }
         }
-        return "cuisine.food." + String.valueOf(getRegistryName()).replace(':', '.');
+        return translationKey;
     }
 
     @Override

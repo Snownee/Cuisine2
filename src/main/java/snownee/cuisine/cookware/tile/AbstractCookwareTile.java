@@ -6,10 +6,13 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -25,8 +28,9 @@ import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.api.tile.KitchenTile;
 import snownee.cuisine.base.BaseModule;
+import snownee.cuisine.cookware.container.OvenContainer;
 
-abstract public class AbstractCookwareTile extends KitchenTile {
+abstract public class AbstractCookwareTile extends KitchenTile implements ITickableTileEntity {
 
     protected CuisineRecipe cachedLastRecipe;
     private final Cookware cookware;
@@ -49,8 +53,18 @@ abstract public class AbstractCookwareTile extends KitchenTile {
         }
     }
 
+    public boolean canCook() {
+        return getOutputHandler().getStackInSlot(0).isEmpty();
+    }
+
     @LogicalServerSide
-    public boolean cookAsItem(Entity entity) {
+    public boolean cookAsItem(@Nullable Entity entity, boolean insertEntityInventory) {
+        if (isRemoved()) {
+            return false;
+        }
+        if (!canCook() && !insertEntityInventory || entity == null || !entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).isPresent()) {
+            return false;
+        }
         FoodBuilder<?> builder = foodBuilder(this, entity);
         CuisineRecipe recipe = cook(builder, entity);
         if (recipe == null) {
@@ -61,51 +75,53 @@ abstract public class AbstractCookwareTile extends KitchenTile {
         if (result.isEmpty()) {
             return false;
         }
-        IItemHandlerModifiable output = getOutputHandler();
+        IItemHandler output = getOutputHandler();
         if (!ItemHandlerHelper.insertItemStacked(output, result, true).isEmpty()) {
-            return false;
+            if (!insertEntityInventory || entity == null) {
+                return false;
+            }
+            IItemHandler itemHandler = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
+            if (itemHandler == null || !ItemHandlerHelper.insertItemStacked(itemHandler, result, true).isEmpty()) {
+                return false;
+            }
+            output = itemHandler;
         }
-        IItemHandlerModifiable input = getInputHandler();
+        IItemHandler input = getInputHandler();
         for (int i = 0; i < input.getSlots(); i++) {
             ItemStack stack = input.getStackInSlot(i);
             ItemStack container = stack.getContainerItem();
             if (!stack.isEmpty() && !ItemHandlerHelper.canItemStacksStack(stack, container)) {
-                stack.shrink(1);
-                if (stack.isEmpty()) {
-                    input.setStackInSlot(i, container);
-                } else {
-                    input.setStackInSlot(i, stack);
-                    if (!container.isEmpty()) {
-                        if (entity != null) {
-                            if (entity instanceof PlayerEntity) {
-                                ItemHandlerHelper.giveItemToPlayer((PlayerEntity) entity, container);
-                                container = ItemStack.EMPTY;
-                            } else {
-                                IItemHandler handler = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
-                                if (handler != null) {
-                                    container = ItemHandlerHelper.insertItemStacked(handler, container, false);
-                                }
+                input.extractItem(i, 1, false);
+                container = input.insertItem(i, container, false);
+                if (!container.isEmpty()) {
+                    if (entity != null) {
+                        if (insertEntityInventory || entity instanceof PlayerEntity) {
+                            ItemHandlerHelper.giveItemToPlayer((PlayerEntity) entity, container);
+                            container = ItemStack.EMPTY;
+                        } else {
+                            IItemHandler handler = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
+                            if (handler != null) {
+                                container = ItemHandlerHelper.insertItemStacked(handler, container, false);
                             }
                         }
-                        if (container != null) {
-                            Block.spawnAsEntity(world, pos, container);
-                        }
+                    }
+                    if (container != null) {
+                        Block.spawnAsEntity(world, pos, container);
                     }
                 }
             }
         }
         IItemHandler paperHandler = getPaperHandler();
-        IItemHandler recipeHandler = getRecipeHandler();
+        IItemHandlerModifiable recipeHandler = getRecipeHandler();
         /* off */
         if (paperHandler != null
                 && recipeHandler != null
-                && recipeHandler.getSlots() > 0
-                && IntStream.range(0, recipeHandler.getSlots()).mapToObj(recipeHandler::getStackInSlot).anyMatch(ItemStack::isEmpty)) {
+                && recipeHandler.getStackInSlot(0).isEmpty()) {
             for (int i = 0; i < paperHandler.getSlots(); i++) {
                 /* on */
                 if (!paperHandler.getStackInSlot(i).isEmpty()) {
                     ItemStack recipeItem = BaseModule.RECIPE.make(builder, recipe);
-                    ItemHandlerHelper.insertItem(recipeHandler, recipeItem, false);
+                    recipeHandler.setStackInSlot(i, recipeItem);
                     paperHandler.extractItem(i, 1, false);
                 }
             }
@@ -118,7 +134,7 @@ abstract public class AbstractCookwareTile extends KitchenTile {
     abstract public IItemHandlerModifiable getInputHandler();
 
     @Nullable
-    abstract public IItemHandler getRecipeHandler();
+    abstract public IItemHandlerModifiable getRecipeHandler();
 
     @Nullable
     abstract public IItemHandler getPaperHandler();
@@ -166,6 +182,28 @@ abstract public class AbstractCookwareTile extends KitchenTile {
 
     public Cookware getCookware() {
         return cookware;
+    }
+
+    protected OvenContainer cookingPlayer;
+
+    @Override
+    public void tick() {
+        if (!world.isRemote && cookingPlayer != null) {
+            cookingPlayer.tick();
+        }
+    }
+
+    public void stopCooking() {
+        cookingPlayer = null;
+    }
+
+    public void startCooking(OvenContainer cookingPlayer) {
+        Preconditions.checkArgument(this.cookingPlayer == null || this.cookingPlayer == cookingPlayer);
+        this.cookingPlayer = cookingPlayer;
+    }
+
+    public PlayerEntity getCookingPlayer() {
+        return cookingPlayer == null ? null : cookingPlayer.player;
     }
 
 }

@@ -1,5 +1,6 @@
 package snownee.cuisine.cookware.tile;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,6 +19,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import snownee.cuisine.api.CuisineAPI;
@@ -34,6 +36,79 @@ public class OvenTile extends AbstractCookwareTile implements INamedContainerPro
         public boolean isItemValid(int slot, ItemStack stack) {
             return CuisineAPI.findMaterial(stack).isPresent() || CuisineAPI.findFood(stack).isPresent();
         }
+
+        @Override
+        @Nonnull
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            if (stack.isEmpty())
+                return ItemStack.EMPTY;
+
+            if (!isItemValid(slot, stack))
+                return stack;
+
+            validateSlotIndex(slot);
+
+            ItemStack existing = this.stacks.get(slot);
+
+            int limit = getStackLimit(slot, stack);
+
+            if (!existing.isEmpty()) {
+                if (!ItemHandlerHelper.canItemStacksStack(stack, existing))
+                    return stack;
+
+                limit -= existing.getCount();
+            }
+
+            if (limit <= 0)
+                return stack;
+
+            boolean reachedLimit = stack.getCount() > limit;
+
+            if (!simulate) {
+                if (existing.isEmpty()) {
+                    this.stacks.set(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+                    cachedLastRecipe = null; // cuisine patch
+                } else {
+                    existing.grow(reachedLimit ? limit : stack.getCount());
+                }
+                onContentsChanged(slot);
+            }
+
+            return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (amount == 0)
+                return ItemStack.EMPTY;
+
+            validateSlotIndex(slot);
+
+            ItemStack existing = this.stacks.get(slot);
+
+            if (existing.isEmpty())
+                return ItemStack.EMPTY;
+
+            int toExtract = Math.min(amount, existing.getMaxStackSize());
+
+            if (existing.getCount() <= toExtract) {
+                if (!simulate) {
+                    this.stacks.set(slot, ItemStack.EMPTY);
+                    cachedLastRecipe = null; // cuisine patch
+                    onContentsChanged(slot);
+                }
+                return existing;
+            } else {
+                if (!simulate) {
+                    this.stacks.set(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.getCount() - toExtract));
+                    onContentsChanged(slot);
+                }
+
+                return ItemHandlerHelper.copyStackWithSize(existing, toExtract);
+            }
+        }
+
     };
     private final ExtractOnlyItemHandler<ItemStackHandler> outputHandler = new ExtractOnlyItemHandler<>(new ItemStackHandler());
     private final LazyOptional<ItemStackHandler> inputProvider = LazyOptional.of(() -> inputHandler);
@@ -141,7 +216,7 @@ public class OvenTile extends AbstractCookwareTile implements INamedContainerPro
     }
 
     @Override
-    public IItemHandler getRecipeHandler() {
+    public IItemHandlerModifiable getRecipeHandler() {
         return recipeHandler;
     }
 
