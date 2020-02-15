@@ -69,6 +69,26 @@ public class ResearchInfoImpl implements ResearchInfo {
     }
 
     @Override
+    public void addStar(Material material, int star) {
+        materialStars.addTo(material.getRegistryName(),star);
+    }
+
+    @Override
+    public void addStar(CuisineFood food, int star) {
+        foodStars.addTo(food.getRegistryName(),star);
+    }
+
+    @Override
+    public void addProgress(Material material, int progress) {
+        materialProgresses.addTo(material.getRegistryName(),progress);
+    }
+
+    @Override
+    public void addProgress(CuisineFood food, int progress) {
+        foodProgresses.addTo(food.getRegistryName(),progress);
+    }
+
+    @Override
     public void read(CompoundNBT data) {
         ListNBT list = data.getList("MaterialProgresses", 10);
         for (INBT i : list) {
@@ -98,40 +118,25 @@ public class ResearchInfoImpl implements ResearchInfo {
 
     @Override
     public CompoundNBT write(CompoundNBT data) {
-        ListNBT list1 = new ListNBT();
-        for (ResourceLocation material : materialProgresses.keySet()) {
-            CompoundNBT compoundNBT = new CompoundNBT();
-            compoundNBT.putString("k", material.toString());
-            compoundNBT.putInt("v", materialProgresses.getInt(material));
-            list1.add(compoundNBT);
-        }
-        data.put("MaterialProgresses", list1);
-        ListNBT list2 = new ListNBT();
-        for (ResourceLocation material : materialStars.keySet()) {
-            CompoundNBT compoundNBT = new CompoundNBT();
-            compoundNBT.putString("k", (material.toString()));
-            compoundNBT.putInt("v", materialStars.getInt(material));
-        }
-        ListNBT list3 = new ListNBT();
-        data.put("MaterialStars", list2);
-
-        for (ResourceLocation food : foodProgresses.keySet()) {
-            CompoundNBT compoundNBT = new CompoundNBT();
-            compoundNBT.putString("k", food.toString());
-            compoundNBT.putInt("v", foodProgresses.getInt(food));
-        }
-        ListNBT list4 = new ListNBT();
-        data.put("FoodProgresses", list3);
-
-        for (ResourceLocation food : foodStars.keySet()) {
-            CompoundNBT compoundNBT = new CompoundNBT();
-            compoundNBT.putString("k", food.toString());
-
-            compoundNBT.putInt("v", foodStars.getInt(food));
-        }
-        data.put("FoodStars", list4);
-
+        data.put("MaterialProgresses", writeHelp(materialProgresses));
+        data.put("MaterialStars", writeHelp(materialStars));
+        data.put("FoodProgresses", writeHelp(foodProgresses));
+        data.put("FoodStars", writeHelp(foodStars));
         return data;
+    }
+
+    private ListNBT writeHelp(Object2IntOpenHashMap<ResourceLocation> foodStars) {
+        ListNBT list = new ListNBT();
+        for (ResourceLocation food : foodStars.keySet()) {
+            int r = foodProgresses.getInt(food);
+            if (r>0){
+                CompoundNBT compoundNBT = new CompoundNBT();
+                compoundNBT.putString("k", food.toString());
+                compoundNBT.putInt("v",r );
+                list.add(compoundNBT);
+            }
+        }
+        return list;
     }
 
 }

@@ -22,6 +22,14 @@ public interface ResearchInfo {
 
     void setProgress(CuisineFood food, int progress);
 
+    void addStar(Material material, int star);
+
+    void addStar(CuisineFood food, int star);
+
+    void addProgress(Material material, int progress);
+
+    void addProgress(CuisineFood food, int progress);
+
     default void read(CompoundNBT data){
 
     }
@@ -64,6 +72,26 @@ public interface ResearchInfo {
 
         @Override
         public void setProgress(CuisineFood food, int progress) {}
+
+        @Override
+        public void addStar(Material material, int star) {
+
+        }
+
+        @Override
+        public void addStar(CuisineFood food, int star) {
+
+        }
+
+        @Override
+        public void addProgress(Material material, int progress) {
+
+        }
+
+        @Override
+        public void addProgress(CuisineFood food, int progress) {
+
+        }
     }
 
 }
