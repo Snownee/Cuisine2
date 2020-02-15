@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.internal.Streams;
@@ -11,11 +12,13 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
+import snownee.cuisine.util.Tweaker;
 import snownee.kiwi.util.Util;
 
 public class ForgeRegistryAdapterFactory implements TypeAdapterFactory {
@@ -57,8 +60,17 @@ public class ForgeRegistryAdapterFactory implements TypeAdapterFactory {
                 return null;
             }
             if (json.isJsonObject()) {
-                if (!CraftingHelper.processConditions(json.getAsJsonObject(), "conditions")) {
+                JsonObject object = json.getAsJsonObject();
+                if (!CraftingHelper.processConditions(object, "conditions")) {
                     throw new ConditionsNotMetException();
+                }
+                if (object.has("remove_recipe")) {
+                    Tweaker.disableRecipe(Util.RL(JSONUtils.getString(object, "remove_recipe")));
+                }
+                if (object.has("remove_recipes")) {
+                    for (JsonElement element : object.getAsJsonArray("remove_recipes")) {
+                        Tweaker.disableRecipe(Util.RL(element.getAsString()));
+                    }
                 }
                 return delegate().fromJsonTree(json);
             } else {
