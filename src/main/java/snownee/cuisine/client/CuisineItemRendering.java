@@ -73,7 +73,7 @@ public final class CuisineItemRendering {
 
     private static void renderMapFirstPersonSide(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, float equippedProgress, HandSide handIn, float swingProgress, ItemStack stack) {
         float f = handIn == HandSide.RIGHT ? 1.0F : -1.0F;
-        matrixStackIn.translate((double) (f * 0.125F), -0.125D, 0.0D);
+        matrixStackIn.translate(f * 0.125F, -0.125D, 0.0D);
         if (!MC.player.isInvisible()) {
             matrixStackIn.push();
             matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f * 10.0F));
@@ -82,13 +82,13 @@ public final class CuisineItemRendering {
         }
 
         matrixStackIn.push();
-        matrixStackIn.translate((double) (f * 0.51F), (double) (-0.08F + equippedProgress * -1.2F), -0.75D);
+        matrixStackIn.translate(f * 0.51F, -0.08F + equippedProgress * -1.2F, -0.75D);
         float f1 = MathHelper.sqrt(swingProgress);
         float f2 = MathHelper.sin(f1 * (float) Math.PI);
         float f3 = -0.5F * f2;
         float f4 = 0.4F * MathHelper.sin(f1 * ((float) Math.PI * 2F));
         float f5 = -0.3F * MathHelper.sin(swingProgress * (float) Math.PI);
-        matrixStackIn.translate((double) (f * f3), (double) (f4 - 0.3F * f2), (double) f5);
+        matrixStackIn.translate(f * f3, f4 - 0.3F * f2, f5);
         matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f2 * -45.0F));
         matrixStackIn.rotate(Vector3f.YP.rotationDegrees(f * f2 * -30.0F));
         renderMapFirstPerson(matrixStackIn, bufferIn, combinedLightIn, stack);

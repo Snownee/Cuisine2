@@ -53,7 +53,7 @@ public class OvenScreen extends ContainerScreen<OvenContainer> {
         this.blit(i, j, 0, 0, this.xSize, this.ySize);
 
         this.minecraft.getTextureManager().bindTexture(FURNACE_GUI_TEXTURES);
-        int l = ((OvenContainer) this.container).getCookProgressionScaled();
+        int l = this.container.getCookProgressionScaled();
         if (l > 0) {
             this.blit(i + 89, j + 34, 176, 14, l + 1, 16);
         }

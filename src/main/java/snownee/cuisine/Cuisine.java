@@ -139,7 +139,7 @@ public final class Cuisine implements ICuisineAPI {
 
     @Override
     public ResearchInfo getResearchInfo(Entity entity) {
-        return CoreModule.researchData.get(entity);
+        return CoreModule.getResearchData().get(entity);
     }
 
     @Override

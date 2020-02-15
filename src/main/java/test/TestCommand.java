@@ -1,24 +1,14 @@
 package test;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.GameType;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.kiwi.Kiwi;
-import snownee.kiwi.util.LootDumper;
-
-import java.util.Collections;
-import java.util.UUID;
-import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 public class TestCommand {

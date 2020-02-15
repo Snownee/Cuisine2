@@ -1,18 +1,14 @@
 package snownee.cuisine.data.research;
 
-import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
-import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.ResearchInfo;
 import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.Material;
-
-import java.util.Map;
 
 public class ResearchInfoImpl implements ResearchInfo {
     private final Object2IntOpenHashMap<ResourceLocation> materialStars = new Object2IntOpenHashMap<>();
