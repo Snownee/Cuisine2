@@ -42,7 +42,7 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
 
     @LogicalServerSide
     public boolean matches(FoodBuilder<?> builder) {
-        return builder.getCookware() == getCookware() && rules.stream().allMatch(rule -> rule.test(builder));
+        return CuisineRegistries.RECIPES.containsValue(this) && builder.getCookware() == getCookware() && rules.stream().allMatch(rule -> rule.test(builder));
     }
 
     @Override
