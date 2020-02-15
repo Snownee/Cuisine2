@@ -14,9 +14,12 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.base.block.SpiceRackBlock;
 import snownee.cuisine.base.client.SpiceRackScreen;
@@ -71,4 +74,8 @@ public class BaseModule extends AbstractModule {
         ScreenManager.registerFactory(SPICE_RACK_CONTAINER, SpiceRackScreen::new);
     }
 
+    @Override
+    protected void serverInit(FMLServerStartingEvent event) {
+        Cuisine.getServer().getWorld(DimensionType.OVERWORLD).getSavedData();
+    }
 }

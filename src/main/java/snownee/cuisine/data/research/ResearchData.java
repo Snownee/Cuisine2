@@ -23,6 +23,7 @@ public class ResearchData extends WorldSavedData {
 
     @Override
     public void read(CompoundNBT data) {
+        players.clear();
         ListNBT listNBT = data.getList("ResearchData",10);
         for (INBT i : listNBT){
             CompoundNBT nbt = (CompoundNBT)i;
@@ -55,6 +56,8 @@ public class ResearchData extends WorldSavedData {
     }
 
     public ResearchInfo get(Entity entity) {
+        if (!players.containsKey(entity.getUniqueID()))
+            players.put(entity.getUniqueID(),new ResearchInfoImpl());
         return players.getOrDefault(entity.getUniqueID(),ResearchInfo.Empty.INSTANCE);
     }
 
