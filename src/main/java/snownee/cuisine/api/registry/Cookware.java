@@ -7,17 +7,23 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import snownee.cuisine.cookware.block.CookwareBlock;
+import snownee.cuisine.cookware.tile.CookwareTile;
 
 public class Cookware extends ForgeRegistryEntry<Cookware> {
 
     private ImmutableSet<Block> blocks;
     private int inputSlots = 9;
+    private int cookingTime = 20;
+    private ContainerType<?> container;
+    private TileEntityType<CookwareTile> tileType;
 
-    public Cookware setBlocks(@Nullable TileEntityType<?> tileType, Block... blocks) {
+    public Cookware setBlocks(@Nullable TileEntityType<CookwareTile> tileType, Block... blocks) {
         this.blocks = ImmutableSet.copyOf(blocks);
+        this.tileType = tileType;
         if (tileType != null) {
             for (Block block : this.blocks) {
                 if (block instanceof CookwareBlock) {
@@ -32,13 +38,35 @@ public class Cookware extends ForgeRegistryEntry<Cookware> {
         return blocks;
     }
 
-    public int getInputSlots() {
-        return inputSlots;
+    public TileEntityType<CookwareTile> getTileType() {
+        return tileType;
     }
 
     public Cookware setInputSlots(int inputSlots) {
         this.inputSlots = inputSlots;
         return this;
+    }
+
+    public int getInputSlots() {
+        return inputSlots;
+    }
+
+    public Cookware setCookingTime(int cookingTime) {
+        this.cookingTime = cookingTime;
+        return this;
+    }
+
+    public int getCookingTime() {
+        return cookingTime;
+    }
+
+    public Cookware setContainer(ContainerType<?> container) {
+        this.container = container;
+        return this;
+    }
+
+    public ContainerType<?> getContainer() {
+        return container;
     }
 
     @Override

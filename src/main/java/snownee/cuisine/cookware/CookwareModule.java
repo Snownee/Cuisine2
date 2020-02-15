@@ -14,6 +14,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.cookware.block.CookwareBlock;
 import snownee.cuisine.cookware.client.CookwareScreen;
+import snownee.cuisine.cookware.container.BowlContainer;
 import snownee.cuisine.cookware.container.CookwareContainer;
 import snownee.cuisine.cookware.network.CBeginCookingPacket;
 import snownee.cuisine.cookware.tile.CookwareTile;
@@ -31,25 +32,25 @@ public final class CookwareModule extends AbstractModule {
     @Name("oven")
     public static final Cookware OVEN_TYPE = new Cookware();
     @Name("oven")
-    public static final TileEntityType<CookwareTile> OVEN_TILE = TileEntityType.Builder.create(CookwareModule::createOven, OVEN).build(null);
+    public static final TileEntityType<CookwareTile> OVEN_TILE = TileEntityType.Builder.create(() -> new CookwareTile(OVEN_TYPE), OVEN).build(null);
     @Name("oven")
-    public static final ContainerType<CookwareContainer> OVEN_CONTAINER = new ContainerType<>(CookwareContainer::new);
+    public static final ContainerType<CookwareContainer> OVEN_CONTAINER = new ContainerType<>((id, inv) -> new CookwareContainer(OVEN_TYPE, id, inv));
 
     public static final CookwareBlock SAUCEPAN = new CookwareBlock(blockProp(Material.IRON));
     @Name("saucepan")
     public static final Cookware SAUCEPAN_TYPE = new Cookware();
     @Name("saucepan")
-    public static final TileEntityType<CookwareTile> SAUCEPAN_TILE = TileEntityType.Builder.create(CookwareModule::createSaucepan, SAUCEPAN).build(null);
+    public static final TileEntityType<CookwareTile> SAUCEPAN_TILE = TileEntityType.Builder.create(() -> new CookwareTile(SAUCEPAN_TYPE), SAUCEPAN).build(null);
     @Name("saucepan")
-    public static final ContainerType<CookwareContainer> SAUCEPAN_CONTAINER = new ContainerType<>(CookwareContainer::new);
+    public static final ContainerType<CookwareContainer> SAUCEPAN_CONTAINER = new ContainerType<>((id, inv) -> new CookwareContainer(SAUCEPAN_TYPE, id, inv));
 
     public static final CookwareBlock DRINKRO = new CookwareBlock(blockProp(Material.IRON));
     @Name("drinkro")
     public static final Cookware DRINKRO_TYPE = new Cookware();
     @Name("drinkro")
-    public static final TileEntityType<CookwareTile> DRINKRO_TILE = TileEntityType.Builder.create(CookwareModule::createDrinkro, DRINKRO).build(null);
+    public static final TileEntityType<CookwareTile> DRINKRO_TILE = TileEntityType.Builder.create(() -> new CookwareTile(DRINKRO_TYPE), DRINKRO).build(null);
     @Name("drinkro")
-    public static final ContainerType<CookwareContainer> DRINKRO_CONTAINER = new ContainerType<>(CookwareContainer::new);
+    public static final ContainerType<CookwareContainer> DRINKRO_CONTAINER = new ContainerType<>((id, inv) -> new CookwareContainer(DRINKRO_TYPE, id, inv));
 
     public static final CookwareBlock BOWL = new CookwareBlock(blockProp(Material.WOOD));
     @Name("bowl")
@@ -57,7 +58,7 @@ public final class CookwareModule extends AbstractModule {
     @Name("bowl")
     public static final TileEntityType<CookwareTile> BOWL_TILE = TileEntityType.Builder.create(CookwareModule::createBowl, BOWL).build(null);
     @Name("bowl")
-    public static final ContainerType<CookwareContainer> BOWL_CONTAINER = new ContainerType<>(CookwareContainer::new);
+    public static final ContainerType<CookwareContainer> BOWL_CONTAINER = new ContainerType<>(BowlContainer::new);
 
     @Override
     protected void preInit() {
@@ -66,10 +67,10 @@ public final class CookwareModule extends AbstractModule {
 
     @Override
     protected void init(FMLCommonSetupEvent event) {
-        OVEN_TYPE.setBlocks(OVEN_TILE, OVEN);
-        SAUCEPAN_TYPE.setBlocks(SAUCEPAN_TILE, SAUCEPAN);
-        DRINKRO_TYPE.setBlocks(DRINKRO_TILE, DRINKRO);
-        BOWL_TYPE.setBlocks(BOWL_TILE, BOWL);
+        OVEN_TYPE.setBlocks(OVEN_TILE, OVEN).setContainer(OVEN_CONTAINER);
+        SAUCEPAN_TYPE.setBlocks(SAUCEPAN_TILE, SAUCEPAN).setContainer(SAUCEPAN_CONTAINER);
+        DRINKRO_TYPE.setBlocks(DRINKRO_TILE, DRINKRO).setContainer(DRINKRO_CONTAINER);
+        BOWL_TYPE.setBlocks(BOWL_TILE, BOWL).setContainer(BOWL_CONTAINER);
     }
 
     @Override
@@ -81,38 +82,11 @@ public final class CookwareModule extends AbstractModule {
         ScreenManager.registerFactory(BOWL_CONTAINER, CookwareScreen::new);
     }
 
-    private static CookwareTile createOven() {
-        return new CookwareTile(OVEN_TILE, OVEN_TYPE) {
-            @Override
-            public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
-                return new CookwareContainer(id, playerInventory, this);
-            }
-        };
-    }
-
-    private static CookwareTile createSaucepan() {
-        return new CookwareTile(SAUCEPAN_TILE, SAUCEPAN_TYPE) {
-            @Override
-            public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
-                return new CookwareContainer(id, playerInventory, this);
-            }
-        };
-    }
-
-    private static CookwareTile createDrinkro() {
-        return new CookwareTile(DRINKRO_TILE, DRINKRO_TYPE) {
-            @Override
-            public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
-                return new CookwareContainer(id, playerInventory, this);
-            }
-        };
-    }
-
     private static CookwareTile createBowl() {
-        return new CookwareTile(BOWL_TILE, BOWL_TYPE) {
+        return new CookwareTile(BOWL_TYPE) {
             @Override
             public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
-                return new CookwareContainer(id, playerInventory, this);
+                return new BowlContainer(id, playerInventory, this);
             }
         };
     }

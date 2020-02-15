@@ -7,8 +7,9 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IntReferenceHolder;
+import snownee.cuisine.api.LogicalServerSide;
+import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.base.item.RecipeItem;
-import snownee.cuisine.cookware.CookwareModule;
 import snownee.cuisine.cookware.tile.AbstractCookwareTile;
 import snownee.cuisine.cookware.tile.CookwareTile;
 import snownee.cuisine.data.RecordData;
@@ -16,24 +17,25 @@ import snownee.cuisine.util.ModSlot;
 
 public class CookwareContainer extends Container {
 
+    @LogicalServerSide
     protected AbstractCookwareTile tile;
     public final PlayerEntity player;
     protected int cookTime;
     protected boolean cycle;
+    protected Cookware cookware;
 
-    public static final int COOK_TIME = 20;
-
-    public CookwareContainer(int id, PlayerInventory playerInventory) {
-        this(id, playerInventory, CookwareModule.OVEN_TILE.create().getInventory());
+    public CookwareContainer(Cookware cookware, int id, PlayerInventory playerInventory) {
+        this(cookware, id, playerInventory, cookware.getTileType().create().getInventory());
     }
 
-    public CookwareContainer(int id, PlayerInventory playerInventory, CookwareTile tile) {
-        this(id, playerInventory, tile.getInventory());
+    public CookwareContainer(Cookware cookware, int id, PlayerInventory playerInventory, CookwareTile tile) {
+        this(cookware, id, playerInventory, tile.getInventory());
         this.tile = tile;
     }
 
-    public CookwareContainer(int id, PlayerInventory playerInventory, IInventory inventory) {
-        super(CookwareModule.OVEN_CONTAINER, id);
+    public CookwareContainer(Cookware cookware, int id, PlayerInventory playerInventory, IInventory inventory) {
+        super(cookware.getContainer(), id);
+        this.cookware = cookware;
         this.player = playerInventory.player;
         addSlots(playerInventory, inventory);
     }
@@ -123,7 +125,7 @@ public class CookwareContainer extends Container {
         }
         tile.startCooking(this);
         this.cycle = cycle;
-        cookTime = COOK_TIME;
+        cookTime = cookware.getCookingTime();
     }
 
     public void tick() {
@@ -156,8 +158,9 @@ public class CookwareContainer extends Container {
     }
 
     public int getCookProgressionScaled() {
-        int i = COOK_TIME - cookTime;
-        return COOK_TIME != 0 && cookTime != 0 ? i * 24 / COOK_TIME : 0;
+        int j = cookware.getCookingTime();
+        int i = j - cookTime;
+        return j != 0 && cookTime != 0 ? i * 24 / j : 0;
     }
 
 }

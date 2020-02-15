@@ -3,12 +3,14 @@ package snownee.cuisine.cookware.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
@@ -24,10 +26,11 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.base.item.RecipeItem;
+import snownee.cuisine.cookware.container.CookwareContainer;
 import snownee.cuisine.util.ExtractOnlyItemHandler;
 import snownee.cuisine.util.InvHandlerWrapper;
 
-public abstract class CookwareTile<C extends CookwareTile<C>> extends AbstractCookwareTile implements INamedContainerProvider {
+public class CookwareTile<C extends CookwareTile<C>> extends AbstractCookwareTile implements INamedContainerProvider {
 
     private final ItemStackHandler inputHandler;
     private final ExtractOnlyItemHandler<ItemStackHandler> outputHandler = new ExtractOnlyItemHandler<>(new ItemStackHandler());
@@ -52,8 +55,8 @@ public abstract class CookwareTile<C extends CookwareTile<C>> extends AbstractCo
     };
     private final LazyOptional<IItemHandlerModifiable> unsidedProvider;
 
-    public CookwareTile(TileEntityType<?> tileEntityType, Cookware cookware) {
-        super(tileEntityType, cookware);
+    public CookwareTile(Cookware cookware) {
+        super(cookware.getTileType(), cookware);
         inputHandler = new ItemStackHandler(cookware.getInputSlots()) {
             @Override
             public boolean isItemValid(int slot, ItemStack stack) {
@@ -145,6 +148,11 @@ public abstract class CookwareTile<C extends CookwareTile<C>> extends AbstractCo
     @Override
     public ITextComponent getDisplayName() {
         return new TranslationTextComponent(Util.makeTranslationKey("container", getCookware().getRegistryName()));
+    }
+
+    @Override
+    public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+        return new CookwareContainer(getCookware(), id, playerInventory, this);
     }
 
     public IInventory getInventory() {
