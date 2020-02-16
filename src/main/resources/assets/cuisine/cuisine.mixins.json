@@ -6,8 +6,7 @@
   "mixins": [
     "MixinLivingEntity",
     "MixinFoodStats",
-    "MixinRecipeManager",
-    "MixinYggdrasilMinecraftSessionService"
+    "MixinRecipeManager"
   ],
   "injectors": {
     "defaultRequire": 1
