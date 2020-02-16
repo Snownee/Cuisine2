@@ -4,14 +4,13 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
+import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
@@ -44,21 +43,15 @@ public class CuisineNetworkTagManager implements IFutureReloadListener {
 
     @Override
     public CompletableFuture<Void> reload(IFutureReloadListener.IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
-        /* off */
-        return stage
-                .markCompleteAwaitingOthers((Void) null)
-                .thenCompose($ -> spices.reload(resourceManager, backgroundExecutor))
-                .thenCompose($ -> materials.reload(resourceManager, backgroundExecutor)
-                        .thenCombine(CompletableFuture.completedFuture($), Pair::of))
-                .thenAccept(wtf -> {
-                    reloadProfiler.startSection("Loading " + wtf.toString());
-                    this.materials.registerAll(wtf.getLeft());
-                    this.spices.registerAll(wtf.getRight());
-                    MaterialTags.setCollection(this.materials);
-                    SpiceTags.setCollection(this.spices);
-                    reloadProfiler.endSection();
-                });
-        /* on */
+        try {
+            this.materials.registerAll(materials.reload(resourceManager, backgroundExecutor).get());
+            this.spices.registerAll(spices.reload(resourceManager, backgroundExecutor).get());
+            MaterialTags.setCollection(this.materials);
+            SpiceTags.setCollection(this.spices);
+        } catch (Exception e) {
+            Cuisine.logger.catching(e);
+        }
+        return CompletableFuture.completedFuture(null);
     }
 
     public static class ReloadResults {

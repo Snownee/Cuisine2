@@ -278,7 +278,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         return Registry.FLUID.getId(stack.getFluid());
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({ "deprecation", "unused" })
     private static Fluid unpack(int packedFluid) {
         return packedFluid == 0 ? Fluids.EMPTY : Registry.FLUID.getByValue(packedFluid);
     }

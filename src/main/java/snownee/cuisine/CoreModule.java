@@ -2,6 +2,7 @@ package snownee.cuisine;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -14,7 +15,8 @@ import net.minecraft.command.arguments.IArgumentSerializer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.SimpleReloadableResourceManager;
+import net.minecraft.tags.NetworkTagManager;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -142,13 +144,24 @@ public final class CoreModule extends AbstractModule {
             foodManager = new CuisineDataManager("cuisine_food", CuisineRegistries.FOODS).setCallback(CoreModule::buildFoodMap);
             recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES).setVerifier(CuisineRecipe::validate);
         }
-        IReloadableResourceManager manager = event.getServer().getResourceManager();
+        SimpleReloadableResourceManager manager = (SimpleReloadableResourceManager) event.getServer().getResourceManager();
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, materialManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, spiceManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, foodManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.TAG, networkTagManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.RECIPE, recipeManager);
-        manager.addReloadListener(DeferredReloadListener.INSTANCE);
+        NetworkTagManager tagManager = Cuisine.server.getNetworkTagManager();
+        addAfter(manager.reloadListeners, tagManager, DeferredReloadListener.INSTANCE);
+        addAfter(manager.initTaskQueue, tagManager, DeferredReloadListener.INSTANCE);
+    }
+
+    private static <T> void addAfter(List<T> listeners, T listener, T add) {
+        for (int i = 0; i < listeners.size(); i++) {
+            if (listeners.get(i) == listener) {
+                listeners.add(i + 1, add);
+                break;
+            }
+        }
     }
 
     //Snownee: will we keep the insert order?
