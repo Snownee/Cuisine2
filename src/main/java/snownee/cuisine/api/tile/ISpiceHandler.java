@@ -1,11 +1,8 @@
 package snownee.cuisine.api.tile;
 
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import snownee.cuisine.api.multiblock.KitchenMultiblock;
 
-public interface ISpiceHandler extends IItemHandler {
+public interface ISpiceHandler extends IMasterHandler<KitchenMultiblock>, IItemHandler {
 
-    public void addSubHandler(ItemStackHandler handler);
-
-    public void removeSubHandler(ItemStackHandler handler);
 }

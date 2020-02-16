@@ -8,29 +8,14 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.IItemHandler;
+import snownee.cuisine.api.multiblock.KitchenMultiblock;
 import snownee.cuisine.api.tile.ISpiceHandler;
 import snownee.cuisine.base.item.SpiceBottleItem;
 
 public class SpiceHandler implements ISpiceHandler {
-    private final LinkedList<ItemStackHandler> handlers = Lists.newLinkedList();
+    private final LinkedList<IItemHandler> handlers = Lists.newLinkedList();
     private int slotCount;
-
-    @Override
-    public void addSubHandler(ItemStackHandler handler) {
-        if (handlers.contains(handler)) {
-            return;
-        }
-        handlers.add(handler);
-        slotCount += handler.getSlots();
-    }
-
-    @Override
-    public void removeSubHandler(ItemStackHandler handler) {
-        if (handlers.remove(handler)) {
-            slotCount -= handler.getSlots();
-        }
-    }
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
@@ -45,12 +30,12 @@ public class SpiceHandler implements ISpiceHandler {
         return slotCount + 1;
     }
 
-    private Pair<ItemStackHandler, Integer> getLocalSlot(int slot) {
+    private Pair<IItemHandler, Integer> getLocalSlot(int slot) {
         if (slot < 0 || slot >= slotCount) {
             throw new RuntimeException("Slot " + slot + " not in valid range - [0," + slotCount + ")");
         }
         int i = 0;
-        for (ItemStackHandler handler : handlers) {
+        for (IItemHandler handler : handlers) {
             if (i + handler.getSlots() > slot) {
                 return Pair.of(handler, slot - i);
             }
@@ -64,7 +49,7 @@ public class SpiceHandler implements ISpiceHandler {
         if (slot == slotCount) {
             return ItemStack.EMPTY;
         }
-        Pair<ItemStackHandler, Integer> pair = getLocalSlot(slot);
+        Pair<IItemHandler, Integer> pair = getLocalSlot(slot);
         return pair.getLeft().getStackInSlot(pair.getRight());
     }
 
@@ -90,7 +75,7 @@ public class SpiceHandler implements ISpiceHandler {
         if (slot == slotCount) {
             return stack;
         }
-        Pair<ItemStackHandler, Integer> pair = getLocalSlot(slot);
+        Pair<IItemHandler, Integer> pair = getLocalSlot(slot);
         return pair.getLeft().insertItem(pair.getRight(), stack, simulate);
     }
 
@@ -99,7 +84,7 @@ public class SpiceHandler implements ISpiceHandler {
         if (slot == slotCount) {
             return ItemStack.EMPTY;
         }
-        Pair<ItemStackHandler, Integer> pair = getLocalSlot(slot);
+        Pair<IItemHandler, Integer> pair = getLocalSlot(slot);
         return pair.getLeft().extractItem(pair.getRight(), amount, simulate);
     }
 
@@ -109,7 +94,25 @@ public class SpiceHandler implements ISpiceHandler {
         if (slot == slotCount) {
             return Items.AIR.getMaxStackSize();
         }
-        Pair<ItemStackHandler, Integer> pair = getLocalSlot(slot);
+        Pair<IItemHandler, Integer> pair = getLocalSlot(slot);
         return pair.getLeft().getSlotLimit(pair.getRight());
+    }
+
+    @Override
+    public void addMultiblock(KitchenMultiblock multiblock) {
+        IItemHandler handler = multiblock.x;
+        if (handler == null || handlers.contains(handler)) {
+            return;
+        }
+        handlers.add(handler);
+        slotCount += handler.getSlots();
+    }
+
+    @Override
+    public void removeMultiblock(KitchenMultiblock multiblock) {
+        IItemHandler handler = multiblock.x;
+        if (handlers.remove(handler)) {
+            slotCount -= handler.getSlots();
+        }
     }
 }

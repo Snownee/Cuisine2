@@ -15,6 +15,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import snownee.cuisine.api.tile.KitchenTile;
 import snownee.cuisine.base.BaseModule;
@@ -57,6 +58,11 @@ public class SpiceRackTile extends KitchenTile implements INamedContainerProvide
 
     public IInventory getInventory() {
         return new InvHandlerWrapper(itemHandler);
+    }
+
+    @Override
+    protected IItemHandler getItemHandler() {
+        return itemHandler;
     }
 
     @Override

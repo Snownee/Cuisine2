@@ -25,34 +25,39 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.event.TickEvent.Phase;
 import snownee.cuisine.api.CuisineCapabilities;
+import snownee.cuisine.api.tile.IMasterHandler;
 import snownee.cuisine.base.block.SpiceRackBlock;
 import snownee.kiwi.schedule.Scheduler;
 import snownee.kiwi.schedule.impl.SimpleWorldTask;
 
-public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<CompoundNBT> {
+public abstract class ChainMultiblock<T extends IMasterHandler, X> implements Supplier<T>, INBTSerializable<CompoundNBT> {
 
     public static final int MAX_BLOCKS = 5;
 
     protected TileEntity tile;
     @Nullable
-    protected LazyOptional<T> tCap;
+    protected LazyOptional<T> handlerCap;
     @Nullable
-    protected ChainMultiblock<T> master;
+    protected ChainMultiblock<T, X> master;
     @Nullable
-    public HashMap<BlockPos, Supplier<ChainMultiblock<T>>> all;
+    public HashMap<BlockPos, Supplier<ChainMultiblock<T, X>>> all;
+    @Nullable
+    public final X x;
 
-    public ChainMultiblock(TileEntity tile, NonNullSupplier<T> ctxFactory, CompoundNBT compound) {
+    public ChainMultiblock(TileEntity tile, CompoundNBT compound, X x) {
         this.tile = tile;
+        this.x = x;
         if (compound == null) {
             init();
         } else {
             deserializeNBT(compound);
         }
         if (all == null) {
-            tCap = LazyOptional.of(ctxFactory);
+            T hanlder = createNewHandler();
+            hanlder.addMultiblock(this);
+            handlerCap = LazyOptional.of(() -> hanlder);
         }
     }
 
@@ -64,7 +69,7 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
             if (neighbor == null) {
                 continue;
             }
-            ChainMultiblock<T> multiblock = neighbor.getCapability(CuisineCapabilities.MULTIBLOCK).orElse(null);
+            ChainMultiblock<T, X> multiblock = neighbor.getCapability(CuisineCapabilities.MULTIBLOCK).orElse(null);
             if (multiblock != null) {
                 multiblock = multiblock.getMaster();
                 if (master == null || multiblock == master) {
@@ -93,6 +98,7 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
         if (multiblock == this) {
             all = Maps.newHashMap();
             master = null;
+            handlerCap = LazyOptional.of(this::createNewHandler);
         } else {
             if (multiblock.all.size() >= MAX_BLOCKS) {
                 destory();
@@ -100,6 +106,7 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
             }
             all = null;
             master = multiblock;
+            handlerCap = null;
         }
         addSelf();
         // for testing:
@@ -113,9 +120,10 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
     }
 
     private void addSelf() {
-        ChainMultiblock<T> master = getMaster();
+        ChainMultiblock<T, X> master = getMaster();
         if (tile.hasWorld() && master.all != null && !master.all.containsKey(tile.getPos())) {
             master.all.put(tile.getPos(), () -> this);
+            getCap().orElse(null).addMultiblock(this);
         }
     }
 
@@ -124,33 +132,40 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
     }
 
     @Nonnull
-    public ChainMultiblock<T> getMaster() {
+    public ChainMultiblock<T, X> getMaster() {
         return isMaster() ? this : master;
     }
 
     public void remove() {
-        if (getMaster().all != null && getMaster().all.size() > 1) {
+        if (getMaster().all != null) {
             getMaster().all.remove(tile.getPos());
-            Map<BlockPos, ChainMultiblock> map = Maps.newHashMap();
-            getMaster().all.forEach((k, v) -> map.put(k, v.get()));
-            Set<ChainMultiblock> origins = Sets.newLinkedHashSet();
-            if (!isMaster()) {
-                origins.add(master);
-            }
-            for (Direction direction : Direction.VALUES) {
-                BlockPos pos = tile.getPos().offset(direction);
-                if (map.containsKey(pos)) {
-                    origins.add(map.get(pos));
+            if (getMaster().all.size() > 1) {
+                getCap().ifPresent(handler -> handler.removeMultiblock(this));
+                Map<BlockPos, ChainMultiblock> map = Maps.newHashMap();
+                getMaster().all.forEach((k, v) -> map.put(k, v.get()));
+                Set<ChainMultiblock> origins = Sets.newLinkedHashSet();
+                if (!isMaster()) {
+                    origins.add(master);
                 }
-            }
-            if (origins.size() > 1 || !origins.contains(master)) {
-                Set<BlockPos> added = Sets.newHashSet();
-                for (ChainMultiblock origin : origins) {
-                    if (!added.contains(origin.tile.getPos())) {
-                        origin.search(null, origin, map, added);
+                for (Direction direction : Direction.VALUES) {
+                    BlockPos pos = tile.getPos().offset(direction);
+                    if (map.containsKey(pos)) {
+                        origins.add(map.get(pos));
+                    }
+                }
+                if (origins.size() > 1 || !origins.contains(master)) {
+                    Set<BlockPos> added = Sets.newHashSet();
+                    for (ChainMultiblock origin : origins) {
+                        if (!added.contains(origin.tile.getPos())) {
+                            origin.search(null, origin, map, added);
+                        }
                     }
                 }
             }
+        }
+        if (handlerCap != null) {
+            handlerCap.invalidate();
+            handlerCap = null;
         }
         tile = null;
     }
@@ -186,7 +201,7 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
         CompoundNBT data = new CompoundNBT();
         if (isMaster()) {
             ListNBT list = new ListNBT();
-            for (Entry<BlockPos, Supplier<ChainMultiblock<T>>> e : all.entrySet()) {
+            for (Entry<BlockPos, Supplier<ChainMultiblock<T, X>>> e : all.entrySet()) {
                 CompoundNBT element = NBTUtil.writeBlockPos(e.getKey());
                 list.add(element);
             }
@@ -205,7 +220,7 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
         for (INBT e : list) {
             CompoundNBT element = (CompoundNBT) e;
             BlockPos pos = NBTUtil.readBlockPos(element);
-            Supplier<ChainMultiblock<T>> multiblock = Lazy.of(() -> {
+            Supplier<ChainMultiblock<T, X>> multiblock = Lazy.of(() -> {
                 TileEntity tile = this.tile.getWorld().getTileEntity(pos);
                 if (tile != null) {
                     return tile.getCapability(CuisineCapabilities.MULTIBLOCK).orElse(null);
@@ -235,13 +250,15 @@ public class ChainMultiblock<T> implements Supplier<T>, INBTSerializable<Compoun
         }));
     }
 
+    protected abstract T createNewHandler();
+
     @Override
     public T get() {
-        return getMaster().tCap.orElse(null);
+        return getMaster().handlerCap.orElse(null);
     }
 
     public LazyOptional<T> getCap() {
-        return getMaster().tCap;
+        return getMaster().handlerCap;
     }
 
 }

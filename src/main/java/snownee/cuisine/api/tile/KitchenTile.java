@@ -5,16 +5,16 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import snownee.cuisine.api.CuisineAPI;
+import net.minecraftforge.items.IItemHandler;
 import snownee.cuisine.api.CuisineCapabilities;
-import snownee.cuisine.api.multiblock.ChainMultiblock;
+import snownee.cuisine.api.multiblock.KitchenMultiblock;
 import snownee.kiwi.tile.TextureTile;
 import snownee.kiwi.util.NBTHelper;
 
 public abstract class KitchenTile extends TextureTile {
 
-    protected ChainMultiblock<ISpiceHandler> multiblock;
-    protected LazyOptional<ChainMultiblock<ISpiceHandler>> multiblockOptional;
+    protected KitchenMultiblock multiblock;
+    protected LazyOptional<KitchenMultiblock> multiblockOptional;
 
     public KitchenTile(TileEntityType<?> tileEntityTypeIn, String... textureKeys) {
         super(tileEntityTypeIn, textureKeys);
@@ -29,7 +29,7 @@ public abstract class KitchenTile extends TextureTile {
     public void read(CompoundNBT compound) {
         NBTHelper data = NBTHelper.of(compound);
         if (world == null) {
-            multiblock = new ChainMultiblock(this, CuisineAPI::newSpiceHandler, data.getTag("Multiblock"));
+            multiblock = new KitchenMultiblock(this, data.getTag("Multiblock"), getItemHandler());
         }
         super.read(compound);
     }
@@ -65,7 +65,7 @@ public abstract class KitchenTile extends TextureTile {
         super.onLoad();
         if (!world.isRemote) {
             if (multiblock == null) {
-                multiblock = new ChainMultiblock(this, CuisineAPI::newSpiceHandler, null);
+                multiblock = new KitchenMultiblock(this, null, getItemHandler());
             } else {
                 multiblock.onLoad();
             }
@@ -73,6 +73,10 @@ public abstract class KitchenTile extends TextureTile {
         if (multiblock != null) {
             multiblockOptional = LazyOptional.of(() -> multiblock);
         }
+    }
+
+    protected IItemHandler getItemHandler() {
+        return null;
     }
 
     @Override

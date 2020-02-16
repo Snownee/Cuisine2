@@ -114,13 +114,13 @@ public final class CuisineCommand {
         return star;
     }
 
-    private static int hungry(CommandContext<CommandSource> ctx) {
+    private static int hungry(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
         try {
             FoodStats stats = ctx.getSource().asPlayer().getFoodStats();
             stats.setFoodLevel(2);
             stats.setFoodSaturationLevel(0);
         } catch (CommandSyntaxException e) {
-            return 0;
+            throw e;
         }
         return 1;
     }
