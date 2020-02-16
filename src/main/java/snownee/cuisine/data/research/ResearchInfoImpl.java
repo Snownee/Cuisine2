@@ -10,6 +10,8 @@ import snownee.cuisine.api.ResearchInfo;
 import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.Material;
 
+import static snownee.cuisine.CoreModule.makeResearchDataDirty;
+
 public class ResearchInfoImpl implements ResearchInfo {
     private final Object2IntOpenHashMap<ResourceLocation> materialStars = new Object2IntOpenHashMap<>();
     private final Object2IntOpenHashMap<ResourceLocation> foodStars = new Object2IntOpenHashMap<>();
@@ -42,6 +44,8 @@ public class ResearchInfoImpl implements ResearchInfo {
             materialStars.removeInt(material.getRegistryName());
         else
             materialStars.put(material.getRegistryName(), star);
+        makeResearchDataDirty();
+
     }
 
     @Override
@@ -50,6 +54,8 @@ public class ResearchInfoImpl implements ResearchInfo {
             foodStars.removeInt(food.getRegistryName());
         else
             foodStars.put(food.getRegistryName(), star);
+        makeResearchDataDirty();
+
     }
 
     @Override
@@ -58,6 +64,8 @@ public class ResearchInfoImpl implements ResearchInfo {
             materialProgresses.removeInt(material.getRegistryName());
         else
             materialProgresses.put(material.getRegistryName(), progress);
+        makeResearchDataDirty();
+
     }
 
     @Override
@@ -66,26 +74,35 @@ public class ResearchInfoImpl implements ResearchInfo {
             foodProgresses.removeInt(food.getRegistryName());
         else
             foodProgresses.put(food.getRegistryName(), progress);
+        makeResearchDataDirty();
     }
 
     @Override
     public void addStar(Material material, int star) {
         materialStars.addTo(material.getRegistryName(),star);
+        makeResearchDataDirty();
+
     }
 
     @Override
     public void addStar(CuisineFood food, int star) {
         foodStars.addTo(food.getRegistryName(),star);
+        makeResearchDataDirty();
+
     }
 
     @Override
     public void addProgress(Material material, int progress) {
         materialProgresses.addTo(material.getRegistryName(),progress);
+        makeResearchDataDirty();
+
     }
 
     @Override
     public void addProgress(CuisineFood food, int progress) {
         foodProgresses.addTo(food.getRegistryName(),progress);
+        makeResearchDataDirty();
+
     }
 
     @Override

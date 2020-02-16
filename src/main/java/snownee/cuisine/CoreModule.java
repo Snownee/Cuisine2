@@ -71,7 +71,7 @@ public final class CoreModule extends AbstractModule {
 
     static CuisineNetworkTagManager networkTagManager;
 
-    private static ResearchData researchData = new ResearchData();
+    private static ResearchData researchData;
 
     public CoreModule() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -142,6 +142,7 @@ public final class CoreModule extends AbstractModule {
             foodManager = new CuisineDataManager("cuisine_food", CuisineRegistries.FOODS).setCallback(CoreModule::buildFoodMap);
             recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES).setVerifier(CuisineRecipe::validate);
         }
+        researchData = new ResearchData();
         IReloadableResourceManager manager = event.getServer().getResourceManager();
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, materialManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, spiceManager);
@@ -243,5 +244,9 @@ public final class CoreModule extends AbstractModule {
 
     public static ResearchData getResearchData() {
         return Cuisine.getServer().getWorld(DimensionType.OVERWORLD).getSavedData().getOrCreate(() -> researchData, researchData.getName());
+    }
+
+    public static void makeResearchDataDirty(){
+        researchData.markDirty();
     }
 }
