@@ -50,9 +50,7 @@ public class ResearchData extends WorldSavedData {
 
     @Override
     public void save(File fileIn) {
-        markDirty(); // for testing
-
-        super.save(new File("cuisine.dat"));
+        super.save(fileIn);
     }
 
     public ResearchInfo get(Entity entity) {
