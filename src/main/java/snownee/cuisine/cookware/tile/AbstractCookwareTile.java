@@ -28,7 +28,7 @@ import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.api.tile.KitchenTile;
 import snownee.cuisine.base.BaseModule;
-import snownee.cuisine.cookware.container.OvenContainer;
+import snownee.cuisine.cookware.container.CookwareContainer;
 
 abstract public class AbstractCookwareTile extends KitchenTile implements ITickableTileEntity {
 
@@ -184,7 +184,7 @@ abstract public class AbstractCookwareTile extends KitchenTile implements ITicka
         return cookware;
     }
 
-    protected OvenContainer cookingPlayer;
+    protected CookwareContainer cookingPlayer;
 
     @Override
     public void tick() {
@@ -197,7 +197,7 @@ abstract public class AbstractCookwareTile extends KitchenTile implements ITicka
         cookingPlayer = null;
     }
 
-    public void startCooking(OvenContainer cookingPlayer) {
+    public void startCooking(CookwareContainer cookingPlayer) {
         Preconditions.checkArgument(this.cookingPlayer == null || this.cookingPlayer == cookingPlayer);
         this.cookingPlayer = cookingPlayer;
     }

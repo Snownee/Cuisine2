@@ -13,16 +13,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import snownee.cuisine.cookware.container.OvenContainer;
+import snownee.cuisine.cookware.container.CookwareContainer;
 import snownee.cuisine.cookware.network.CBeginCookingPacket;
 
 @OnlyIn(Dist.CLIENT)
-public class OvenScreen extends ContainerScreen<OvenContainer> {
+public class CookwareScreen extends ContainerScreen<CookwareContainer> {
 
     private static final ResourceLocation CRAFTING_TABLE_GUI_TEXTURES = new ResourceLocation("textures/gui/container/crafting_table.png");
     private static final ResourceLocation FURNACE_GUI_TEXTURES = new ResourceLocation("textures/gui/container/furnace.png");
 
-    public OvenScreen(OvenContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public CookwareScreen(CookwareContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
     }
 

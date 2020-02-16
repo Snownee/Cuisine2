@@ -18,17 +18,17 @@ import snownee.cuisine.CoreModule;
 import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.client.ColorLookup;
+import snownee.cuisine.util.Tweaker;
 
 public enum DeferredReloadListener implements IFutureReloadListener {
     INSTANCE;
 
     public final ListMultimap<LoadingStage, IFutureReloadListener> listeners = ArrayListMultimap.create(3, 3);
-    private CompletableFuture<Void> registryCompleted;
+    private CompletableFuture<Void> registryCompleted = new CompletableFuture<>();
     private int count;
 
     @Override
     public CompletableFuture<Void> reload(IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
-        registryCompleted = new CompletableFuture<>();
         count = 0;
         Function<IFutureReloadListener, CompletableFuture<?>> mapper = listener -> listener.reload(DummyStage.INSTANCE, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
         /* off */
@@ -43,13 +43,15 @@ public enum DeferredReloadListener implements IFutureReloadListener {
 
     public synchronized <T extends IForgeRegistryEntry<T>> void complete(IForgeRegistry<T> registry) {
         if (registry == CuisineRegistries.RECIPES) {
+            registryCompleted = new CompletableFuture<>();
+            Tweaker.clearRecipes();
             MinecraftServer server = Cuisine.getServer();
             if (server != null && server.isDedicatedServer()) {
                 server.getPlayerList().getPlayers().forEach(CoreModule::sync);
             }
             return;
         }
-        if (registryCompleted != null && !registryCompleted.isDone() && ++count >= 2) {
+        if (!registryCompleted.isDone() && ++count >= 2) {
             registryCompleted.complete(null);
             ColorLookup.invalidateAll();
         }

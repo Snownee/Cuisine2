@@ -17,6 +17,10 @@ public final class Tweaker {
         }
     }
 
+    public static void clearRecipes() {
+        disabledRecipes.clear();
+    }
+
     public static boolean isRecipeDisabled(ResourceLocation id) {
         return disabledRecipes.contains(id);
     }

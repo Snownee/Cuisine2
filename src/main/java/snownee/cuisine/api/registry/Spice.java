@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
@@ -90,7 +91,7 @@ public class Spice extends ForgeRegistryEntry<Spice> {
                     }
                 }
                 if (translationKey == null) {
-                    translationKey = "cuisine.spice." + String.valueOf(getRegistryName()).replace(':', '.');
+                    translationKey = Util.makeTranslationKey("cuisine.spice", getRegistryName());
                 }
             }
         }

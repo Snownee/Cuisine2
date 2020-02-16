@@ -7,50 +7,50 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IntReferenceHolder;
+import snownee.cuisine.api.LogicalServerSide;
+import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.base.item.RecipeItem;
-import snownee.cuisine.cookware.CookwareModule;
 import snownee.cuisine.cookware.tile.AbstractCookwareTile;
-import snownee.cuisine.cookware.tile.OvenTile;
+import snownee.cuisine.cookware.tile.CookwareTile;
 import snownee.cuisine.data.RecordData;
 import snownee.cuisine.util.ModSlot;
 
-public class OvenContainer extends Container {
+public class CookwareContainer extends Container {
 
+    @LogicalServerSide
     protected AbstractCookwareTile tile;
     public final PlayerEntity player;
     protected int cookTime;
     protected boolean cycle;
+    protected Cookware cookware;
 
-    public static final int COOK_TIME = 20;
-
-    public OvenContainer(int id, PlayerInventory playerInventory) {
-        this(id, playerInventory, CookwareModule.OVEN_TILE.create().getInventory());
+    public CookwareContainer(Cookware cookware, int id, PlayerInventory playerInventory) {
+        this(cookware, id, playerInventory, cookware.getTileType().create().getInventory());
     }
 
-    public OvenContainer(int id, PlayerInventory playerInventory, OvenTile tile) {
-        this(id, playerInventory, tile.getInventory());
+    public CookwareContainer(Cookware cookware, int id, PlayerInventory playerInventory, CookwareTile tile) {
+        this(cookware, id, playerInventory, tile.getInventory());
         this.tile = tile;
     }
 
-    public OvenContainer(int id, PlayerInventory playerInventory, IInventory inventory) {
-        super(CookwareModule.OVEN_CONTAINER, id);
-        assertInventorySize(inventory, 12);
+    public CookwareContainer(Cookware cookware, int id, PlayerInventory playerInventory, IInventory inventory) {
+        super(cookware.getContainer(), id);
+        this.cookware = cookware;
         this.player = playerInventory.player;
+        addSlots(playerInventory, inventory);
+    }
 
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
-                this.addSlot(new ModSlot(inventory, j + i * 3, 30 + j * 18, 17 + i * 18));
-            }
-        }
+    protected void addSlots(PlayerInventory playerInventory, IInventory inventory) {
+        int slot = addInputSlots(inventory);
 
-        this.addSlot(new ModSlot(inventory, 9, 124, 35) {
+        this.addSlot(new ModSlot(inventory, ++slot, 124, 35) {
             @Override
             public boolean isItemValid(ItemStack stack) {
                 return false;
             }
         });
-        this.addSlot(new ModSlot(inventory, 10, 114, 5));
-        this.addSlot(new ModSlot(inventory, 11, 134, 5));
+        this.addSlot(new ModSlot(inventory, ++slot, 114, 5));
+        this.addSlot(new ModSlot(inventory, ++slot, 134, 5));
 
         for (int k = 0; k < 3; ++k) {
             for (int i1 = 0; i1 < 9; ++i1) {
@@ -73,6 +73,16 @@ public class OvenContainer extends Container {
                 return cookTime;
             }
         });
+    }
+
+    protected int addInputSlots(IInventory inventory) {
+        assertInventorySize(inventory, 12);
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                this.addSlot(new ModSlot(inventory, j + i * 3, 30 + j * 18, 17 + i * 18));
+            }
+        }
+        return 8;
     }
 
     @Override
@@ -115,7 +125,7 @@ public class OvenContainer extends Container {
         }
         tile.startCooking(this);
         this.cycle = cycle;
-        cookTime = COOK_TIME;
+        cookTime = cookware.getCookingTime();
     }
 
     public void tick() {
@@ -148,8 +158,9 @@ public class OvenContainer extends Container {
     }
 
     public int getCookProgressionScaled() {
-        int i = COOK_TIME - cookTime;
-        return COOK_TIME != 0 && cookTime != 0 ? i * 24 / COOK_TIME : 0;
+        int j = cookware.getCookingTime();
+        int i = j - cookTime;
+        return j != 0 && cookTime != 0 ? i * 24 / j : 0;
     }
 
 }

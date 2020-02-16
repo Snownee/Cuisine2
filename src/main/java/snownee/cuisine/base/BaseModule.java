@@ -33,6 +33,7 @@ import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiManager;
 import snownee.kiwi.KiwiModule;
 import snownee.kiwi.Name;
+import snownee.kiwi.NoGroup;
 import snownee.kiwi.item.ModItem;
 
 @KiwiModule(name = "base", dependencies = "@core")
@@ -61,6 +62,7 @@ public class BaseModule extends AbstractModule {
     public static final ContainerType<SpiceRackContainer> SPICE_RACK_CONTAINER = new ContainerType<>(SpiceRackContainer::new);
 
     public static final ManualItem MANUAL = new ManualItem();
+    @NoGroup
     public static final RecipeItem RECIPE = new RecipeItem();
     public static final ModItem SALT = new ModItem(itemProp());
     public static final ModItem BROWN_SUGAR = new ModItem(itemProp());

@@ -1,3 +1,4 @@
 {
-  "item": "mushroom_stew"
+  "item": "mushroom_stew",
+  "remove_recipe": "mushroom_stew"
 }

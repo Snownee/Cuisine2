@@ -15,7 +15,7 @@ import snownee.cuisine.util.Tweaker;
 @Mixin(RecipeManager.class)
 public class MixinRecipeManager {
     @Inject(at = @At("HEAD"), method = "deserializeRecipe", cancellable = true)
-    private static void injectDeserializeRecipe(ResourceLocation recipeId, JsonObject json, CallbackInfoReturnable<IRecipe<?>> info) {
+    private static void disableRecipes(ResourceLocation recipeId, JsonObject json, CallbackInfoReturnable<IRecipe<?>> info) {
         if (Tweaker.isRecipeDisabled(recipeId)) {
             info.setReturnValue(null);
         }

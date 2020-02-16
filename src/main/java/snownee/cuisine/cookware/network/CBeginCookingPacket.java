@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
-import snownee.cuisine.cookware.container.OvenContainer;
+import snownee.cuisine.cookware.container.CookwareContainer;
 import snownee.kiwi.network.ClientPacket;
 
 public class CBeginCookingPacket extends ClientPacket {
@@ -32,8 +32,8 @@ public class CBeginCookingPacket extends ClientPacket {
         public void handle(CBeginCookingPacket pkt, Supplier<Context> ctx) {
             ctx.get().enqueueWork(() -> {
                 Container container = ctx.get().getSender().openContainer;
-                if (container instanceof OvenContainer) {
-                    ((OvenContainer) container).startCooking(pkt.shiftClick);
+                if (container instanceof CookwareContainer) {
+                    ((CookwareContainer) container).startCooking(pkt.shiftClick);
                 }
             });
             ctx.get().setPacketHandled(true);
