@@ -12,12 +12,14 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
+import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.util.Tweaker;
 import snownee.kiwi.util.Util;
 
@@ -72,7 +74,16 @@ public class ForgeRegistryAdapterFactory implements TypeAdapterFactory {
                         Tweaker.disableRecipe(Util.RL(element.getAsString()));
                     }
                 }
-                return delegate().fromJsonTree(json);
+                T value = delegate().fromJsonTree(json);
+                if (registry == CuisineRegistries.FOODS) {
+                    if (JSONUtils.getBoolean(object, "remove_container", false)) {
+                        Tweaker.disableContainer(((IItemProvider) value).asItem());
+                    }
+                    if (object.has("stack_size")) {
+                        Tweaker.setStackSize(((IItemProvider) value).asItem(), object.get("stack_size").getAsInt());
+                    }
+                }
+                return value;
             } else {
                 ResourceLocation id = Util.RL(json.getAsString());
                 return registry.getValue(id);

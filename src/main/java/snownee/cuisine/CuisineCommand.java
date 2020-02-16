@@ -9,6 +9,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.util.FoodStats;
 import net.minecraft.util.text.TranslationTextComponent;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.CuisineRegistries;
@@ -63,6 +64,10 @@ public final class CuisineCommand {
                         .argument("name", new ForgeRegistryArgument<>(CuisineRegistries.SPICES))
                         .executes(CuisineCommand::spiceInfo)
                 )
+        )
+        .then(Commands
+                .literal("hungry")
+                .executes(CuisineCommand::hungry)
         );
         /* on */
 
@@ -107,5 +112,16 @@ public final class CuisineCommand {
         int star = IntegerArgumentType.getInteger(ctx, "star");
         info.setProgress(food, star);
         return star;
+    }
+
+    private static int hungry(CommandContext<CommandSource> ctx) {
+        try {
+            FoodStats stats = ctx.getSource().asPlayer().getFoodStats();
+            stats.setFoodLevel(2);
+            stats.setFoodSaturationLevel(0);
+        } catch (CommandSyntaxException e) {
+            return 0;
+        }
+        return 1;
     }
 }

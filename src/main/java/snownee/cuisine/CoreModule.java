@@ -56,6 +56,7 @@ import snownee.cuisine.impl.bonus.EffectsBonus;
 import snownee.cuisine.impl.bonus.NewMaterialBonus;
 import snownee.cuisine.impl.rule.CountRegistryRecipeRule;
 import snownee.cuisine.util.ForgeRegistryArgument;
+import snownee.cuisine.util.Tweaker;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.Kiwi;
 import snownee.kiwi.KiwiModule;
@@ -214,8 +215,8 @@ public final class CoreModule extends AbstractModule {
         item2Food.clear();
         block2Food.clear();
         for (CuisineFood food : CuisineRegistries.FOODS.getValues()) {
-            if (food.getItem() != null) {
-                item2Food.put(food.getItem(), food);
+            if (food.asItem() != null) {
+                item2Food.put(food.asItem(), food);
             }
             if (food.getBlock() != null) {
                 block2Food.put(food.getBlock(), food);
@@ -236,6 +237,7 @@ public final class CoreModule extends AbstractModule {
         new SSyncRegistryPacket(CuisineRegistries.FOODS).send(player);
         new SSyncTagsPacket(networkTagManager).send(player);
         new SSyncRegistryPacket(CuisineRegistries.RECIPES).send(player);
+        Tweaker.sync(player);
     }
 
     public static void setNetworkTagManager(CuisineNetworkTagManager networkTagManager) {

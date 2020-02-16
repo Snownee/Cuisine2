@@ -10,11 +10,6 @@
 
 1.15.2 / 1.16
 
-### 映射
-
-~~[yarn2mcp](https://www.tterrag.com/yarn2mcp/)，为未来移植 Fabric 做准备。~~
-不好用，放弃。
-
 ### 前置
 
  - Kiwi
@@ -70,7 +65,7 @@
 
 #### 可放置菜品
 
-计划移植 Touhou Little Maid 的 JSON Model Renderer，令菜品以实体形式放置在世界中。多个置于相同方块的菜品可合并为同一实体，缩放。右击食用，左击取下。
+计划移植 Custom Player Model，令菜品以方块（实体？多个置于相同方块的菜品可合并为同一实体，缩放）形式放置在世界中。。右击食用，左击取下。
 
 ### 配方（CuisineRecipe）
 

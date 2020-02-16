@@ -1,4 +1,6 @@
 {
   "item": "mushroom_stew",
-  "remove_recipe": "mushroom_stew"
+  "remove_recipe": "mushroom_stew",
+  "remove_container": true,
+  "stack_size": 64
 }
