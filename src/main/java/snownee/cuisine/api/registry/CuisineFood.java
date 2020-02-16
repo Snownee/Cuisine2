@@ -16,6 +16,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import snownee.cuisine.api.LogicalServerSide;
 
 public class CuisineFood extends ForgeRegistryEntry<CuisineFood> implements IItemProvider {
 
@@ -47,6 +48,11 @@ public class CuisineFood extends ForgeRegistryEntry<CuisineFood> implements IIte
     @Nullable
     public Block getBlock() {
         return block != Blocks.AIR ? block : null;
+    }
+
+    @LogicalServerSide
+    public boolean validate() {
+        return asItem() != null;
     }
 
     public ITextComponent getDisplayName() {

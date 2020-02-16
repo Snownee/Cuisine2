@@ -140,10 +140,10 @@ public final class CoreModule extends AbstractModule {
     protected void serverInit(FMLServerAboutToStartEvent event) {
         Cuisine.server = event.getServer();
         if (materialManager == null) {
-            materialManager = new CuisineDataManager("cuisine_material", CuisineRegistries.MATERIALS).setCallback(CoreModule::buildMaterialMap);
-            spiceManager = new CuisineDataManager("cuisine_spice", CuisineRegistries.SPICES).setCallback(CoreModule::buildSpiceMap);
-            foodManager = new CuisineDataManager("cuisine_food", CuisineRegistries.FOODS).setCallback(CoreModule::buildFoodMap);
-            recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES).setVerifier(CuisineRecipe::validate);
+            materialManager = new CuisineDataManager<>("cuisine_material", CuisineRegistries.MATERIALS).setValidator(Material::validate).setCallback(CoreModule::buildMaterialMap);
+            spiceManager = new CuisineDataManager<>("cuisine_spice", CuisineRegistries.SPICES).setValidator(Spice::validate).setCallback(CoreModule::buildSpiceMap);
+            foodManager = new CuisineDataManager<>("cuisine_food", CuisineRegistries.FOODS).setValidator(CuisineFood::validate).setCallback(CoreModule::buildFoodMap);
+            recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES).setValidator(CuisineRecipe::validate);
         }
         researchData = new ResearchData();
         SimpleReloadableResourceManager manager = (SimpleReloadableResourceManager) event.getServer().getResourceManager();
@@ -261,7 +261,7 @@ public final class CoreModule extends AbstractModule {
         return Cuisine.getServer().getWorld(DimensionType.OVERWORLD).getSavedData().getOrCreate(() -> researchData, researchData.getName());
     }
 
-    public static void makeResearchDataDirty(){
+    public static void makeResearchDataDirty() {
         researchData.markDirty();
     }
 }

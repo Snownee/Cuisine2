@@ -78,6 +78,11 @@ public class Material extends ForgeRegistryEntry<Material> {
         return "Material{" + getRegistryName() + "}";
     }
 
+    @LogicalServerSide
+    public boolean validate() {
+        return !items.isEmpty() || !tags.stream().allMatch(tag -> tag.getAllElements().isEmpty());
+    }
+
     public static class Serializer implements RegistrySerializer<Material> {
 
         @Override

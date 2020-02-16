@@ -98,6 +98,11 @@ public class Spice extends ForgeRegistryEntry<Spice> {
         return new TranslationTextComponent(translationKey);
     }
 
+    @LogicalServerSide
+    public boolean validate() {
+        return !items.isEmpty() || !tags.stream().allMatch(tag -> tag.getAllElements().isEmpty()) || !fluids.isEmpty() || !fluidTags.stream().allMatch(tag -> tag.getAllElements().isEmpty());
+    }
+
     @Override
     public String toString() {
         return "Spice{" + getRegistryName() + "}";

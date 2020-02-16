@@ -25,6 +25,7 @@ import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.Bonus;
+import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.RecipeRule;
 import snownee.cuisine.data.adapter.ForgeRegistryAdapterFactory;
 import snownee.cuisine.data.adapter.ForgeRegistryAdapterFactory.ConditionsNotMetException;
@@ -54,7 +55,7 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
 
     protected final ForgeRegistry<T> registry;
     private Runnable callback;
-    private Predicate<T> verifier;
+    private Predicate<T> validator;
 
     public CuisineDataManager(String folder, ForgeRegistry<T> registry) {
         super(GSON, folder);
@@ -66,8 +67,8 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
         return (R) this;
     }
 
-    public <R extends CuisineDataManager<T>> R setVerifier(Predicate<T> verifier) {
-        this.verifier = verifier;
+    public <R extends CuisineDataManager<T>> R setValidator(Predicate<T> verifier) {
+        this.validator = verifier;
         return (R) this;
     }
 
@@ -86,8 +87,12 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
                 if (go == null) {
                     return;
                 }
-                if (verifier != null && !verifier.test(go)) {
-                    throw new JsonSyntaxException("Failed to verify " + go + " " + id);
+                if (validator != null && !validator.test(go)) {
+                    if (registry == CuisineRegistries.RECIPES) {
+                        throw new JsonSyntaxException("Failed to validate " + go + " " + id);
+                    } else {
+                        Cuisine.logger.info("Skipping loading {} {}", registry.getRegistryName().getPath(), id);
+                    }
                 }
                 registry.register(go.setRegistryName(id));
             } catch (ConditionsNotMetException e) {
