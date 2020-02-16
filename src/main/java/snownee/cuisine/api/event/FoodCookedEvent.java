@@ -7,19 +7,11 @@ import snownee.cuisine.api.FoodBuilder;
 
 @Cancelable
 public class FoodCookedEvent extends Event {
-    private ItemStack output;
-    private FoodBuilder<?> foodBuilder;
+    public ItemStack output;
+    public FoodBuilder<?> foodBuilder;
+
     public FoodCookedEvent(FoodBuilder<?> foodBuilder, ItemStack output) {
         this.foodBuilder = foodBuilder;
         this.output = output;
-
-    }
-
-    public ItemStack getOutput() {
-        return output;
-    }
-
-    public FoodBuilder<?> getFoodBuilder() {
-        return foodBuilder;
     }
 }

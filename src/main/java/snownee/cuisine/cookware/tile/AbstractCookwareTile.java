@@ -73,11 +73,14 @@ abstract public class AbstractCookwareTile extends KitchenTile implements ITicka
             return false;
         }
         ItemStack result = builder.build(recipe);
-        // we assume the amount of result is always 1
-        if (result.isEmpty()) {
+        FoodCookedEvent event = new FoodCookedEvent(builder, result);
+        if (MinecraftForge.EVENT_BUS.post(event)) {
             return false;
         }
-        if(MinecraftForge.EVENT_BUS.post(new FoodCookedEvent(builder,result))){
+        result = event.output;
+        builder = event.foodBuilder;
+        // we assume the amount of result is always 1
+        if (result.isEmpty()) {
             return false;
         }
         IItemHandler output = getOutputHandler();
