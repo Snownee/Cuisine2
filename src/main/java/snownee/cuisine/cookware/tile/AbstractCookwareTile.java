@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -21,6 +22,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.LogicalServerSide;
+import snownee.cuisine.api.event.FoodCookedEvent;
 import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.api.registry.CuisineFoodInstance;
 import snownee.cuisine.api.registry.CuisineRecipe;
@@ -73,6 +75,9 @@ abstract public class AbstractCookwareTile extends KitchenTile implements ITicka
         ItemStack result = builder.build(recipe);
         // we assume the amount of result is always 1
         if (result.isEmpty()) {
+            return false;
+        }
+        if(MinecraftForge.EVENT_BUS.post(new FoodCookedEvent(builder,result))){
             return false;
         }
         IItemHandler output = getOutputHandler();
