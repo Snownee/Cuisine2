@@ -1,5 +1,12 @@
 package snownee.cuisine.client;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nullable;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -7,21 +14,20 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,16 +36,17 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import snownee.cuisine.base.BaseModule;
 import snownee.cuisine.base.item.RecipeItem;
 import snownee.cuisine.base.item.SpiceBottleItem;
-import snownee.cuisine.data.RecordData;
+import snownee.kiwi.util.NBTHelper;
 
-@SuppressWarnings("deprecation")
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(bus = Bus.MOD, value = Dist.CLIENT)
 public final class CuisineItemRendering {
 
     private static final RenderType MAP_BACKGROUND = RenderType.text(new ResourceLocation("textures/map/map_background.png"));
     private static final RenderType MAP_BACKGROUND_CHECKERBOARD = RenderType.text(new ResourceLocation("textures/map/map_background_checkerboard.png"));
-    private static final Minecraft MC = Minecraft.getInstance();
+    static final Minecraft MC = Minecraft.getInstance();
+    private static final Cache<Integer, RecordRenderingContext> RECORDS = CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build();
+    private static long lastShowRecordTime;
 
     private CuisineItemRendering() {}
 
@@ -59,6 +66,41 @@ public final class CuisineItemRendering {
     }
 
     @SubscribeEvent
+    public static void onMouseScroll(InputEvent.MouseScrollEvent event) {
+        if (MC.currentScreen != null || MC.player == null || !MC.player.isShiftKeyDown() || !MC.isGameFocused()) {
+            return;
+        }
+        if (MC.gameSettings.thirdPersonView != 0 || MC.gameSettings.hideGUI) {
+            return;
+        }
+        Hand hand = Hand.MAIN_HAND;
+        ItemStack stack = MC.player.getHeldItemMainhand();
+        if (stack.getItem() != BaseModule.RECIPE) {
+            stack = MC.player.getHeldItemOffhand();
+            if (stack.getItem() != BaseModule.RECIPE) {
+                return;
+            }
+            hand = Hand.OFF_HAND;
+        }
+        event.setCanceled(true);
+        RecordRenderingContext ctx = getContext(stack);
+        if (ctx == null) {
+            return;
+        }
+        int pageNum = ctx.pageNum;
+        if (ctx.turnPage(event.getScrollDelta() < 0)) {
+            // play re-equip anim
+            stack = stack.copy();
+            stack.getOrCreateTag().putInt("Page", pageNum);
+            if (hand == Hand.MAIN_HAND) {
+                MC.getFirstPersonRenderer().itemStackMainHand = stack;
+            } else {
+                MC.getFirstPersonRenderer().itemStackOffHand = stack;
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onFirstPersonHandRendering(RenderHandEvent event) {
         ItemStack stack = event.getItemStack();
         if (stack.getItem() != BaseModule.RECIPE) {
@@ -69,7 +111,12 @@ public final class CuisineItemRendering {
         event.getMatrixStack().push();
         renderMapFirstPersonSide(event.getMatrixStack(), event.getBuffers(), event.getLight(), event.getEquipProgress(), handside, event.getSwingProgress(), stack);
         event.getMatrixStack().pop();
-        //TODO
+
+        long time = Util.milliTime();
+        if (time - lastShowRecordTime > 5000) {
+            MC.player.sendStatusMessage(new StringTextComponent("Shit + Scroll to turn page."), true);
+        }
+        lastShowRecordTime = time;
     }
 
     private static void renderMapFirstPersonSide(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, float equippedProgress, HandSide handIn, float swingProgress, ItemStack stack) {
@@ -96,6 +143,16 @@ public final class CuisineItemRendering {
         matrixStackIn.pop();
     }
 
+    @Nullable
+    private static RecordRenderingContext getContext(ItemStack stack) {
+        try {
+            int id = NBTHelper.of(stack).getInt("Id");
+            return RECORDS.get(id, () -> new RecordRenderingContext(RecipeItem.getData(id)));
+        } catch (ExecutionException e) {
+            return null;
+        }
+    }
+
     private static void renderMapFirstPerson(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, ItemStack stack) {
         matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F));
         matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180.0F));
@@ -104,35 +161,20 @@ public final class CuisineItemRendering {
         //matrixStackIn.translate(-0.5D, -0.5D, 0.0D);
         matrixStackIn.scale(0.01F, 0.01F, 0.01F);
         //matrixStackIn.scale(0.0078125F, 0.0078125F, 0.0078125F);
-        RecordData data = RecipeItem.getData(stack);
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(data != null ? MAP_BACKGROUND : MAP_BACKGROUND_CHECKERBOARD);
+        RecordRenderingContext ctx = getContext(stack);
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(ctx != null ? MAP_BACKGROUND : MAP_BACKGROUND_CHECKERBOARD);
         Matrix4f matrix4f = matrixStackIn.getLast().getPositionMatrix();
         ivertexbuilder.pos(matrix4f, -7.0F, 135.0F, 0.0F).color(255, 255, 255, 255).tex(0.0F, 1.0F).lightmap(combinedLightIn).endVertex();
         ivertexbuilder.pos(matrix4f, 135.0F, 135.0F, 0.0F).color(255, 255, 255, 255).tex(1.0F, 1.0F).lightmap(combinedLightIn).endVertex();
         ivertexbuilder.pos(matrix4f, 135.0F, -7.0F, 0.0F).color(255, 255, 255, 255).tex(1.0F, 0.0F).lightmap(combinedLightIn).endVertex();
         ivertexbuilder.pos(matrix4f, -7.0F, -7.0F, 0.0F).color(255, 255, 255, 255).tex(0.0F, 0.0F).lightmap(combinedLightIn).endVertex();
-        if (data == null) {
+        if (ctx == null) {
             return;
         }
         matrixStackIn.push();
         RenderSystem.setupGuiFlatDiffuseLighting();
         matrixStackIn.scale(20, 20, 1);
-        matrixStackIn.translate(0, 0, -1);
-        matrixStackIn.rotate(Vector3f.XP.rotationDegrees(180.0F));
-        matrixStackIn.translate(1, -1, 0);
-        MC.getItemRenderer().renderItem(null, new ItemStack(Items.MUSHROOM_STEW), TransformType.GUI, false, matrixStackIn, bufferIn, MC.world, combinedLightIn, OverlayTexture.DEFAULT_LIGHT);
-        matrixStackIn.translate(0, -1, 0);
-        MC.getItemRenderer().renderItem(null, new ItemStack(Items.RED_MUSHROOM), TransformType.GUI, false, matrixStackIn, bufferIn, MC.world, combinedLightIn, OverlayTexture.DEFAULT_LIGHT);
-        matrixStackIn.translate(0, -1, 0);
-        MC.getItemRenderer().renderItem(null, new ItemStack(Items.BROWN_MUSHROOM), TransformType.GUI, false, matrixStackIn, bufferIn, MC.world, combinedLightIn, OverlayTexture.DEFAULT_LIGHT);
-        RenderHelper.enableStandardItemLighting();
-        matrixStackIn.pop();
-        matrixStackIn.push();
-        matrixStackIn.scale(0.8f, 0.8f, 1);
-        matrix4f = matrixStackIn.getLast().getPositionMatrix();
-        MC.fontRenderer.renderString("Mushroom Stew", 45, 24, 0x000000, false, matrix4f, bufferIn, /*transparent*/ false, /*?*/0, combinedLightIn);
-        MC.fontRenderer.renderString("Red Mushroom x1", 45, 52, 0x000000, false, matrix4f, bufferIn, /*transparent*/ false, /*?*/0, combinedLightIn);
-        MC.fontRenderer.renderString("Brown Mushroom x1", 45, 80, 0x000000, false, matrix4f, bufferIn, /*transparent*/ false, /*?*/0, combinedLightIn);
+        ctx.render(matrixStackIn, bufferIn, combinedLightIn, stack);
         matrixStackIn.pop();
 
     }
