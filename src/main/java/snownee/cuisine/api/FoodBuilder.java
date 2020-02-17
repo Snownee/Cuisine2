@@ -2,10 +2,10 @@ package snownee.cuisine.api;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import snownee.cuisine.api.registry.Cookware;
@@ -26,8 +26,6 @@ public interface FoodBuilder<C> {
 
     void add(CuisineFood cuisineFood);
 
-    void add(Spice spice, int incr);
-
     void add(Spice spice);
 
     boolean has(Object o);
@@ -38,7 +36,7 @@ public interface FoodBuilder<C> {
 
     List<CuisineFoodInstance> getFoods();
 
-    Object2IntMap<Spice> getSpices();
+    Set<Spice> getSpices();
 
     Cookware getCookware();
 

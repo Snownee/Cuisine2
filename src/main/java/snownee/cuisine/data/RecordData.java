@@ -6,9 +6,8 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
-import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -36,7 +35,7 @@ public class RecordData extends WorldSavedData {
     private Cookware cookware;
     private ImmutableList<Material> materials;
     private ImmutableList<CuisineFood> foods;
-    private Object2IntMap<Spice> spices;
+    private ImmutableSet<Spice> spices;
     // https://stackoverflow.com/questions/4062919/why-does-exist-weakhashmap-but-absent-weakset
     public final Set<PlayerEntity> syncedPlayers = Collections.newSetFromMap(new WeakHashMap<>());
 
@@ -63,13 +62,12 @@ public class RecordData extends WorldSavedData {
         }
         foods = foodBuilder.build();
 
-        ListNBT spiceList = data.getList(CuisineConst.SPICES, Constants.NBT.TAG_COMPOUND);
-        spices = new Object2IntArrayMap<>(spiceList.size());
-        for (INBT tag : foodList) {
-            Spice spice = CuisineRegistries.SPICES.getValue(Util.RL(((CompoundNBT) tag).getString("Id"), CuisineAPI.MODID));
-            int amount = ((CompoundNBT) tag).getInt("Amount");
-            spices.put(spice, amount);
+        ListNBT spiceList = data.getList(CuisineConst.SPICES, Constants.NBT.TAG_STRING);
+        ImmutableSet.Builder<Spice> spiceBuilder = ImmutableSet.builder();
+        for (INBT tag : spiceList) {
+            spiceBuilder.add(CuisineRegistries.SPICES.getValue(Util.RL(tag.getString(), CuisineAPI.MODID)));
         }
+        spices = spiceBuilder.build();
     }
 
     @Override
@@ -87,11 +85,8 @@ public class RecordData extends WorldSavedData {
         }
         data.put(CuisineConst.FOODS, foodList);
         ListNBT spiceList = new ListNBT();
-        for (Spice spice : spices.keySet()) {
-            CompoundNBT spiceTag = new CompoundNBT();
-            spiceTag.putString("Id", Util.trimRL(spice.getRegistryName(), CuisineAPI.MODID));
-            spiceTag.putInt("Amount", spices.getInt(spice));
-            spiceList.add(spiceTag);
+        for (Spice spice : spices) {
+            spiceList.add(StringNBT.valueOf(Util.trimRL(spice.getRegistryName(), CuisineAPI.MODID)));
         }
         data.put(CuisineConst.SPICES, spiceList);
         return data;
@@ -114,7 +109,7 @@ public class RecordData extends WorldSavedData {
         result = recipe.getResult();
         materials = builder.getMaterials().stream().map(MaterialInstance::getLeft).collect(ImmutableList.toImmutableList());
         foods = builder.getFoods().stream().map(CuisineFoodInstance::getLeft).collect(ImmutableList.toImmutableList());
-        spices = new Object2IntArrayMap<>(builder.getSpices());
+        spices = ImmutableSet.copyOf(builder.getSpices());
         markDirty();
     }
 
@@ -135,11 +130,12 @@ public class RecordData extends WorldSavedData {
         }
         data.foods = foodBuilder.build();
 
-        int size = buf.readVarInt();
-        data.spices = new Object2IntArrayMap<>(size);
-        for (int i = 0; i < size; i++) {
-            data.spices.put(CuisineRegistries.SPICES.getValue(buf.readVarInt()), buf.readVarInt());
+        ImmutableSet.Builder<Spice> spiceBuilder = ImmutableSet.builder();
+        for (int id : buf.readVarIntArray(16)) {
+            spiceBuilder.add(CuisineRegistries.SPICES.getValue(id));
         }
+        data.spices = spiceBuilder.build();
+
         data.markDirty();
         return data;
     }
@@ -160,9 +156,8 @@ public class RecordData extends WorldSavedData {
         }
 
         buf.writeVarInt(spices.size());
-        for (Spice spice : spices.keySet()) {
+        for (Spice spice : spices) {
             buf.writeRegistryIdUnsafe(CuisineRegistries.SPICES, spice);
-            buf.writeVarInt(spices.getInt(spice));
         }
     }
 

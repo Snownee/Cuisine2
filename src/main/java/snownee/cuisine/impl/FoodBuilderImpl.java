@@ -3,15 +3,14 @@ package snownee.cuisine.impl;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
@@ -33,7 +32,7 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
     private final C context;
     private final List<MaterialInstance> materials = Lists.newArrayList();
     private final List<CuisineFoodInstance> foods = Lists.newArrayList();
-    private final Object2IntOpenHashMap<Spice> spices = new Object2IntOpenHashMap<>();
+    private final Set<Spice> spices = Sets.newHashSet();
     private final @Nullable Entity cook;
 
     public FoodBuilderImpl(Cookware cookware, C context, Entity cook) {
@@ -65,13 +64,8 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
     }
 
     @Override
-    public void add(Spice spice, int incr) {
-        spices.addTo(spice, incr);
-    }
-
-    @Override
     public void add(Spice spice) {
-        add(spice, 1);
+        spices.add(spice);
     }
 
     @Override
@@ -83,7 +77,7 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
             return foods.stream().map($ -> $.food).anyMatch(o::equals);
         }
         if (o instanceof Spice) {
-            return spices.containsKey(o);
+            return spices.contains(o);
         }
         if (o instanceof MaterialInstance) {
             return materials.contains(o);
@@ -103,7 +97,7 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
             return (int) foods.stream().map($ -> $.food).filter(o::equals).count();
         }
         if (o instanceof Spice) {
-            return spices.getInt(o);
+            return spices.contains(o) ? 1 : 0;
         }
         throw new IllegalArgumentException("Object has to be Material or Spice!");
     }
@@ -119,8 +113,8 @@ public class FoodBuilderImpl<C> implements FoodBuilder<C> {
     }
 
     @Override
-    public Object2IntMap<Spice> getSpices() {
-        return Object2IntMaps.unmodifiable(spices);
+    public Set<Spice> getSpices() {
+        return Collections.unmodifiableSet(spices);
     }
 
     @Override
