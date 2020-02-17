@@ -1,15 +1,15 @@
-package snownee.cuisine.farm;
+package snownee.cuisine.agriculture;
 
 import net.minecraft.block.Blocks;
-import snownee.cuisine.farm.block.CuisineCropsBlock;
+import snownee.cuisine.agriculture.block.CuisineCropsBlock;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiModule;
 import snownee.kiwi.item.ModItem;
 
-@KiwiModule(name = "farm")
+@KiwiModule(name = "agriculture")
 @KiwiModule.Group("cuisine:base")
 @KiwiModule.Optional
-public class FarmModule extends AbstractModule {
+public class AgricultureModule extends AbstractModule {
 
     public static final CuisineCropsBlock PEANUT = new CuisineCropsBlock(blockProp(Blocks.POTATOES));
     public static final CuisineCropsBlock CHILI = new CuisineCropsBlock(blockProp(Blocks.POTATOES));
