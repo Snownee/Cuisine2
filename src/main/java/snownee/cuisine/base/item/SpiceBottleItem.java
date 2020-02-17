@@ -40,17 +40,19 @@ import snownee.kiwi.util.Util;
 
 public class SpiceBottleItem extends ModItem {
 
-    public final int maxVolume;
+    public final int maxItemVolume;
+    public final int fluidCapacity;
 
-    public static final int VOLUME_PER_ITEM = 10;
-    public static final int FLUID_PER_VOLUME = FluidAttributes.BUCKET_VOLUME / VOLUME_PER_ITEM;
+    public static final int VOLUME_PER_ITEM = 1;
+    public static final int FLUID_PER_VOLUME = FluidAttributes.BUCKET_VOLUME / 10;
 
     public static final String SPICE_VALUE = "Spice.Value";
     public static final String SPICE_NAME = "Spice.Name";
 
-    public SpiceBottleItem(int maxVolume, Properties builder) {
+    public SpiceBottleItem(int maxItemVolume, int fluidCapacity, Properties builder) {
         super(builder.maxStackSize(1));
-        this.maxVolume = maxVolume;
+        this.maxItemVolume = maxItemVolume;
+        this.fluidCapacity = fluidCapacity;
     }
 
     /**
@@ -68,7 +70,7 @@ public class SpiceBottleItem extends ModItem {
         }
         NBTHelper nbt = NBTHelper.of(container);
         int volume = nbt.getInt(SPICE_VALUE);
-        int fill_item = (maxVolume - volume) / VOLUME_PER_ITEM;
+        int fill_item = (maxItemVolume - volume) / VOLUME_PER_ITEM;
         fill_item = Math.min(fill_item, in.getCount());
         if (simulate) {
             in = in.copy();
@@ -170,7 +172,7 @@ public class SpiceBottleItem extends ModItem {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack container, @Nullable CompoundNBT nbt) {
-        return new SpiceFluidHandler(container, FLUID_PER_VOLUME * maxVolume);
+        return new SpiceFluidHandler(container, fluidCapacity);
     }
 
     public boolean hasFluid(ItemStack container) {
@@ -181,6 +183,7 @@ public class SpiceBottleItem extends ModItem {
         return NBTHelper.of(container).getInt(SPICE_VALUE);
     }
 
+    //FIXME whats this?
     public void setDurability(ItemStack stack, int durability) {
         if (durability > 0) {
             NBTHelper.of(stack).setInt(SPICE_VALUE, durability);
@@ -280,6 +283,7 @@ public class SpiceBottleItem extends ModItem {
         if (!hasSpice(stack)) {
             return;
         }
-        tooltip.add(new TranslationTextComponent("cuisine.spice_bottle.rest").appendText(String.format(":%d/%d", getDurability(stack), maxVolume)));
+        //FIXME
+        tooltip.add(new TranslationTextComponent("cuisine.spice_bottle.rest").appendText(String.format(":%d/%d", getDurability(stack), maxItemVolume)));
     }
 }

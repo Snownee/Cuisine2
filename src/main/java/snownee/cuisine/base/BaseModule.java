@@ -49,7 +49,7 @@ public class BaseModule extends AbstractModule {
             }
         });
     }
-    public static final SpiceBottleItem SPICE_BOTTLE = new SpiceBottleItem(50, itemProp());
+    public static final SpiceBottleItem SPICE_BOTTLE = new SpiceBottleItem(256, 8000, itemProp());
 
     public static final IRecipeSerializer<?> SPICE_BOTTLE_FILL = new SpiceBottleFillingRecipe.Serializer();
 
