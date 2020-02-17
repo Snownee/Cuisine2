@@ -175,22 +175,24 @@ public class SpiceBottleItem extends ModItem {
         return new SpiceFluidHandler(container, fluidCapacity);
     }
 
-    public boolean hasFluid(ItemStack container) {
+    public static boolean hasFluid(ItemStack container) {
         return FluidUtil.getFluidContained(container).map(FluidStack::isEmpty).orElse(false);
     }
 
-    public int getDurability(ItemStack container) {
-        return NBTHelper.of(container).getInt(SPICE_VALUE);
+    // why not use getDamage? because there are some OP mending machines
+    public int getMaxDurability(ItemStack stack) {
+        return hasFluid(stack) ? fluidCapacity / FLUID_PER_VOLUME : maxItemVolume;
     }
 
-    //FIXME whats this?
-    public void setDurability(ItemStack stack, int durability) {
+    public static int getDurability(ItemStack stack) {
+        return NBTHelper.of(stack).getInt(SPICE_VALUE);
+    }
+
+    private static void setDurability(ItemStack stack, int durability) {
         if (durability > 0) {
             NBTHelper.of(stack).setInt(SPICE_VALUE, durability);
-            stack.setDamage(1);
         } else {
             stack.setTag(null);
-            stack.setDamage(0);
         }
     }
 

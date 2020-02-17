@@ -66,6 +66,9 @@ public class SpiceHandler implements ISpiceHandler {
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        if (slotCount == 0) {
+            return stack;
+        }
         Optional<Spice> spice = CuisineAPI.findSpice(stack);
         if (spice.isPresent()) {
             if (simulate) {
@@ -78,10 +81,14 @@ public class SpiceHandler implements ISpiceHandler {
                         continue;
                     }
                     SpiceBottleItem bottle = (SpiceBottleItem) container.getItem();
+                    int c = stack.getCount();
                     stack = bottle.fill(container, stack, simulate);
+                    if (!simulate && c != stack.getCount()) {
+                        spiceCounts.addTo(spice.get(), SpiceBottleItem.VOLUME_PER_ITEM * (stack.getCount() - c));
+                    }
                     // 正常情况下此处应当执行onContentsChanged
                     if (stack.isEmpty()) {
-                        return stack;
+                        return ItemStack.EMPTY;
                     }
                 }
             }
@@ -91,16 +98,29 @@ public class SpiceHandler implements ISpiceHandler {
             return stack;
         }
         Pair<IItemHandler, Integer> pair = getLocalSlot(slot);
-        return pair.getLeft().insertItem(pair.getRight(), stack, simulate);
+        int c = stack.getCount();
+        ItemStack ret = pair.getLeft().insertItem(pair.getRight(), stack, simulate);
+        if (!simulate && ret.getCount() != c) {
+            SpiceBottleItem.getSpice(ret).ifPresent(s -> {
+                spiceCounts.addTo(s, SpiceBottleItem.VOLUME_PER_ITEM * (c - ret.getCount()));
+            });
+        }
+        return ret;
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot == slotCount) {
+        if (slotCount == 0 || slot == slotCount) {
             return ItemStack.EMPTY;
         }
         Pair<IItemHandler, Integer> pair = getLocalSlot(slot);
-        return pair.getLeft().extractItem(pair.getRight(), amount, simulate);
+        ItemStack ret = pair.getLeft().extractItem(pair.getRight(), amount, simulate);
+        if (!simulate && ret.getItem() instanceof SpiceBottleItem) {
+            SpiceBottleItem.getSpice(ret).ifPresent(spice -> {
+                spiceCounts.addTo(spice, -SpiceBottleItem.getDurability(ret));
+            });
+        }
+        return ret;
     }
 
     @SuppressWarnings("deprecation")
@@ -116,18 +136,38 @@ public class SpiceHandler implements ISpiceHandler {
     @Override
     public void addMultiblock(KitchenMultiblock multiblock) {
         IItemHandler handler = multiblock.x;
-        if (handler == null || handlers.contains(handler)) {
+        if (handler == null || handler == this || handlers.contains(handler)) {
             return;
         }
         handlers.add(handler);
-        slotCount += handler.getSlots();
+        int slots = handler.getSlots();
+        slotCount += slots;
+        for (int i = 0; i < slots; i++) {
+            ItemStack container = handler.getStackInSlot(i);
+            if (!(container.getItem() instanceof SpiceBottleItem)) {
+                return;
+            }
+            SpiceBottleItem.getSpice(container).ifPresent(spice -> {
+                spiceCounts.addTo(spice, SpiceBottleItem.getDurability(container));
+            });
+        }
     }
 
     @Override
     public void removeMultiblock(KitchenMultiblock multiblock) {
         IItemHandler handler = multiblock.x;
         if (handlers.remove(handler)) {
-            slotCount -= handler.getSlots();
+            int slots = handler.getSlots();
+            slotCount -= slots;
+            for (int i = 0; i < slots; i++) {
+                ItemStack container = handler.getStackInSlot(i);
+                if (!(container.getItem() instanceof SpiceBottleItem)) {
+                    return;
+                }
+                SpiceBottleItem.getSpice(container).ifPresent(spice -> {
+                    spiceCounts.addTo(spice, -SpiceBottleItem.getDurability(container));
+                });
+            }
         }
     }
 
