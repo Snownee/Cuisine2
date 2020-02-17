@@ -26,7 +26,7 @@ import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
-import snownee.cuisine.api.tile.IMasterHandler;
+import snownee.cuisine.api.tile.ISpiceHandler;
 import snownee.cuisine.base.tile.SpiceHandler;
 import snownee.cuisine.data.CuisineDataManager;
 import snownee.cuisine.impl.FoodBuilderImpl;
@@ -143,7 +143,7 @@ public final class Cuisine implements ICuisineAPI {
     }
 
     @Override
-    public IMasterHandler newSpiceHandler() {
+    public ISpiceHandler newSpiceHandler() {
         return new SpiceHandler();
     }
 }

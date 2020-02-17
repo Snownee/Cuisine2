@@ -18,7 +18,7 @@ import snownee.cuisine.api.registry.CuisineFoodInstance;
 import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
-import snownee.cuisine.api.tile.IMasterHandler;
+import snownee.cuisine.api.tile.ISpiceHandler;
 
 public final class CuisineAPI {
     public static final String MODID = "cuisine";
@@ -85,7 +85,7 @@ public final class CuisineAPI {
         return entity != null && INSTANCE != null ? INSTANCE.getResearchInfo(entity) : ResearchInfo.Empty.INSTANCE;
     }
 
-    public static IMasterHandler newSpiceHandler() {
+    public static ISpiceHandler newSpiceHandler() {
         return INSTANCE != null ? INSTANCE.newSpiceHandler() : null;
     }
 
@@ -126,6 +126,6 @@ public final class CuisineAPI {
 
         ResearchInfo getResearchInfo(Entity entity);
 
-        IMasterHandler newSpiceHandler();
+        ISpiceHandler newSpiceHandler();
     }
 }
