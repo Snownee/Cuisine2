@@ -139,7 +139,7 @@ public abstract class ChainMultiblock<T extends IMasterHandler, X> implements Su
     public void remove() {
         if (getMaster().all != null) {
             getMaster().all.remove(tile.getPos());
-            if (getMaster().all.size() > 1) {
+            if (!getMaster().all.isEmpty()) {
                 getCap().ifPresent(handler -> handler.removeMultiblock(this));
                 Map<BlockPos, ChainMultiblock> map = Maps.newHashMap();
                 getMaster().all.forEach((k, v) -> map.put(k, v.get()));
@@ -241,9 +241,11 @@ public abstract class ChainMultiblock<T extends IMasterHandler, X> implements Su
         }
         addSelf();
         Scheduler.add(new SimpleWorldTask(tile.getWorld(), Phase.START, i -> {
-            all.values().stream().forEach(m -> {
-                if (m.get() != this) {
-                    m.get().master = this;
+            all.values().stream().forEach($ -> {
+                ChainMultiblock<T, X> mb = $.get();
+                if (mb != this) {
+                    mb.master = this;
+                    get().addMultiblock(mb);
                 }
             });
             return true;

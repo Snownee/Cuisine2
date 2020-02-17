@@ -2,6 +2,8 @@ package snownee.cuisine.data.research;
 
 import static snownee.cuisine.CoreModule.makeResearchDataDirty;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -146,12 +148,11 @@ public class ResearchInfoImpl implements ResearchInfo {
 
     private ListNBT writeList(Object2IntOpenHashMap<ResourceLocation> map) {
         ListNBT list = new ListNBT();
-        for (ResourceLocation id : map.keySet()) {
-            int r = foodProgresses.getInt(id);
-            if (r > 0) {
+        for (Entry<ResourceLocation> entry : Object2IntMaps.fastIterable(map)) {
+            if (entry.getIntValue() > 0) {
                 CompoundNBT compoundNBT = new CompoundNBT();
-                compoundNBT.putString("k", Util.trimRL(id, CuisineAPI.MODID));
-                compoundNBT.putInt("v", r);
+                compoundNBT.putString("k", Util.trimRL(entry.getKey(), CuisineAPI.MODID));
+                compoundNBT.putInt("v", entry.getIntValue());
                 list.add(compoundNBT);
             }
         }
