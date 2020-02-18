@@ -2,6 +2,7 @@ package snownee.cuisine.cookware.container;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
@@ -10,6 +11,7 @@ import net.minecraft.util.IntReferenceHolder;
 import snownee.cuisine.api.LogicalServerSide;
 import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.base.item.RecipeItem;
+import snownee.cuisine.base.network.SUpdateSpicesPacket;
 import snownee.cuisine.cookware.tile.AbstractCookwareTile;
 import snownee.cuisine.cookware.tile.CookwareTile;
 import snownee.cuisine.data.RecordData;
@@ -28,9 +30,11 @@ public class CookwareContainer extends Container {
         this(cookware, id, playerInventory, cookware.getTileType().create().getInventory());
     }
 
+    @LogicalServerSide
     public CookwareContainer(Cookware cookware, int id, PlayerInventory playerInventory, CookwareTile tile) {
         this(cookware, id, playerInventory, tile.getInventory());
         this.tile = tile;
+        new SUpdateSpicesPacket(tile.getSpiceHandler().getSpices()).send((ServerPlayerEntity) playerInventory.player);
     }
 
     public CookwareContainer(Cookware cookware, int id, PlayerInventory playerInventory, IInventory inventory) {

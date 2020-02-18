@@ -12,6 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import snownee.cuisine.api.registry.Cookware;
+import snownee.cuisine.base.network.SUpdateSpicesPacket;
 import snownee.cuisine.cookware.block.CookwareBlock;
 import snownee.cuisine.cookware.client.CookwareScreen;
 import snownee.cuisine.cookware.container.BowlContainer;
@@ -63,6 +64,7 @@ public final class CookwareModule extends AbstractModule {
     @Override
     protected void preInit() {
         NetworkChannel.register(CBeginCookingPacket.class, new CBeginCookingPacket.Handler());
+        NetworkChannel.register(SUpdateSpicesPacket.class, new SUpdateSpicesPacket.Handler());
     }
 
     @Override

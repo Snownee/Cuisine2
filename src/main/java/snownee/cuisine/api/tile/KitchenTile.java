@@ -91,4 +91,8 @@ public abstract class KitchenTile extends TextureTile {
         }
     }
 
+    public ISpiceHandler getSpiceHandler() {
+        return multiblock.get();
+    }
+
 }

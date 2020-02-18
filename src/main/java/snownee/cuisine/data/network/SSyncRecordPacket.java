@@ -2,14 +2,12 @@ package snownee.cuisine.data.network;
 
 import java.util.function.Supplier;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
-import net.minecraftforge.fml.network.PacketDistributor;
+import snownee.cuisine.base.network.PlayerPacket;
 import snownee.cuisine.data.RecordData;
-import snownee.kiwi.network.Packet;
 
-public class SSyncRecordPacket extends Packet {
+public class SSyncRecordPacket extends PlayerPacket {
 
     private final RecordData data;
     private final int id;
@@ -17,10 +15,6 @@ public class SSyncRecordPacket extends Packet {
     public SSyncRecordPacket(RecordData data, int id) {
         this.data = data;
         this.id = id;
-    }
-
-    public void send(ServerPlayerEntity player) {
-        send(PacketDistributor.PLAYER.with(() -> player));
     }
 
     public static class Handler extends PacketHandler<SSyncRecordPacket> {

@@ -5,7 +5,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.RedstoneTorchBlock;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer.Builder;
@@ -67,6 +69,10 @@ public class SpiceRackBlock extends HorizontalBlock {
         //            }
         //        }
         //        return ActionResultType.PASS;
+        ItemStack stack = player.getHeldItem(handIn);
+        if (stack.getItem() instanceof BlockItem) {
+            return ActionResultType.PASS;
+        }
         if (!worldIn.isRemote) {
             TileEntity tile = worldIn.getTileEntity(pos);
             if (tile instanceof SpiceRackTile) {

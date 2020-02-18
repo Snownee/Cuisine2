@@ -264,6 +264,7 @@ public class SpiceBottleItem extends ModItem {
             CuisineRegistries.SPICES.getKeys().forEach(i -> {
                 nbt.setString(SPICE_NAME, i.toString());
                 //FIXME illegal item. spice value?
+                //FIXME should use fill()?
                 items.add(stack.copy());
             });
         }

@@ -74,6 +74,7 @@ public class SpiceHandler implements ISpiceHandler {
             if (simulate) {
                 stack = stack.copy();
             }
+            //TODO insertStackStacked
             for (IItemHandler handler : handlers) {
                 for (int i = 0; i < handler.getSlots(); i++) {
                     ItemStack container = handler.getStackInSlot(i);
@@ -84,7 +85,7 @@ public class SpiceHandler implements ISpiceHandler {
                     int c = stack.getCount();
                     stack = bottle.fill(container, stack, simulate);
                     if (!simulate && c != stack.getCount()) {
-                        spiceCounts.addTo(spice.get(), SpiceBottleItem.VOLUME_PER_ITEM * (stack.getCount() - c));
+                        spiceCounts.addTo(spice.get(), SpiceBottleItem.VOLUME_PER_ITEM * (c - stack.getCount()));
                     }
                     // 正常情况下此处应当执行onContentsChanged
                     if (stack.isEmpty()) {
@@ -101,7 +102,7 @@ public class SpiceHandler implements ISpiceHandler {
         int c = stack.getCount();
         ItemStack ret = pair.getLeft().insertItem(pair.getRight(), stack, simulate);
         if (!simulate && ret.getCount() != c) {
-            SpiceBottleItem.getSpice(ret).ifPresent(s -> {
+            SpiceBottleItem.getSpice(stack).ifPresent(s -> {
                 spiceCounts.addTo(s, SpiceBottleItem.VOLUME_PER_ITEM * (c - ret.getCount()));
             });
         }
@@ -145,7 +146,7 @@ public class SpiceHandler implements ISpiceHandler {
         for (int i = 0; i < slots; i++) {
             ItemStack container = handler.getStackInSlot(i);
             if (!(container.getItem() instanceof SpiceBottleItem)) {
-                return;
+                continue;
             }
             SpiceBottleItem.getSpice(container).ifPresent(spice -> {
                 spiceCounts.addTo(spice, SpiceBottleItem.getDurability(container));

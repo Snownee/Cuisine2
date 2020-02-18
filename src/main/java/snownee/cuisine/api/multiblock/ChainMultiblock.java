@@ -56,7 +56,9 @@ public abstract class ChainMultiblock<T extends IMasterHandler, X> implements Su
         }
         if (all == null) {
             T hanlder = createNewHandler();
-            hanlder.addMultiblock(this);
+            if (compound == null) {
+                hanlder.addMultiblock(this);
+            }
             handlerCap = LazyOptional.of(() -> hanlder);
         }
     }
@@ -245,8 +247,8 @@ public abstract class ChainMultiblock<T extends IMasterHandler, X> implements Su
                 ChainMultiblock<T, X> mb = $.get();
                 if (mb != this) {
                     mb.master = this;
-                    get().addMultiblock(mb);
                 }
+                get().addMultiblock(mb);
             });
             return true;
         }));
