@@ -147,6 +147,7 @@ public final class CoreModule extends AbstractModule {
         }
         researchData = new ResearchData();
         SimpleReloadableResourceManager manager = (SimpleReloadableResourceManager) event.getServer().getResourceManager();
+        DeferredReloadListener.INSTANCE.listeners.clear();
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, materialManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, spiceManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, foodManager);
