@@ -10,6 +10,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -57,7 +58,12 @@ public class SpiceRackTile extends KitchenTile implements INamedContainerProvide
     }
 
     public IInventory getInventory() {
-        return new InvHandlerWrapper(itemHandler);
+        return new InvHandlerWrapper(itemHandler) {
+            @Override
+            public void setInventorySlotContents(int index, ItemStack stack) {
+                super.setInventorySlotContents(index, stack);
+            }
+        };
     }
 
     @Override
@@ -72,7 +78,7 @@ public class SpiceRackTile extends KitchenTile implements INamedContainerProvide
 
     @Override
     public ITextComponent getDisplayName() {
-        return new TranslationTextComponent("container.cuisine.spice_rack");
+        return new TranslationTextComponent(Util.makeTranslationKey("container", getType().getRegistryName()));
     }
 
 }

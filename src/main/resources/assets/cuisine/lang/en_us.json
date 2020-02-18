@@ -11,6 +11,7 @@
   "container.cuisine.bowl": "Bowl",
   "container.cuisine.spice_rack": "Spice Rack",
   "container.cuisine.mill": "Mill",
+  "container.cuisine.cabinet": "Cabinet",
   
   "__comment": "Item Groups",
   "itemGroup.cuisine": "Cuisine",
@@ -39,8 +40,8 @@
   "block.cuisine.sichuan_pepper": "Szechuan Peppercorn",
   "block.cuisine.corn": "Corn",
   "block.cuisine.cucumber": "Cucumber",
-  "block.cuisine.green_pepper": "Green_pepper",
-  "block.cuisine.red_pepper": "Red_pepper",
+  "block.cuisine.green_pepper": "Green Pepper",
+  "block.cuisine.red_pepper": "Red Pepper",
   "block.cuisine.cabbage": "Cabbage",
   "block.cuisine.turnip": "Turnip",
   "block.cuisine.sesame": "Sesame",
@@ -57,6 +58,8 @@
   "block.cuisine.bowl": "Bowl",
   "block.cuisine.spice_rack": "Spice Rack",
   "block.cuisine.mill": "Mill",
+  "block.cuisine.cabinet": "Cabinet",
+  "block.cuisine.inner_cabinet": "Inner Cabinet",
   
   "__comment": "Commands",
   "commands.cuisine.star.info_not_found": "Cannot found research info.",

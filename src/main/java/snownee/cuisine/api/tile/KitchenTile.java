@@ -11,7 +11,7 @@ import snownee.cuisine.api.multiblock.KitchenMultiblock;
 import snownee.kiwi.tile.TextureTile;
 import snownee.kiwi.util.NBTHelper;
 
-public abstract class KitchenTile extends TextureTile {
+public class KitchenTile extends TextureTile {
 
     protected KitchenMultiblock multiblock;
     protected LazyOptional<KitchenMultiblock> multiblockOptional;

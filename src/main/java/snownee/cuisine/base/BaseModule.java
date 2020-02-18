@@ -21,6 +21,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.CuisineAPI;
+import snownee.cuisine.api.tile.KitchenTile;
+import snownee.cuisine.base.block.CabinetBlock;
+import snownee.cuisine.base.block.InnerCabinetBlock;
 import snownee.cuisine.base.block.SpiceRackBlock;
 import snownee.cuisine.base.client.SpiceRackScreen;
 import snownee.cuisine.base.container.SpiceRackContainer;
@@ -28,6 +31,7 @@ import snownee.cuisine.base.crafting.SpiceBottleFillingRecipe;
 import snownee.cuisine.base.item.ManualItem;
 import snownee.cuisine.base.item.RecipeItem;
 import snownee.cuisine.base.item.SpiceBottleItem;
+import snownee.cuisine.base.tile.CabinetTile;
 import snownee.cuisine.base.tile.SpiceRackTile;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiManager;
@@ -60,6 +64,14 @@ public class BaseModule extends AbstractModule {
     public static final TileEntityType<SpiceRackTile> SPICE_RACK_TILE = new TileEntityType<>(SpiceRackTile::new, SPICE_RACK_VALID_BLOCKS, null);
     @Name("spice_rack")
     public static final ContainerType<SpiceRackContainer> SPICE_RACK_CONTAINER = new ContainerType<>(SpiceRackContainer::new);
+
+    public static final CabinetBlock CABINET = new CabinetBlock(blockProp(Material.ROCK));
+    @Name("cabinet")
+    public static final TileEntityType<CabinetTile> CABINET_TILE = TileEntityType.Builder.create(CabinetTile::new, CABINET).build(null);
+
+    public static final InnerCabinetBlock INNER_CABINET = new InnerCabinetBlock(blockProp(Material.ROCK));
+    @Name("inner_cabinet")
+    public static final TileEntityType<KitchenTile> INNER_CABINET_TILE = TileEntityType.Builder.create(INNER_CABINET::createTileEntity, INNER_CABINET).build(null);
 
     public static final ManualItem MANUAL = new ManualItem();
     @NoGroup
