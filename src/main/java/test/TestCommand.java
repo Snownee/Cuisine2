@@ -26,7 +26,6 @@ public class TestCommand {
         try {
             System.out.println(111);
             for (ResourceLocation i :CuisineRegistries.MATERIALS.getKeys()){
-                System.out.println(CuisineAPI.getResearchInfo(source.getEntity()).getProgress(CuisineRegistries.MATERIALS.getValue(i)));
                 CuisineAPI.getResearchInfo(source.getEntity()).setProgress(CuisineRegistries.MATERIALS.getValue(i),
                         CuisineAPI.getResearchInfo(source.getEntity()).getProgress(CuisineRegistries.MATERIALS.getValue(i))+1);
             }
