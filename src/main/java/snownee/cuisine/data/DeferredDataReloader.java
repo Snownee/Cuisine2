@@ -56,6 +56,7 @@ public enum DeferredDataReloader {
 
     private synchronized void tryUpdateTags() {
         if (materialDone && spiceDone && foodDone && tagsPacket != null) {
+            ++DeferredReloadListener.INSTANCE.dataPackID;
             SSyncTagsPacket packet = tagsPacket;
             tagsPacket = null;
             packet.handle();

@@ -1,7 +1,6 @@
 package snownee.cuisine.data;
 
 import java.util.Map;
-import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
@@ -22,11 +21,11 @@ import net.minecraftforge.common.util.JsonUtils.ImmutableListTypeAdapter;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.Bonus;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.RecipeRule;
+import snownee.cuisine.api.registry.CuisineRegistryEntry;
 import snownee.cuisine.data.adapter.ForgeRegistryAdapterFactory;
 import snownee.cuisine.data.adapter.ForgeRegistryAdapterFactory.ConditionsNotMetException;
 import snownee.cuisine.data.adapter.ImmutableSetAdapter;
@@ -34,7 +33,7 @@ import snownee.cuisine.data.adapter.RecipeRuleAdapter;
 import snownee.cuisine.data.adapter.StarsAdapter;
 import snownee.cuisine.data.adapter.TagAdapter;
 
-public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonReloadListener {
+public class CuisineDataManager<T extends CuisineRegistryEntry<T>> extends JsonReloadListener {
 
     /* off */
     public static final Gson GSON = new GsonBuilder()
@@ -55,7 +54,6 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
 
     protected final ForgeRegistry<T> registry;
     private Runnable callback;
-    private Predicate<T> validator;
 
     public CuisineDataManager(String folder, ForgeRegistry<T> registry) {
         super(GSON, folder);
@@ -67,17 +65,13 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
         return (R) this;
     }
 
-    public <R extends CuisineDataManager<T>> R setValidator(Predicate<T> verifier) {
-        this.validator = verifier;
-        return (R) this;
-    }
-
     @Override
     protected void apply(Map<ResourceLocation, JsonObject> splashList, IResourceManager resourceManagerIn, IProfiler profilerIn) {
         profilerIn.startSection("Loading " + registry.getRegistryName());
         boolean noWarning = true;
         ModLoadingContext ctx = ModLoadingContext.get();
         registry.unfreeze();
+        registry.getValues().forEach(CuisineRegistryEntry::invalidate);
         registry.clear();
         splashList.forEach((id, o) -> {
             if (noWarning)
@@ -87,7 +81,7 @@ public class CuisineDataManager<T extends IForgeRegistryEntry<T>> extends JsonRe
                 if (go == null) {
                     return;
                 }
-                if (validator != null && !validator.test(go)) {
+                if (!go.validate()) {
                     if (registry == CuisineRegistries.RECIPES) {
                         throw new JsonSyntaxException("Failed to validate " + go + " " + id);
                     } else {

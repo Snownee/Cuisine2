@@ -18,12 +18,11 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.LogicalServerSide;
 import snownee.cuisine.api.tag.SpiceTags;
 
-public class Spice extends ForgeRegistryEntry<Spice> {
+public class Spice extends CuisineRegistryEntry<Spice> {
 
     //TODO remove
     private int color = 0xff0000;
@@ -65,6 +64,7 @@ public class Spice extends ForgeRegistryEntry<Spice> {
         return color;
     }
 
+    @Override
     public ITextComponent getDisplayName() {
         if (translationKey == null) {
             if (!items.isEmpty()) {
@@ -98,9 +98,10 @@ public class Spice extends ForgeRegistryEntry<Spice> {
         return new TranslationTextComponent(translationKey);
     }
 
+    @Override
     @LogicalServerSide
     public boolean validate() {
-        return !items.isEmpty() || !tags.stream().allMatch(tag -> tag.getAllElements().isEmpty()) || !fluids.isEmpty() || !fluidTags.stream().allMatch(tag -> tag.getAllElements().isEmpty());
+        return valid = !items.isEmpty() || !tags.stream().allMatch(tag -> tag.getAllElements().isEmpty()) || !fluids.isEmpty() || !fluidTags.stream().allMatch(tag -> tag.getAllElements().isEmpty());
     }
 
     @Override

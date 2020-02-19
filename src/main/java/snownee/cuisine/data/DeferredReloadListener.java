@@ -26,9 +26,19 @@ public enum DeferredReloadListener implements IFutureReloadListener {
     public final ListMultimap<LoadingStage, IFutureReloadListener> listeners = ArrayListMultimap.create(3, 3);
     private CompletableFuture<Void> registryCompleted = new CompletableFuture<>();
     private int count;
+    int dataPackID = -1;
+
+    public int getDataPackID() {
+        return dataPackID;
+    }
+
+    public void clearDataPackID() {
+        dataPackID = -1;
+    }
 
     @Override
     public CompletableFuture<Void> reload(IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
+        ++dataPackID;
         count = 0;
         Tweaker.clear();
         Function<IFutureReloadListener, CompletableFuture<?>> mapper = listener -> listener.reload(DummyStage.INSTANCE, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor);

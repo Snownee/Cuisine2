@@ -61,7 +61,18 @@ public class SpiceRackTile extends KitchenTile implements INamedContainerProvide
         return new InvHandlerWrapper(itemHandler) {
             @Override
             public void setInventorySlotContents(int index, ItemStack stack) {
+                if (world != null && !world.isRemote) {
+                    ItemStack before = getStackInSlot(index);
+                    SpiceBottleItem.getSpice(before).ifPresent(spice -> {
+                        getSpiceHandler().addSpice(spice, -SpiceBottleItem.getDurability(before));
+                    });
+                }
                 super.setInventorySlotContents(index, stack);
+                if (world != null && !world.isRemote) {
+                    SpiceBottleItem.getSpice(stack).ifPresent(spice -> {
+                        getSpiceHandler().addSpice(spice, SpiceBottleItem.getDurability(stack));
+                    });
+                }
             }
         };
     }

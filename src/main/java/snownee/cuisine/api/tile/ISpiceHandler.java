@@ -11,4 +11,6 @@ public interface ISpiceHandler extends IMasterHandler<KitchenMultiblock>, IItemH
 
     boolean useSpices(Object2IntMap<Spice> spices);
 
+    void addSpice(Spice spice, int incr);
+
 }

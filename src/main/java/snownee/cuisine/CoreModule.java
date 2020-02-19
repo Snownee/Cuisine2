@@ -38,7 +38,6 @@ import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.config.CuisineClientConfig;
 import snownee.cuisine.api.config.CuisineCommonConfig;
 import snownee.cuisine.api.registry.CuisineFood;
-import snownee.cuisine.api.registry.CuisineRecipe;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.cap.CuisineCapabilitiesInternal;
@@ -140,13 +139,14 @@ public final class CoreModule extends AbstractModule {
     protected void serverInit(FMLServerAboutToStartEvent event) {
         Cuisine.server = event.getServer();
         if (materialManager == null) {
-            materialManager = new CuisineDataManager<>("cuisine_material", CuisineRegistries.MATERIALS).setValidator(Material::validate).setCallback(CoreModule::buildMaterialMap);
-            spiceManager = new CuisineDataManager<>("cuisine_spice", CuisineRegistries.SPICES).setValidator(Spice::validate).setCallback(CoreModule::buildSpiceMap);
-            foodManager = new CuisineDataManager<>("cuisine_food", CuisineRegistries.FOODS).setValidator(CuisineFood::validate).setCallback(CoreModule::buildFoodMap);
-            recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES).setValidator(CuisineRecipe::validate);
+            materialManager = new CuisineDataManager<>("cuisine_material", CuisineRegistries.MATERIALS).setCallback(CoreModule::buildMaterialMap);
+            spiceManager = new CuisineDataManager<>("cuisine_spice", CuisineRegistries.SPICES).setCallback(CoreModule::buildSpiceMap);
+            foodManager = new CuisineDataManager<>("cuisine_food", CuisineRegistries.FOODS).setCallback(CoreModule::buildFoodMap);
+            recipeManager = new CuisineRecipeManager("cuisine_recipe", CuisineRegistries.RECIPES);
         }
         researchData = new ResearchData();
         SimpleReloadableResourceManager manager = (SimpleReloadableResourceManager) event.getServer().getResourceManager();
+        DeferredReloadListener.INSTANCE.clearDataPackID();
         DeferredReloadListener.INSTANCE.listeners.clear();
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, materialManager);
         DeferredReloadListener.INSTANCE.listeners.put(LoadingStage.REGISTRY, spiceManager);
@@ -231,6 +231,12 @@ public final class CoreModule extends AbstractModule {
     protected void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         Cuisine.logger.info("Syncing...");
         sync((ServerPlayerEntity) event.getPlayer());
+    }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    protected void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        DeferredReloadListener.INSTANCE.clearDataPackID();
     }
 
     public static void sync(ServerPlayerEntity player) {

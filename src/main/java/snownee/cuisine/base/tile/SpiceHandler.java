@@ -18,15 +18,13 @@ import snownee.cuisine.api.multiblock.KitchenMultiblock;
 import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.api.tile.ISpiceHandler;
 import snownee.cuisine.base.item.SpiceBottleItem;
+import snownee.cuisine.data.DeferredReloadListener;
 
 public class SpiceHandler implements ISpiceHandler {
     private final LinkedList<IItemHandler> handlers = Lists.newLinkedList();
     private int slotCount;
     private final Object2IntOpenHashMap<Spice> spiceCounts = new Object2IntOpenHashMap<>();
-
-    public SpiceHandler() {
-        // spiceCounts.defaultReturnValue(0);
-    }
+    private int dataPackID = DeferredReloadListener.INSTANCE.getDataPackID();
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
@@ -69,6 +67,7 @@ public class SpiceHandler implements ISpiceHandler {
         if (slotCount == 0) {
             return stack;
         }
+        tryRefresh();
         Optional<Spice> spice = CuisineAPI.findSpice(stack);
         if (spice.isPresent()) {
             if (simulate) {
@@ -114,9 +113,10 @@ public class SpiceHandler implements ISpiceHandler {
         if (slotCount == 0 || slot == slotCount) {
             return ItemStack.EMPTY;
         }
+        tryRefresh();
         Pair<IItemHandler, Integer> pair = getLocalSlot(slot);
         ItemStack ret = pair.getLeft().extractItem(pair.getRight(), amount, simulate);
-        if (!simulate && ret.getItem() instanceof SpiceBottleItem) {
+        if (!simulate) {
             SpiceBottleItem.getSpice(ret).ifPresent(spice -> {
                 spiceCounts.addTo(spice, -SpiceBottleItem.getDurability(ret));
             });
@@ -136,6 +136,7 @@ public class SpiceHandler implements ISpiceHandler {
 
     @Override
     public void addMultiblock(KitchenMultiblock multiblock) {
+        tryRefresh();
         IItemHandler handler = multiblock.x;
         if (handler == null || handler == this || handlers.contains(handler)) {
             return;
@@ -145,9 +146,6 @@ public class SpiceHandler implements ISpiceHandler {
         slotCount += slots;
         for (int i = 0; i < slots; i++) {
             ItemStack container = handler.getStackInSlot(i);
-            if (!(container.getItem() instanceof SpiceBottleItem)) {
-                continue;
-            }
             SpiceBottleItem.getSpice(container).ifPresent(spice -> {
                 spiceCounts.addTo(spice, SpiceBottleItem.getDurability(container));
             });
@@ -156,15 +154,13 @@ public class SpiceHandler implements ISpiceHandler {
 
     @Override
     public void removeMultiblock(KitchenMultiblock multiblock) {
+        tryRefresh();
         IItemHandler handler = multiblock.x;
         if (handlers.remove(handler)) {
             int slots = handler.getSlots();
             slotCount -= slots;
             for (int i = 0; i < slots; i++) {
                 ItemStack container = handler.getStackInSlot(i);
-                if (!(container.getItem() instanceof SpiceBottleItem)) {
-                    return;
-                }
                 SpiceBottleItem.getSpice(container).ifPresent(spice -> {
                     spiceCounts.addTo(spice, -SpiceBottleItem.getDurability(container));
                 });
@@ -174,12 +170,40 @@ public class SpiceHandler implements ISpiceHandler {
 
     @Override
     public Object2IntMap<Spice> getSpices() {
+        tryRefresh();
         return Object2IntMaps.unmodifiable(spiceCounts);
     }
 
     @Override
     public boolean useSpices(Object2IntMap<Spice> spices) {
+        tryRefresh();
         // TODO Auto-generated method stub
         return false;
+    }
+
+    @Override
+    public void addSpice(Spice spice, int incr) {
+        tryRefresh();
+        int old = spiceCounts.getInt(spice);
+        if (old + incr > 0) {
+            spiceCounts.put(spice, old + incr);
+        } else {
+            spiceCounts.removeInt(spice);
+        }
+    }
+
+    private void tryRefresh() {
+        if (dataPackID != DeferredReloadListener.INSTANCE.getDataPackID()) {
+            spiceCounts.clear();
+            for (IItemHandler handler : handlers) {
+                for (int i = 0; i < handler.getSlots(); i++) {
+                    ItemStack container = handler.getStackInSlot(i);
+                    SpiceBottleItem.getSpice(container).ifPresent(spice -> {
+                        spiceCounts.addTo(spice, SpiceBottleItem.getDurability(container));
+                    });
+                }
+            }
+            dataPackID = DeferredReloadListener.INSTANCE.getDataPackID();
+        }
     }
 }

@@ -4,14 +4,14 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraft.util.text.ITextComponent;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.LogicalServerSide;
 import snownee.cuisine.api.RecipeRule;
 import snownee.cuisine.impl.rule.NoFoodRecipeRule;
 
-public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
+public class CuisineRecipe extends CuisineRegistryEntry<CuisineRecipe> {
 
     private CuisineFood result;
     private int priority;
@@ -32,17 +32,18 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
         return cookware;
     }
 
+    @Override
     @LogicalServerSide
     public boolean validate() {
         if (rules.stream().noneMatch(RecipeRule::isFoodRule)) {
             rules.add(NoFoodRecipeRule.INSTANCE);
         }
-        return getResult() != null && rules.stream().allMatch(rule -> rule.acceptCookware(cookware));
+        return valid = getResult() != null && rules.stream().allMatch(rule -> rule.acceptCookware(cookware));
     }
 
     @LogicalServerSide
     public boolean matches(FoodBuilder<?> builder) {
-        return CuisineRegistries.RECIPES.containsValue(this) && builder.getCookware() == getCookware() && rules.stream().allMatch(rule -> rule.test(builder));
+        return isValid() && builder.getCookware() == getCookware() && rules.stream().allMatch(rule -> rule.test(builder));
     }
 
     @Override
@@ -66,5 +67,10 @@ public class CuisineRecipe extends ForgeRegistryEntry<CuisineRecipe> {
             buf.writeRegistryIdUnsafe(CuisineRegistries.FOODS, entry.result);
         }
 
+    }
+
+    @Override
+    public ITextComponent getDisplayName() {
+        return result.getDisplayName();
     }
 }

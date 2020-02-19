@@ -19,13 +19,12 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import snownee.cuisine.api.Bonus;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.LogicalServerSide;
 import snownee.cuisine.api.tag.MaterialTags;
 
-public class Material extends ForgeRegistryEntry<Material> {
+public class Material extends CuisineRegistryEntry<Material> {
 
     private ImmutableSet<Item> items = ImmutableSet.of();
     private ImmutableSet<Tag<Item>> tags = ImmutableSet.of();
@@ -53,6 +52,7 @@ public class Material extends ForgeRegistryEntry<Material> {
         return stars.get(star);
     }
 
+    @Override
     public ITextComponent getDisplayName() {
         if (translationKey == null) {
             if (!items.isEmpty()) {
@@ -78,9 +78,10 @@ public class Material extends ForgeRegistryEntry<Material> {
         return "Material{" + getRegistryName() + "}";
     }
 
+    @Override
     @LogicalServerSide
     public boolean validate() {
-        return !items.isEmpty() || !tags.stream().allMatch(tag -> tag.getAllElements().isEmpty());
+        return valid = !items.isEmpty() || !tags.stream().allMatch(tag -> tag.getAllElements().isEmpty());
     }
 
     public static class Serializer implements RegistrySerializer<Material> {

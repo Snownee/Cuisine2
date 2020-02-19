@@ -13,13 +13,14 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
 import snownee.cuisine.api.registry.CuisineFood;
 import snownee.cuisine.api.registry.CuisineRecipe;
+import snownee.cuisine.api.registry.CuisineRegistryEntry;
 import snownee.cuisine.api.registry.Material;
 import snownee.cuisine.api.registry.RegistrySerializer;
 import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.base.network.PlayerPacket;
 import snownee.cuisine.data.DeferredDataReloader;
 
-public class SSyncRegistryPacket<T extends IForgeRegistryEntry<T>> extends PlayerPacket {
+public class SSyncRegistryPacket<T extends CuisineRegistryEntry<T>> extends PlayerPacket {
 
     public final ForgeRegistry<T> registry;
     public final RegistrySerializer<T> serializer;
@@ -39,6 +40,7 @@ public class SSyncRegistryPacket<T extends IForgeRegistryEntry<T>> extends Playe
         boolean noWarning = true;
         ModLoadingContext ctx = ModLoadingContext.get();
         registry.unfreeze();
+        registry.getValues().forEach(CuisineRegistryEntry::invalidate);
         registry.clear();
         int n = buf.readVarInt();
         for (int i = 0; i < n; i++) {
@@ -80,7 +82,7 @@ public class SSyncRegistryPacket<T extends IForgeRegistryEntry<T>> extends Playe
 
     }
 
-    public static <T extends IForgeRegistryEntry<T>> RegistrySerializer<T> getSerializer(ForgeRegistry<T> registry) {
+    public static <T extends CuisineRegistryEntry<T>> RegistrySerializer<T> getSerializer(ForgeRegistry<T> registry) {
         switch (registry.getRegistryName().getPath()) {
         case "material":
             return (RegistrySerializer<T>) new Material.Serializer();
