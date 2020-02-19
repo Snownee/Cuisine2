@@ -19,6 +19,7 @@ import snownee.cuisine.cookware.container.BowlContainer;
 import snownee.cuisine.cookware.container.CookwareContainer;
 import snownee.cuisine.cookware.network.CBeginCookingPacket;
 import snownee.cuisine.cookware.tile.CookwareTile;
+import snownee.cuisine.cookware.tile.HeatingCookwareTile;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiModule;
 import snownee.kiwi.Name;
@@ -41,7 +42,7 @@ public final class CookwareModule extends AbstractModule {
     @Name("saucepan")
     public static final Cookware SAUCEPAN_TYPE = new Cookware();
     @Name("saucepan")
-    public static final TileEntityType<CookwareTile> SAUCEPAN_TILE = TileEntityType.Builder.create(() -> new CookwareTile(SAUCEPAN_TYPE), SAUCEPAN).build(null);
+    public static final TileEntityType<HeatingCookwareTile> SAUCEPAN_TILE = TileEntityType.Builder.create(() -> new HeatingCookwareTile(SAUCEPAN_TYPE), SAUCEPAN).build(null);
     @Name("saucepan")
     public static final ContainerType<CookwareContainer> SAUCEPAN_CONTAINER = new ContainerType<>((id, inv) -> new CookwareContainer(SAUCEPAN_TYPE, id, inv));
 

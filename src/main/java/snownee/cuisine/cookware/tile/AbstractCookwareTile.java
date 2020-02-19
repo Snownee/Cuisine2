@@ -56,15 +56,19 @@ abstract public class AbstractCookwareTile extends KitchenTile implements ITicka
     }
 
     public boolean canCook() {
-        return getOutputHandler().getStackInSlot(0).isEmpty();
+        return true;
+    }
+
+    public boolean isOutputFull() {
+        return !getOutputHandler().getStackInSlot(0).isEmpty();
     }
 
     @LogicalServerSide
     public boolean cookAsItem(@Nullable Entity entity, boolean insertEntityInventory) {
-        if (isRemoved()) {
+        if (isRemoved() || !canCook()) {
             return false;
         }
-        if (!canCook() && !insertEntityInventory || entity == null || !entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).isPresent()) {
+        if (isOutputFull() && !insertEntityInventory || entity == null || !entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).isPresent()) {
             return false;
         }
         FoodBuilder<?> builder = foodBuilder(this, entity);

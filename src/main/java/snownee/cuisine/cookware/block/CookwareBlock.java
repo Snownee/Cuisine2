@@ -13,7 +13,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import snownee.cuisine.base.block.CookstoveBlock;
 import snownee.cuisine.cookware.tile.CookwareTile;
+import snownee.cuisine.cookware.tile.HeatingCookwareTile;
 import snownee.kiwi.block.ModBlock;
 
 public class CookwareBlock extends HorizontalBlock {
@@ -53,6 +55,17 @@ public class CookwareBlock extends HorizontalBlock {
             }
         }
         return ActionResultType.SUCCESS;
+    }
+
+    @Override
+    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+        if (!pos.down().equals(fromPos)) {
+            return;
+        }
+        TileEntity tile = worldIn.getTileEntity(pos);
+        if (tile instanceof HeatingCookwareTile) {
+            ((HeatingCookwareTile) tile).heating = blockIn instanceof CookstoveBlock;
+        }
     }
 
 }

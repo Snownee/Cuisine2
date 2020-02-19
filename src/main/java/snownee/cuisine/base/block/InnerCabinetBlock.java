@@ -6,7 +6,6 @@ import net.minecraft.block.HorizontalBlock;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
-import snownee.cuisine.api.tile.KitchenTile;
 import snownee.cuisine.base.BaseModule;
 import snownee.kiwi.block.ModBlock;
 
@@ -24,11 +23,7 @@ public class InnerCabinetBlock extends HorizontalBlock {
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return createTileEntity();
-    }
-
-    public KitchenTile createTileEntity() {
-        return new KitchenTile(BaseModule.INNER_CABINET_TILE, "0");
+        return BaseModule.createConnector();
     }
 
     @Override

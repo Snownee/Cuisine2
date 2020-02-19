@@ -121,7 +121,7 @@ public class CookwareContainer extends Container {
     }
 
     public void startCooking(boolean cycle) {
-        if (tile == null || tile.isRemoved() || !cycle && !tile.canCook()) {
+        if (tile == null || tile.isRemoved() || !tile.canCook() || !cycle && tile.isOutputFull()) {
             return;
         }
         if (tile.getCookingPlayer() != null && tile.getCookingPlayer() != player) {

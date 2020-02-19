@@ -23,6 +23,7 @@ import snownee.cuisine.Cuisine;
 import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.tile.KitchenTile;
 import snownee.cuisine.base.block.CabinetBlock;
+import snownee.cuisine.base.block.CookstoveBlock;
 import snownee.cuisine.base.block.InnerCabinetBlock;
 import snownee.cuisine.base.block.SpiceRackBlock;
 import snownee.cuisine.base.client.SpiceRackScreen;
@@ -70,8 +71,11 @@ public class BaseModule extends AbstractModule {
     public static final TileEntityType<CabinetTile> CABINET_TILE = TileEntityType.Builder.create(CabinetTile::new, CABINET).build(null);
 
     public static final InnerCabinetBlock INNER_CABINET = new InnerCabinetBlock(blockProp(Material.ROCK));
-    @Name("inner_cabinet")
-    public static final TileEntityType<KitchenTile> INNER_CABINET_TILE = TileEntityType.Builder.create(INNER_CABINET::createTileEntity, INNER_CABINET).build(null);
+
+    public static final CookstoveBlock COOKSTOVE = new CookstoveBlock(blockProp(Material.ROCK));
+
+    public static final Set<Block> CONNECTOR_VALID_BLOCKS = Sets.newHashSet(INNER_CABINET, COOKSTOVE);
+    public static final TileEntityType<KitchenTile> CONNECTOR = new TileEntityType<>(BaseModule::createConnector, CONNECTOR_VALID_BLOCKS, null);
 
     public static final ManualItem MANUAL = new ManualItem();
     @NoGroup
@@ -91,5 +95,9 @@ public class BaseModule extends AbstractModule {
     @Override
     protected void serverInit(FMLServerStartingEvent event) {
         Cuisine.getServer().getWorld(DimensionType.OVERWORLD).getSavedData();
+    }
+
+    public static KitchenTile createConnector() {
+        return new KitchenTile(CONNECTOR, "0");
     }
 }

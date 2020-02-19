@@ -19,9 +19,9 @@ public class Cookware extends ForgeRegistryEntry<Cookware> {
     private int inputSlots = 9;
     private int cookingTime = 20;
     private ContainerType<?> container;
-    private TileEntityType<CookwareTile> tileType;
+    private TileEntityType<? extends CookwareTile> tileType;
 
-    public Cookware setBlocks(@Nullable TileEntityType<CookwareTile> tileType, Block... blocks) {
+    public Cookware setBlocks(@Nullable TileEntityType<? extends CookwareTile> tileType, Block... blocks) {
         this.blocks = ImmutableSet.copyOf(blocks);
         this.tileType = tileType;
         if (tileType != null) {
@@ -38,7 +38,7 @@ public class Cookware extends ForgeRegistryEntry<Cookware> {
         return blocks;
     }
 
-    public TileEntityType<CookwareTile> getTileType() {
+    public TileEntityType<? extends CookwareTile> getTileType() {
         return tileType;
     }
 
