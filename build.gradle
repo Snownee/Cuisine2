@@ -117,6 +117,7 @@ dependencies {
 jar {
     exclude "**/*.bat"
     exclude "**/*.psd"
+    exclude "**/*.txt"
     exclude "**/*.d"
     manifest {
         attributes([
