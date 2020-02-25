@@ -12,6 +12,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.annotations.Expose;
 
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
@@ -26,8 +27,11 @@ import snownee.kiwi.util.Util;
 
 public class CountRegistryRecipeRule<T extends IForgeRegistryEntry<T>> implements RecipeRule {
 
+    @Expose
     private ImmutableSet<T> materials;
+    @Expose
     private int min;
+    @Expose
     private boolean food;
 
     public CountRegistryRecipeRule(ImmutableSet<T> materials, int min, boolean food) {

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import it.unimi.dsi.fastutil.ints.IntArraySet;
@@ -26,9 +27,13 @@ import snownee.cuisine.api.tag.MaterialTags;
 
 public class Material extends CuisineRegistryEntry<Material> {
 
+    @Expose
     private ImmutableSet<Item> items = ImmutableSet.of();
+    @Expose
     private ImmutableSet<Tag<Item>> tags = ImmutableSet.of();
+    @Expose
     private ImmutableListMultimap<Integer, Bonus> stars = ImmutableListMultimap.of();
+    @Expose
     @SerializedName("translation_key")
     private String translationKey;
     private final ReverseTagWrapper<Material> reverseTags = new ReverseTagWrapper<>(this, MaterialTags::getGeneration, MaterialTags::getCollection);

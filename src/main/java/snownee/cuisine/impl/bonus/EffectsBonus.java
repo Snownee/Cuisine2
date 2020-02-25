@@ -11,6 +11,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.annotations.Expose;
 
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
@@ -20,6 +21,7 @@ import snownee.cuisine.api.Bonus;
 import snownee.kiwi.util.Util;
 
 public class EffectsBonus implements Bonus {
+    @Expose
     private final ImmutableList<Pair<EffectInstance, Float>> effects;
 
     public EffectsBonus(ImmutableList<Pair<EffectInstance, Float>> effects) {

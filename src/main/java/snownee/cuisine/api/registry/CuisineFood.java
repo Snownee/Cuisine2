@@ -2,6 +2,7 @@ package snownee.cuisine.api.registry;
 
 import javax.annotation.Nullable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.block.Block;
@@ -19,10 +20,14 @@ import snownee.cuisine.api.LogicalServerSide;
 
 public class CuisineFood extends CuisineRegistryEntry<CuisineFood> implements IItemProvider {
 
+    @Expose
     private Item item = Items.AIR;
+    @Expose
     private Block block = Blocks.AIR;
+    @Expose
     @SerializedName("max_stars")
     private int maxStars = 2;
+    @Expose
     @SerializedName("translation_key")
     private String translationKey;
 

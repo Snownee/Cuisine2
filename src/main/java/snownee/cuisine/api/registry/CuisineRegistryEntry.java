@@ -6,7 +6,7 @@ import snownee.cuisine.api.LogicalServerSide;
 
 public abstract class CuisineRegistryEntry<V extends CuisineRegistryEntry<V>> extends ForgeRegistryEntry<V> {
 
-    protected volatile boolean valid;
+    protected boolean valid;
 
     @LogicalServerSide
     public abstract boolean validate();

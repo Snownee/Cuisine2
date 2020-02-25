@@ -1,11 +1,14 @@
 package snownee.cuisine.impl.rule;
 
+import com.google.gson.annotations.Expose;
+
 import snownee.cuisine.api.FoodBuilder;
 import snownee.cuisine.api.RecipeRule;
 import snownee.cuisine.api.registry.Cookware;
 
 public class NotRecipeRule implements RecipeRule {
 
+    @Expose
     private RecipeRule rule;
 
     public NotRecipeRule(RecipeRule rule) {

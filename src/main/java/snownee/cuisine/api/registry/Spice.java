@@ -3,6 +3,7 @@ package snownee.cuisine.api.registry;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import it.unimi.dsi.fastutil.ints.IntArraySet;
@@ -27,14 +28,19 @@ public class Spice extends CuisineRegistryEntry<Spice> {
     //TODO remove
     private int color = 0xff0000;
 
+    @Expose
     private ImmutableSet<Item> items = ImmutableSet.of();
+    @Expose
     private ImmutableSet<Tag<Item>> tags = ImmutableSet.of();
+    @Expose
     private ImmutableSet<Fluid> fluids = ImmutableSet.of();
+    @Expose
     @SerializedName("fluid_tags")
     private ImmutableSet<Tag<Fluid>> fluidTags = ImmutableSet.of();
-    private ReverseTagWrapper<Spice> reverseTags = new ReverseTagWrapper<>(this, SpiceTags::getGeneration, SpiceTags::getCollection);
+    @Expose
     @SerializedName("translation_key")
     private String translationKey;
+    private final ReverseTagWrapper<Spice> reverseTags = new ReverseTagWrapper<>(this, SpiceTags::getGeneration, SpiceTags::getCollection);
 
     private Spice() {}
 

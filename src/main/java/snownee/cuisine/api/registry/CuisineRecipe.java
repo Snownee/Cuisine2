@@ -3,6 +3,8 @@ package snownee.cuisine.api.registry;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.gson.annotations.Expose;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import snownee.cuisine.api.CuisineRegistries;
@@ -13,9 +15,13 @@ import snownee.cuisine.impl.rule.NoFoodRecipeRule;
 
 public class CuisineRecipe extends CuisineRegistryEntry<CuisineRecipe> {
 
+    @Expose
     private CuisineFood result;
+    @Expose
     private int priority;
+    @Expose
     private Cookware cookware;
+    @Expose
     private List<RecipeRule> rules = Collections.EMPTY_LIST;
 
     private CuisineRecipe() {}

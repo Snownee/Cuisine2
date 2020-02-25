@@ -40,6 +40,7 @@ public class CuisineDataManager<T extends CuisineRegistryEntry<T>> extends JsonR
             .setPrettyPrinting()
             .disableHtmlEscaping()
             .enableComplexMapKeySerialization()
+            .excludeFieldsWithoutExposeAnnotation()
             .registerTypeAdapterFactory(new ForgeRegistryAdapterFactory())
             .registerTypeAdapter(ImmutableListMultimap.class, new StarsAdapter())
             .registerTypeAdapter(ImmutableList.class, ImmutableListTypeAdapter.INSTANCE)
