@@ -59,7 +59,7 @@
   "block.cuisine.spice_rack": "Spice Rack",
   "block.cuisine.mill": "Mill",
   "block.cuisine.cabinet": "Cabinet",
-  "block.cuisine.inner_cabinet": "Inner Cabinet",
+  "block.cuisine.connector": "Kitchen Bridge",
   
   "__comment": "Commands",
   "commands.cuisine.star.info_not_found": "Cannot found research info.",

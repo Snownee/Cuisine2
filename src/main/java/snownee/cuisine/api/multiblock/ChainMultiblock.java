@@ -223,6 +223,9 @@ public abstract class ChainMultiblock<T extends IMasterHandler, X> implements Su
             CompoundNBT element = (CompoundNBT) e;
             BlockPos pos = NBTUtil.readBlockPos(element);
             Supplier<ChainMultiblock<T, X>> multiblock = Lazy.of(() -> {
+                if (!this.tile.getWorld().isBlockPresent(pos)) {
+                    return null;
+                }
                 TileEntity tile = this.tile.getWorld().getTileEntity(pos);
                 if (tile != null) {
                     return tile.getCapability(CuisineCapabilities.MULTIBLOCK).orElse(null);

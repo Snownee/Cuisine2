@@ -1,0 +1,14 @@
+{
+  "type": "cuisine:stonecutting_texture",
+  "conditions": [
+    {
+      "type": "kiwi:is_loaded",
+      "module": "cuisine:base"
+    }
+  ],
+  "ingredient": {
+    "type": "kiwi:full_block"
+  },
+  "result": "cuisine:connector",
+  "count": 1
+}

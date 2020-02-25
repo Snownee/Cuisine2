@@ -23,7 +23,7 @@ public class CabinetTile extends KitchenTile implements INamedContainerProvider 
     private final LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> new ItemStackHandler(27));
 
     public CabinetTile() {
-        super(BaseModule.CABINET_TILE, "0");
+        super(BaseModule.CABINET_TILE, "0", "1");
     }
 
     @Override

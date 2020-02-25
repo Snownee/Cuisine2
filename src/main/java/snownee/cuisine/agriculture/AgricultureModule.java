@@ -2,12 +2,13 @@ package snownee.cuisine.agriculture;
 
 import net.minecraft.block.Blocks;
 import snownee.cuisine.agriculture.block.CuisineCropsBlock;
+import snownee.cuisine.api.CuisineAPI;
 import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiModule;
 import snownee.kiwi.item.ModItem;
 
 @KiwiModule(name = "agriculture")
-@KiwiModule.Group("cuisine:base")
+@KiwiModule.Group(CuisineAPI.MODID)
 @KiwiModule.Optional
 public class AgricultureModule extends AbstractModule {
 

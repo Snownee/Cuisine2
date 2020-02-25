@@ -1,0 +1,32 @@
+{
+  "type": "kiwi:texture_block",
+  "conditions": [
+    {
+      "type": "kiwi:is_loaded",
+      "module": "cuisine:base"
+    }
+  ],
+  "pattern": [
+    "1",
+    "#",
+    "0"
+  ],
+  "key": {
+    "1": {
+      "type": "kiwi:full_block"
+    },
+    "#": {
+      "tag": "forge:chests/wooden"
+    },
+    "0": {
+      "item": "cuisine:connector"
+    }
+  },
+  "texture": {
+    "0": "0",
+    "1": "1"
+  },
+  "result": {
+    "item": "cuisine:cabinet"
+  }
+}

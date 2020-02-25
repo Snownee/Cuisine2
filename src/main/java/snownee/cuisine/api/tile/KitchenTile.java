@@ -18,11 +18,12 @@ public class KitchenTile extends TextureTile {
 
     public KitchenTile(TileEntityType<?> tileEntityTypeIn, String... textureKeys) {
         super(tileEntityTypeIn, textureKeys);
+        persistData = false;
     }
 
     @Override
     public CompoundNBT getUpdateTag() {
-        return writePacketData(new CompoundNBT());
+        return writePacketData(writeInternal(new CompoundNBT()));
     }
 
     @Override
@@ -31,6 +32,7 @@ public class KitchenTile extends TextureTile {
         if (world == null) {
             multiblock = new KitchenMultiblock(this, data.getTag("Multiblock"), getItemHandler());
         }
+        super.readPacketData(compound);
         super.read(compound);
     }
 
@@ -39,6 +41,7 @@ public class KitchenTile extends TextureTile {
         if (multiblock != null) {
             compound.put("Multiblock", multiblock.serializeNBT());
         }
+        super.writePacketData(compound);
         return super.write(compound);
     }
 

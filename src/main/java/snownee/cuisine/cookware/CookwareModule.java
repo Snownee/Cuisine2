@@ -11,6 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import snownee.cuisine.api.CuisineAPI;
 import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.base.network.SUpdateSpicesPacket;
 import snownee.cuisine.cookware.block.CookwareBlock;
@@ -27,7 +28,7 @@ import snownee.kiwi.network.NetworkChannel;
 
 @KiwiModule(name = "cookware", dependencies = "@core")
 @KiwiModule.Optional
-@KiwiModule.Group("decorations")
+@KiwiModule.Group(CuisineAPI.MODID)
 public final class CookwareModule extends AbstractModule {
 
     public static final CookwareBlock OVEN = new CookwareBlock(blockProp(Material.IRON));

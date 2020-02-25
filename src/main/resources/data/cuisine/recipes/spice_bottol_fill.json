@@ -1,4 +1,10 @@
 {
   "type": "cuisine:spice_bottle_fill",
+  "conditions": [
+    {
+      "type": "kiwi:is_loaded",
+      "module": "cuisine:base"
+    }
+  ],
   "item": "cuisine:spice_bottle"
 }
