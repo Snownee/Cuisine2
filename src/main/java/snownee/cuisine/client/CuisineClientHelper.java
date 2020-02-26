@@ -11,6 +11,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix4f;
@@ -33,6 +34,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import snownee.cuisine.api.registry.Spice;
 import snownee.cuisine.base.BaseModule;
 import snownee.cuisine.base.item.RecipeItem;
 import snownee.cuisine.base.item.SpiceBottleItem;
@@ -40,18 +42,19 @@ import snownee.kiwi.util.NBTHelper;
 
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(bus = Bus.MOD, value = Dist.CLIENT)
-public final class CuisineItemRendering {
+public final class CuisineClientHelper {
 
     private static final RenderType MAP_BACKGROUND = RenderType.text(new ResourceLocation("textures/map/map_background.png"));
     private static final RenderType MAP_BACKGROUND_CHECKERBOARD = RenderType.text(new ResourceLocation("textures/map/map_background_checkerboard.png"));
     static final Minecraft MC = Minecraft.getInstance();
     private static final Cache<Integer, RecordRenderingContext> RECORDS = CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build();
     private static long lastShowRecordTime;
+    public static Object2IntMap<Spice> spices;
 
-    private CuisineItemRendering() {}
+    private CuisineClientHelper() {}
 
     static {
-        MinecraftForge.EVENT_BUS.register(CuisineItemRendering.class);
+        MinecraftForge.EVENT_BUS.register(CuisineClientHelper.class);
     }
 
     @SubscribeEvent

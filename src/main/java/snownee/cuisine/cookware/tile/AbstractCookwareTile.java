@@ -68,7 +68,7 @@ abstract public class AbstractCookwareTile extends KitchenTile implements ITicka
         if (isRemoved() || !canCook()) {
             return false;
         }
-        if (isOutputFull() && !insertEntityInventory || entity == null || !entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).isPresent()) {
+        if (isOutputFull() && (!insertEntityInventory || entity == null || !entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).isPresent())) {
             return false;
         }
         FoodBuilder<?> builder = foodBuilder(this, entity);

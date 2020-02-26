@@ -1,14 +1,19 @@
-package snownee.cuisine.base.network;
+package snownee.cuisine.cookware.network;
 
 import java.util.function.Supplier;
 
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.registry.Spice;
+import snownee.cuisine.base.network.PlayerPacket;
+import snownee.cuisine.client.CuisineClientHelper;
+import snownee.cuisine.cookware.client.ISpicePickerScreen;
 
 public class SUpdateSpicesPacket extends PlayerPacket {
 
@@ -16,6 +21,7 @@ public class SUpdateSpicesPacket extends PlayerPacket {
 
     public SUpdateSpicesPacket(Object2IntMap<Spice> spices) {
         this.spices = spices;
+        System.out.println(spices);
     }
 
     public static class Handler extends PacketHandler<SUpdateSpicesPacket> {
@@ -41,9 +47,12 @@ public class SUpdateSpicesPacket extends PlayerPacket {
 
         @Override
         public void handle(SUpdateSpicesPacket pkt, Supplier<Context> ctx) {
-//            if (ctx.get().getSender().container != null) {
-                System.out.println(pkt.spices);
-//            }
+            Screen screen = Minecraft.getInstance().currentScreen;
+            if (screen instanceof ISpicePickerScreen) {
+                ((ISpicePickerScreen) screen).getSpicePicker().update(pkt.spices);
+            } else {
+                CuisineClientHelper.spices = pkt.spices;
+            }
             ctx.get().setPacketHandled(true);
         }
 

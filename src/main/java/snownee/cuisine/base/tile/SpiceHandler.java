@@ -2,11 +2,11 @@ package snownee.cuisine.base.tile;
 
 import java.util.LinkedList;
 import java.util.Optional;
-
-import org.apache.commons.lang3.tuple.Pair;
+import java.util.function.IntPredicate;
 
 import com.google.common.collect.Lists;
 
+import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap.BasicEntry;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -39,14 +39,14 @@ public class SpiceHandler implements ISpiceHandler {
         return slotCount == 0 ? 0 : slotCount + 1;
     }
 
-    private Pair<IItemHandler, Integer> getLocalSlot(int slot) {
+    private BasicEntry<IItemHandler> getLocalSlot(int slot) {
         if (slot < 0 || slot >= slotCount) {
             throw new RuntimeException("Slot " + slot + " not in valid range - [0," + slotCount + ")");
         }
         int i = 0;
         for (IItemHandler handler : handlers) {
             if (i + handler.getSlots() > slot) {
-                return Pair.of(handler, slot - i);
+                return new BasicEntry<>(handler, slot - i);
             }
             i += handler.getSlots();
         }
@@ -58,8 +58,8 @@ public class SpiceHandler implements ISpiceHandler {
         if (slot == slotCount) {
             return ItemStack.EMPTY;
         }
-        Pair<IItemHandler, Integer> pair = getLocalSlot(slot);
-        return pair.getLeft().getStackInSlot(pair.getRight());
+        BasicEntry<IItemHandler> pair = getLocalSlot(slot);
+        return pair.getKey().getStackInSlot(pair.getIntValue());
     }
 
     @Override
@@ -97,9 +97,9 @@ public class SpiceHandler implements ISpiceHandler {
         if (slot == slotCount) {
             return stack;
         }
-        Pair<IItemHandler, Integer> pair = getLocalSlot(slot);
+        BasicEntry<IItemHandler> pair = getLocalSlot(slot);
         int c = stack.getCount();
-        ItemStack ret = pair.getLeft().insertItem(pair.getRight(), stack, simulate);
+        ItemStack ret = pair.getKey().insertItem(pair.getIntValue(), stack, simulate);
         if (!simulate && ret.getCount() != c) {
             SpiceBottleItem.getSpice(stack).ifPresent(s -> {
                 spiceCounts.addTo(s, SpiceBottleItem.VOLUME_PER_ITEM * (c - ret.getCount()));
@@ -114,8 +114,8 @@ public class SpiceHandler implements ISpiceHandler {
             return ItemStack.EMPTY;
         }
         tryRefresh();
-        Pair<IItemHandler, Integer> pair = getLocalSlot(slot);
-        ItemStack ret = pair.getLeft().extractItem(pair.getRight(), amount, simulate);
+        BasicEntry<IItemHandler> pair = getLocalSlot(slot);
+        ItemStack ret = pair.getKey().extractItem(pair.getIntValue(), amount, simulate);
         if (!simulate) {
             SpiceBottleItem.getSpice(ret).ifPresent(spice -> {
                 spiceCounts.addTo(spice, -SpiceBottleItem.getDurability(ret));
@@ -130,8 +130,8 @@ public class SpiceHandler implements ISpiceHandler {
         if (slot == slotCount) {
             return Items.AIR.getMaxStackSize();
         }
-        Pair<IItemHandler, Integer> pair = getLocalSlot(slot);
-        return pair.getLeft().getSlotLimit(pair.getRight());
+        BasicEntry<IItemHandler> pair = getLocalSlot(slot);
+        return pair.getKey().getSlotLimit(pair.getIntValue());
     }
 
     @Override
@@ -205,5 +205,6 @@ public class SpiceHandler implements ISpiceHandler {
             }
             dataPackID = DeferredReloadListener.INSTANCE.getDataPackID();
         }
+        spiceCounts.values().removeIf((IntPredicate) i -> i <= 0);
     }
 }

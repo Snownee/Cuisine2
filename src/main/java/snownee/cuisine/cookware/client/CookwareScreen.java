@@ -13,17 +13,24 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import snownee.cuisine.client.CuisineClientHelper;
 import snownee.cuisine.cookware.container.CookwareContainer;
 import snownee.cuisine.cookware.network.CBeginCookingPacket;
 
 @OnlyIn(Dist.CLIENT)
-public class CookwareScreen extends ContainerScreen<CookwareContainer> {
+public class CookwareScreen extends ContainerScreen<CookwareContainer> implements ISpicePickerScreen {
 
     private static final ResourceLocation CRAFTING_TABLE_GUI_TEXTURES = new ResourceLocation("textures/gui/container/crafting_table.png");
     private static final ResourceLocation FURNACE_GUI_TEXTURES = new ResourceLocation("textures/gui/container/furnace.png");
 
+    protected final SpicePicker spicePicker = new SpicePicker();
+
     public CookwareScreen(CookwareContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
+        if (CuisineClientHelper.spices != null) {
+            spicePicker.update(CuisineClientHelper.spices);
+            CuisineClientHelper.spices = null;
+        }
     }
 
     @Override
@@ -41,6 +48,7 @@ public class CookwareScreen extends ContainerScreen<CookwareContainer> {
     public void render(int x, int y, float pTicks) {
         this.renderBackground();
         super.render(x, y, pTicks);
+        spicePicker.render(50, 50, x, y, pTicks);
         this.renderHoveredToolTip(x, y);
     }
 
@@ -63,6 +71,11 @@ public class CookwareScreen extends ContainerScreen<CookwareContainer> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         this.font.drawString(this.title.getFormattedText(), 28.0F, 6.0F, 4210752);
         this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, this.ySize - 96 + 2, 4210752);
+    }
+
+    @Override
+    public SpicePicker getSpicePicker() {
+        return spicePicker;
     }
 
 }

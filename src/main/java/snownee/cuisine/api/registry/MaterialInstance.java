@@ -8,6 +8,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.collect.Maps;
 
+import it.unimi.dsi.fastutil.objects.AbstractObject2FloatMap.BasicEntry;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import snownee.cuisine.api.Bonus;
@@ -45,9 +46,9 @@ public class MaterialInstance extends Pair<Material, Integer> {
     public Collection<EffectInstance> getEffects() {
         Map<Effect, EffectInstance> map = Maps.newHashMap();
         for (Bonus bonus : getBonus()) {
-            for (Pair<EffectInstance, Float> pair : bonus.addEffects()) {
-                if (CuisineAPI.RAND.nextFloat() < pair.getRight()) {
-                    EffectInstance effect = pair.getLeft();
+            for (BasicEntry<EffectInstance> pair : bonus.addEffects()) {
+                if (CuisineAPI.RAND.nextFloat() < pair.getFloatValue()) {
+                    EffectInstance effect = pair.getKey();
                     if (map.containsKey(effect.getPotion())) {
                         map.get(effect.getPotion()).combine(effect);
                     } else {
