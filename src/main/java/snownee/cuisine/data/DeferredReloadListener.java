@@ -82,6 +82,7 @@ public enum DeferredReloadListener implements IFutureReloadListener {
     }
 
     public static enum DummyStage implements IStage {
+        @SuppressWarnings("hiding")
         INSTANCE;
 
         @Override
