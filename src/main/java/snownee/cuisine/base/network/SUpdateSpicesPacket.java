@@ -1,4 +1,4 @@
-package snownee.cuisine.cookware.network;
+package snownee.cuisine.base.network;
 
 import java.util.function.Supplier;
 
@@ -11,9 +11,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import snownee.cuisine.api.CuisineRegistries;
 import snownee.cuisine.api.registry.Spice;
-import snownee.cuisine.base.network.PlayerPacket;
+import snownee.cuisine.base.client.ISpicePickerScreen;
 import snownee.cuisine.client.CuisineClientHelper;
-import snownee.cuisine.cookware.client.ISpicePickerScreen;
 
 public class SUpdateSpicesPacket extends PlayerPacket {
 

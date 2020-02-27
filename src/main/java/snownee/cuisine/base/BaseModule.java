@@ -32,11 +32,12 @@ import snownee.cuisine.base.block.CookstoveBlock;
 import snownee.cuisine.base.block.SpiceRackBlock;
 import snownee.cuisine.base.client.SpiceRackScreen;
 import snownee.cuisine.base.container.SpiceRackContainer;
-import snownee.cuisine.base.crafting.TextureStonecuttingRecipe;
 import snownee.cuisine.base.crafting.SpiceBottleFillingRecipe;
+import snownee.cuisine.base.crafting.TextureStonecuttingRecipe;
 import snownee.cuisine.base.item.ManualItem;
 import snownee.cuisine.base.item.RecipeItem;
 import snownee.cuisine.base.item.SpiceBottleItem;
+import snownee.cuisine.base.network.SUpdateSpicesPacket;
 import snownee.cuisine.base.tile.CabinetTile;
 import snownee.cuisine.base.tile.SpiceRackTile;
 import snownee.kiwi.AbstractModule;
@@ -47,6 +48,7 @@ import snownee.kiwi.NoGroup;
 import snownee.kiwi.client.model.TextureModel;
 import snownee.kiwi.item.ModBlockItem;
 import snownee.kiwi.item.ModItem;
+import snownee.kiwi.network.NetworkChannel;
 
 @SuppressWarnings("unused")
 @KiwiModule(name = "base", dependencies = "@core")
@@ -97,6 +99,11 @@ public class BaseModule extends AbstractModule {
     public static final ModItem PLAIN_CAKE = new ModItem(itemProp());
 
     public static final IRecipeSerializer<TextureStonecuttingRecipe> STONECUTTING_TEXTURE = new SingleItemRecipe.Serializer<>(TextureStonecuttingRecipe::new);
+
+    @Override
+    protected void preInit() {
+        NetworkChannel.register(SUpdateSpicesPacket.class, new SUpdateSpicesPacket.Handler());
+    }
 
     @Override
     @OnlyIn(Dist.CLIENT)

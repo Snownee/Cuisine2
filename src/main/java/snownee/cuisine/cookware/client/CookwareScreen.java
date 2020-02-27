@@ -13,6 +13,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import snownee.cuisine.base.client.ISpicePickerScreen;
+import snownee.cuisine.base.client.SpicePicker;
 import snownee.cuisine.client.CuisineClientHelper;
 import snownee.cuisine.cookware.container.CookwareContainer;
 import snownee.cuisine.cookware.network.CBeginCookingPacket;

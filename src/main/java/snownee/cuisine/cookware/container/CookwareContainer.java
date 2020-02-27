@@ -11,7 +11,7 @@ import net.minecraft.util.IntReferenceHolder;
 import snownee.cuisine.api.LogicalServerSide;
 import snownee.cuisine.api.registry.Cookware;
 import snownee.cuisine.base.item.RecipeItem;
-import snownee.cuisine.cookware.network.SUpdateSpicesPacket;
+import snownee.cuisine.base.network.SUpdateSpicesPacket;
 import snownee.cuisine.cookware.tile.AbstractCookwareTile;
 import snownee.cuisine.cookware.tile.CookwareTile;
 import snownee.cuisine.data.RecordData;

@@ -1,4 +1,4 @@
-package snownee.cuisine.cookware.client;
+package snownee.cuisine.base.client;
 
 import java.util.List;
 

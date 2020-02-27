@@ -18,7 +18,6 @@ import snownee.cuisine.cookware.client.CookwareScreen;
 import snownee.cuisine.cookware.container.BowlContainer;
 import snownee.cuisine.cookware.container.CookwareContainer;
 import snownee.cuisine.cookware.network.CBeginCookingPacket;
-import snownee.cuisine.cookware.network.SUpdateSpicesPacket;
 import snownee.cuisine.cookware.tile.CookwareTile;
 import snownee.cuisine.cookware.tile.HeatingCookwareTile;
 import snownee.kiwi.AbstractModule;
@@ -66,7 +65,6 @@ public final class CookwareModule extends AbstractModule {
     @Override
     protected void preInit() {
         NetworkChannel.register(CBeginCookingPacket.class, new CBeginCookingPacket.Handler());
-        NetworkChannel.register(SUpdateSpicesPacket.class, new SUpdateSpicesPacket.Handler());
     }
 
     @Override
