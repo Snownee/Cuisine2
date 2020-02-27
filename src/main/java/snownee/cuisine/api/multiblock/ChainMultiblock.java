@@ -34,8 +34,6 @@ import snownee.kiwi.schedule.impl.SimpleWorldTask;
 
 public abstract class ChainMultiblock<T extends IMasterHandler, X> implements Supplier<T>, INBTSerializable<CompoundNBT> {
 
-    public static final int MAX_BLOCKS = 5;
-
     protected TileEntity tile;
     @Nullable
     protected LazyOptional<T> handlerCap;
@@ -63,6 +61,8 @@ public abstract class ChainMultiblock<T extends IMasterHandler, X> implements Su
         }
     }
 
+    public abstract int getMaxBlocks();
+
     private void init() {
         World world = tile.getWorld();
         BlockPos pos = tile.getPos();
@@ -79,7 +79,7 @@ public abstract class ChainMultiblock<T extends IMasterHandler, X> implements Su
                         return;
                     }
                 } else {
-                    if (master.all.size() + multiblock.all.size() > MAX_BLOCKS) {
+                    if (master.all.size() + multiblock.all.size() > getMaxBlocks()) {
                         destory();
                         return;
                     }
@@ -102,7 +102,7 @@ public abstract class ChainMultiblock<T extends IMasterHandler, X> implements Su
             master = null;
             handlerCap = LazyOptional.of(this::createNewHandler);
         } else {
-            if (multiblock.all.size() >= MAX_BLOCKS) {
+            if (multiblock.all.size() >= getMaxBlocks()) {
                 destory();
                 return false;
             }
