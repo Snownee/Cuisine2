@@ -247,10 +247,10 @@ public class SpiceBottleItem extends ModItem {
         ItemStack held = playerIn.getHeldItem(handIn);
         if (hasSpice(held)) {
             playerIn.setActiveHand(handIn);
-            return (getUseAction(held) == UseAction.NONE ? ActionResult.func_226250_c_(held) : ActionResult.func_226249_b_(held));
+            return (getUseAction(held) == UseAction.NONE ? ActionResult.resultPass(held) : ActionResult.resultConsume(held));
         }
 
-        return ActionResult.func_226251_d_(held);
+        return ActionResult.resultFail(held);
     }
 
     @Override

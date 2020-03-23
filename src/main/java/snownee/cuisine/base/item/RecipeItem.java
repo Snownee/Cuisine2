@@ -29,8 +29,8 @@ public class RecipeItem extends ModItem {
     public ItemStack make(FoodBuilder<?> builder, CuisineRecipe recipe) {
         DimensionSavedDataManager dataManager = Cuisine.getServer().getWorld(DimensionType.OVERWORLD).getSavedData();
         MapIdTracker tracker = dataManager.getOrCreate(MapIdTracker::new, "idcounts");
-        int id = tracker.field_215163_a.getInt("cuisine.recipe") + 1;
-        tracker.field_215163_a.put("cuisine.recipe", id);
+        int id = tracker.usedIds.getInt("cuisine.recipe") + 1;
+        tracker.usedIds.put("cuisine.recipe", id);
         tracker.markDirty();
         RecordData recipeData = new RecordData(id);
         recipeData.put(builder, recipe);

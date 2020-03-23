@@ -38,7 +38,7 @@ public class CookwareScreen extends ContainerScreen<CookwareContainer> implement
     @Override
     protected void init() {
         super.init();
-        addButton(new Button(88, 32, 28, 23, "Cook", btn -> {
+        addButton(new Button(238, 52, 28, 23, "Cook", btn -> {
             List<ItemStack> stacks = container.getInventory();
             if (!IntStream.range(0, 9).mapToObj(stacks::get).allMatch(ItemStack::isEmpty)) {
                 new CBeginCookingPacket(hasShiftDown()).send();

@@ -44,8 +44,8 @@ import snownee.kiwi.util.NBTHelper;
 @EventBusSubscriber(bus = Bus.MOD, value = Dist.CLIENT)
 public final class CuisineClientHelper {
 
-    private static final RenderType MAP_BACKGROUND = RenderType.text(new ResourceLocation("textures/map/map_background.png"));
-    private static final RenderType MAP_BACKGROUND_CHECKERBOARD = RenderType.text(new ResourceLocation("textures/map/map_background_checkerboard.png"));
+    private static final RenderType MAP_BACKGROUND = RenderType.getText(new ResourceLocation("textures/map/map_background.png"));
+    private static final RenderType MAP_BACKGROUND_CHECKERBOARD = RenderType.getText(new ResourceLocation("textures/map/map_background_checkerboard.png"));
     static final Minecraft MC = Minecraft.getInstance();
     private static final Cache<Integer, RecordRenderingContext> RECORDS = CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build();
     private static long lastShowRecordTime;
@@ -166,7 +166,7 @@ public final class CuisineClientHelper {
         //matrixStackIn.scale(0.0078125F, 0.0078125F, 0.0078125F);
         RecordRenderingContext ctx = getContext(stack);
         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(ctx != null ? MAP_BACKGROUND : MAP_BACKGROUND_CHECKERBOARD);
-        Matrix4f matrix4f = matrixStackIn.getLast().getPositionMatrix();
+        Matrix4f matrix4f = matrixStackIn.getLast().getMatrix();
         ivertexbuilder.pos(matrix4f, -7.0F, 135.0F, 0.0F).color(255, 255, 255, 255).tex(0.0F, 1.0F).lightmap(combinedLightIn).endVertex();
         ivertexbuilder.pos(matrix4f, 135.0F, 135.0F, 0.0F).color(255, 255, 255, 255).tex(1.0F, 1.0F).lightmap(combinedLightIn).endVertex();
         ivertexbuilder.pos(matrix4f, 135.0F, -7.0F, 0.0F).color(255, 255, 255, 255).tex(1.0F, 0.0F).lightmap(combinedLightIn).endVertex();
