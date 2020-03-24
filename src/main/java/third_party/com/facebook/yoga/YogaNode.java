@@ -34,7 +34,7 @@ public class YogaNode implements Iterable<YogaNode> {
     public YogaDelegates.YogaBaseline _baseline;
     private boolean _isReferenceBaseline;
     public Consumer<YogaNode> _dirtied;
-    private YogaStyle _style;
+    public YogaStyle _style;
     private YogaLayout _layout;
     public int _lineIndex;
     public YogaNode _owner;

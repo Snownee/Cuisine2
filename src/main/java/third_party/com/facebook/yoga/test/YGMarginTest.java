@@ -6,6 +6,7 @@ import org.junit.Test;
 import third_party.com.facebook.yoga.YogaAlign;
 import third_party.com.facebook.yoga.YogaConfig;
 import third_party.com.facebook.yoga.YogaDirection;
+import third_party.com.facebook.yoga.YogaEdge;
 import third_party.com.facebook.yoga.YogaFlexDirection;
 import third_party.com.facebook.yoga.YogaJustify;
 import third_party.com.facebook.yoga.YogaNode;
@@ -1728,38 +1729,27 @@ public class YGMarginTest {
             Assert.assertEquals(50f, root_child1.GetLayoutWidth());
             Assert.assertEquals(50f, root_child1.GetLayoutHeight());
         }
-
+*/
     @Test
+    public void Test_margin_side_overrides_horizontal_and_vertical() {
+        YogaEdge[] edges = new YogaEdge[] { YogaEdge.Top, YogaEdge.Bottom, YogaEdge.Start, YogaEdge.End, YogaEdge.Left, YogaEdge.Right };
+        for (float edgeValue = 0; edgeValue < 2; ++edgeValue) {
+            for (YogaEdge edge : edges) {
+                YogaEdge horizontalOrVertical = edge == YogaEdge.Top || edge == YogaEdge.Bottom ? YogaEdge.Vertical : YogaEdge.Horizontal;
+                YogaNode root = new YogaNode();
+                root.SetWidth(YogaValue.Pt(100));
+                root.SetHeight(YogaValue.Pt(100));
+                root._style.Margin[horizontalOrVertical.ordinal()] = YogaValue.Pt(10);
+                root._style.Margin[edge.ordinal()] = YogaValue.Pt(edgeValue);
+                root.CalculateLayout(100, 100, YogaDirection.LeftToRight);
 
-    public void Test_margin_side_overrides_horizontal_and_vertical()
-        {
-            var edges = new[] { YogaEdge.Top,
-                                YogaEdge.Bottom,
-                                YogaEdge.Start,
-                                YogaEdge.End,
-                                YogaEdge.Left,
-                                YogaEdge.Right};
-            for (float edgeValue = 0; edgeValue < 2; ++edgeValue)
-            {
-                foreach (var edge in edges)
-                {
-                    var horizontalOrVertical = edge == YogaEdge.Top || edge == YogaEdge.Bottom
-                        ? YogaEdge.Vertical
-                        : YogaEdge.Horizontal;
-                    var root = new YogaNode();
-                    root.SetWidth(YogaValue.Pt(100;
-                    root.SetHeight(YogaValue.Pt(100;
-                    root.Style.Margin[horizontalOrVertical] = 10;
-                    root.Style.Margin[edge] = edgeValue;
-                    root.CalculateLayout(100, 100, YogaDirection.LeftToRight);
-
-                    Assert.assertEquals(edgeValue, root.GetLayoutMargin(edge));
-                }
+                Assert.assertEquals(edgeValue, root.GetLayoutMargin(edge), 0.01f);
             }
         }
+    }
 
+    /*
     @Test
-
     public void Test_margin_side_overrides_all()
         {
             var edges = new[] { YogaEdge.Top,
@@ -1770,7 +1760,7 @@ public class YGMarginTest {
                                 YogaEdge.Right};
             for (float edgeValue = 0; edgeValue < 2; ++edgeValue)
             {
-                foreach (var edge in edges)
+                for (var edge in edges)
                 {
                     var root = new YogaNode();
                     root.SetWidth(YogaValue.Pt(100;
@@ -1781,34 +1771,29 @@ public class YGMarginTest {
                     Assert.assertEquals(edgeValue, root.GetLayoutMargin(edge));
                 }
             }
-        }@Test
-
-    public void Test_margin_horizontal_and_vertical_overrides_all()
-        {
-            var directions = new[] { YogaEdge.Horizontal, YogaEdge.Vertical };
-            for (float directionValue = 0; directionValue < 2; ++directionValue)
-            {
-                foreach (var direction in directions)
-                {
-                    var root = new YogaNode();
-                    root.SetWidth(YogaValue.Pt(100;
-                    root.SetHeight(YogaValue.Pt(100;
-                    root.Style.Margin[YogaEdge.All] = 10;
-                    root.Style.Margin[direction] = directionValue;
-                    root.CalculateLayout(100, 100, YogaDirection.LeftToRight);
-                    if (direction == YogaEdge.Vertical)
-                    {
-                        Assert.assertEquals(directionValue, root.LayoutMarginTop);
-                        Assert.assertEquals(directionValue, root.LayoutMarginBottom);
-                    }
-                    else
-                    {
-                        Assert.assertEquals(directionValue, root.LayoutMarginStart);
-                        Assert.assertEquals(directionValue, root.LayoutMarginEnd);
-                        Assert.assertEquals(directionValue, root.LayoutMarginLeft);
-                        Assert.assertEquals(directionValue, root.LayoutMarginRight);
-                    }
+        }
+        */
+    @Test
+    public void Test_margin_horizontal_and_vertical_overrides_all() {
+        YogaEdge[] directions = new YogaEdge[] { YogaEdge.Horizontal, YogaEdge.Vertical };
+        for (float directionValue = 0; directionValue < 2; ++directionValue) {
+            for (YogaEdge direction : directions) {
+                YogaNode root = new YogaNode();
+                root.SetWidth(YogaValue.Pt(100));
+                root.SetHeight(YogaValue.Pt(100));
+                root._style.Margin[YogaEdge.All.ordinal()] = YogaValue.Pt(10);
+                root._style.Margin[direction.ordinal()] = YogaValue.Pt(directionValue);
+                root.CalculateLayout(100, 100, YogaDirection.LeftToRight);
+                if (direction == YogaEdge.Vertical) {
+                    Assert.assertEquals(directionValue, root.GetLayoutMarginTop(), 0.01f);
+                    Assert.assertEquals(directionValue, root.GetLayoutMarginBottom(), 0.01f);
+                } else {
+                    Assert.assertEquals(directionValue, root.GetLayoutMarginStart(), 0.01f);
+                    Assert.assertEquals(directionValue, root.GetLayoutMarginEnd(), 0.01f);
+                    Assert.assertEquals(directionValue, root.GetLayoutMarginLeft(), 0.01f);
+                    Assert.assertEquals(directionValue, root.GetLayoutMarginRight(), 0.01f);
                 }
             }
-        }*/
+        }
+    }
 }
