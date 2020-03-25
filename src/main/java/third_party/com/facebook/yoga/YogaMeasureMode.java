@@ -1,4 +1,4 @@
-﻿package third_party.com.facebook.yoga;
+package third_party.com.facebook.yoga;
 
 /**
  * Copyright (c) 2014-present, Facebook, Inc.

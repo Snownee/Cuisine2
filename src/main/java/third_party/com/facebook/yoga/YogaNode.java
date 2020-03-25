@@ -1,4 +1,4 @@
-﻿package third_party.com.facebook.yoga;
+package third_party.com.facebook.yoga;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ public class YogaNode implements Iterable<YogaNode> {
     public YogaDelegates.YogaBaseline _baseline;
     private boolean _isReferenceBaseline;
     public Consumer<YogaNode> _dirtied;
-    public YogaStyle _style;
+    private YogaStyle _style;
     private YogaLayout _layout;
     public int _lineIndex;
     public YogaNode _owner;

@@ -17,13 +17,13 @@ namespace Marius.Yoga
     [TestFixture]
     public class YGAlignBaselineTest
     {
-        private static float _baselineFunc(YogaNode node, float? width, float? height)
+        private static float _baselineFunc(YogaNode node, float width, float height)
         {
             var result = height / 2;
-            return result ?? 0;
+            return result  0;
         }
 
-        private static YogaSize _measure1(YogaNode node, float? width, YogaMeasureMode widthMode, float? height, YogaMeasureMode heightMode)
+        private static YogaSize _measure1(YogaNode node, float width, YogaMeasureMode widthMode, float height, YogaMeasureMode heightMode)
         {
             return new YogaSize
             {
@@ -32,7 +32,7 @@ namespace Marius.Yoga
             };
         }
 
-        private static YogaSize _measure2(YogaNode node, float? width, YogaMeasureMode widthMode, float? height, YogaMeasureMode heightMode)
+        private static YogaSize _measure2(YogaNode node, float width, YogaMeasureMode widthMode, float height, YogaMeasureMode heightMode)
         {
             return new YogaSize
             {
@@ -181,7 +181,7 @@ namespace Marius.Yoga
             var root_child1_child1 = createYGNode(config, YogaFlexDirection.Column, 500, 400, false);
             root_child1_child1.SetBaselineFunction((_, width, height) =>
             {
-                return (height / 2) ?? 0;
+                return (height / 2)  0;
             });
             root_child1_child1.IsReferenceBaseline = true;
             root_child1.Insert(1, root_child1_child1);
@@ -220,7 +220,7 @@ namespace Marius.Yoga
             var root_child1_child1 = createYGNode(config, YogaFlexDirection.Row, 500, 400, false);
             root_child1_child1.SetBaselineFunction((_, width, height) =>
             {
-                return (height / 2) ?? 0;
+                return (height / 2)  0;
             });
             root_child1_child1.IsReferenceBaseline = true;
             root_child1.Insert(1, root_child1_child1);

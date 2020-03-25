@@ -275,7 +275,7 @@ namespace Marius.Yoga
                 foreach (var edge in edges)
                 {
                     var horizontalOrVertical = edge == YogaEdge.Top || edge == YogaEdge.Bottom
-                        ? YogaEdge.Vertical
+                         YogaEdge.Vertical
                         : YogaEdge.Horizontal;
                     var root = new YogaNode();
                     root.Width = 100;
