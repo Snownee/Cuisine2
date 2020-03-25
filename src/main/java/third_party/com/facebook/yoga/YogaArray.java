@@ -4,7 +4,7 @@
 //
 ///**
 // * Copyright (c) 2014-present, Facebook, Inc.
-// * Copyright (c) 2018-present, Marius Klimantaviius
+// * Copyright (c) 2018-present, Marius Klimantavičius
 // *
 // * This source code is licensed under the MIT license found in the
 // * LICENSE file in the root directory of this source tree.
@@ -87,7 +87,7 @@
 //            return areEqual;
 //        }
 //
-//    public static boolean Equal(YogaArray<float> val1, YogaArray<float> val2)
+//    public static boolean Equal(YogaArray<float?> val1, YogaArray<float?> val2)
 //        {
 //            var areEqual = true;
 //            for (var i = 0; i < val1.Length && areEqual; ++i)
@@ -105,7 +105,7 @@
 //            return areEqual;
 //        }
 //
-//    private static boolean FloatsEqual(float a, float b)
+//    private static boolean FloatsEqual(float? a, float? b)
 //        {
 //            if (a != null && b != null)
 //                return Math.Abs(a.Value - b.Value) < 0.0001f;

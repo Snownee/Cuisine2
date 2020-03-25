@@ -14,7 +14,7 @@ import third_party.com.facebook.yoga.YogaDelegates.YogaNodeCloned;
 
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
- * Copyright (c) 2018-present, Marius Klimantaviius
+ * Copyright (c) 2018-present, Marius Klimantavičius
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -34,7 +34,7 @@ public class YogaNode implements Iterable<YogaNode> {
     public YogaDelegates.YogaBaseline _baseline;
     private boolean _isReferenceBaseline;
     public Consumer<YogaNode> _dirtied;
-    public YogaStyle _style;
+    private YogaStyle _style;
     private YogaLayout _layout;
     public int _lineIndex;
     public YogaNode _owner;
@@ -216,7 +216,7 @@ public class YogaNode implements Iterable<YogaNode> {
         }
 
         leadingPosition = ComputedEdgeValue(_style.Position, Leading[axis.ordinal()], YogaValue.UNDEFINED);
-        return leadingPosition.Unit == YogaUnit.Undefined?  0.0f : leadingPosition.Resolve(axisSize);
+        return leadingPosition.Unit == YogaUnit.Undefined ? 0.0f : leadingPosition.Resolve(axisSize);
     }
 
     public float
@@ -234,7 +234,7 @@ public class YogaNode implements Iterable<YogaNode> {
     }
 
     public float GetRelativePosition(YogaFlexDirection axis, float axisSize) {
-        return IsLeadingPositionDefined(axis)? GetLeadingPosition(axis, axisSize) : -GetTrailingPosition(axis, axisSize);
+        return IsLeadingPositionDefined(axis) ? GetLeadingPosition(axis, axisSize) : -GetTrailingPosition(axis, axisSize);
     }
 
     public boolean IsLeadingPositionDefined(YogaFlexDirection axis) {
@@ -576,7 +576,7 @@ public class YogaNode implements Iterable<YogaNode> {
     }
 
     private static float ResolveValueMargin(YogaValue value, float ownerSize) {
-        return value.Unit == YogaUnit.Auto?  0F : value.Resolve(ownerSize);
+        return value.Unit == YogaUnit.Auto ? 0F : value.Resolve(ownerSize);
     }
 
     private static YogaValue ComputedEdgeValue(YogaValue[] edges, YogaEdge edge, YogaValue defaultValue) {
@@ -630,7 +630,7 @@ public class YogaNode implements Iterable<YogaNode> {
             widthMeasureMode = YogaMeasureMode.AtMost;
         } else {
             width = ownerWidth;
-            widthMeasureMode = Float.isNaN(width)?  YogaMeasureMode.Undefined : YogaMeasureMode.Exactly;
+            widthMeasureMode = Float.isNaN(width) ? YogaMeasureMode.Undefined : YogaMeasureMode.Exactly;
         }
 
         float height = Float.NaN;
@@ -946,7 +946,7 @@ public class YogaNode implements Iterable<YogaNode> {
         float minInnerHeight = _style.MinDimensions[YogaDimension.Height.ordinal()].Resolve(ownerHeight) - paddingAndBorderAxisColumn;
         float maxInnerHeight = _style.MaxDimensions[YogaDimension.Height.ordinal()].Resolve(ownerHeight) - paddingAndBorderAxisColumn;
 
-        float minInnerMainDim = isMainAxisRow?  minInnerWidth : minInnerHeight;
+        float minInnerMainDim = isMainAxisRow ? minInnerWidth : minInnerHeight;
         float maxInnerMainDim = isMainAxisRow ? maxInnerWidth : maxInnerHeight;
 
         // STEP 2: DETERMINE AVAILABLE SIZE IN MAIN AND CROSS DIRECTIONS
@@ -1111,7 +1111,7 @@ public class YogaNode implements Iterable<YogaNode> {
                             // no need to stretch.
                             if (!child.IsStyleDimensionDefined(crossAxis, availableInnerCrossDim)) {
                                 float childMainSize = child._layout.MeasuredDimensions[Dimension[mainAxis.ordinal()].ordinal()];
-                                float childCrossSize = !Float.isNaN(child._style.AspectRatio)?  ((child.GetMarginForAxis(crossAxis, availableInnerWidth) + (isMainAxisRow?  childMainSize / child._style.AspectRatio : childMainSize * child._style.AspectRatio))) : collectedFlexItemsValues.CrossDimension;
+                                float childCrossSize = !Float.isNaN(child._style.AspectRatio) ? ((child.GetMarginForAxis(crossAxis, availableInnerWidth) + (isMainAxisRow ? childMainSize / child._style.AspectRatio : childMainSize * child._style.AspectRatio))) : collectedFlexItemsValues.CrossDimension;
 
                                 childMainSize += child.GetMarginForAxis(mainAxis, availableInnerWidth);
 
@@ -1133,7 +1133,7 @@ public class YogaNode implements Iterable<YogaNode> {
                                 float childHeight = !isMainAxisRow ? childMainSize : childCrossSize;
 
                                 YogaMeasureMode childWidthMeasureMode = Float.isNaN(childWidth) ? YogaMeasureMode.Undefined : YogaMeasureMode.Exactly;
-                                YogaMeasureMode childHeightMeasureMode = Float.isNaN(childHeight)?  YogaMeasureMode.Undefined : YogaMeasureMode.Exactly;
+                                YogaMeasureMode childHeightMeasureMode = Float.isNaN(childHeight) ? YogaMeasureMode.Undefined : YogaMeasureMode.Exactly;
 
                                 child.LayoutNode(childWidth, childHeight, direction, childWidthMeasureMode, childHeightMeasureMode, availableInnerWidth, availableInnerHeight, true, "stretch", config);
                             }
@@ -1272,9 +1272,9 @@ public class YogaNode implements Iterable<YogaNode> {
                                 // Remeasure child with the line height as it as been only measured with the
                                 // owners height yet.
                                 if (!child.IsStyleDimensionDefined(crossAxis, availableInnerCrossDim)) {
-                                    float childWidth = isMainAxisRow?  (child._layout.MeasuredDimensions[YogaDimension.Width.ordinal()] + child.GetMarginForAxis(mainAxis, availableInnerWidth)) : lineHeight;
+                                    float childWidth = isMainAxisRow ? (child._layout.MeasuredDimensions[YogaDimension.Width.ordinal()] + child.GetMarginForAxis(mainAxis, availableInnerWidth)) : lineHeight;
 
-                                    float childHeight = !isMainAxisRow  ?(child._layout.MeasuredDimensions[YogaDimension.Height.ordinal()] + child.GetMarginForAxis(crossAxis, availableInnerWidth)) : lineHeight;
+                                    float childHeight = !isMainAxisRow ? (child._layout.MeasuredDimensions[YogaDimension.Height.ordinal()] + child.GetMarginForAxis(crossAxis, availableInnerWidth)) : lineHeight;
 
                                     if (!(YogaMath.FloatsEqual(childWidth, child._layout.MeasuredDimensions[YogaDimension.Width.ordinal()]) && YogaMath.FloatsEqual(childHeight, child._layout.MeasuredDimensions[YogaDimension.Height.ordinal()]))) {
                                         child.LayoutNode(childWidth, childHeight, direction, YogaMeasureMode.Exactly, YogaMeasureMode.Exactly, availableInnerWidth, availableInnerHeight, true, "multiline-stretch", config);
@@ -1343,7 +1343,7 @@ public class YogaNode implements Iterable<YogaNode> {
                 if (child._style.PositionType != YogaPositionType.Absolute)
                     continue;
 
-                AbsoluteLayoutChild(child, availableInnerWidth, isMainAxisRow?  measureModeMainDim : measureModeCrossDim, availableInnerHeight, direction, config);
+                AbsoluteLayoutChild(child, availableInnerWidth, isMainAxisRow ? measureModeMainDim : measureModeCrossDim, availableInnerHeight, direction, config);
             }
 
             // STEP 11: SETTING TRAILING POSITIONS FOR CHILDREN
@@ -1378,8 +1378,8 @@ public class YogaNode implements Iterable<YogaNode> {
         float marginAxisColumn = GetMarginForAxis(YogaFlexDirection.Column, availableWidth);
 
         // We want to make sure we don't call measure with negative size
-        float innerWidth = Float.isNaN(availableWidth)?  availableWidth : YogaMath.Max(0, availableWidth - marginAxisRow - paddingAndBorderAxisRow);
-        float innerHeight = Float.isNaN(availableHeight)?  availableHeight : YogaMath.Max(0, availableHeight - marginAxisColumn - paddingAndBorderAxisColumn);
+        float innerWidth = Float.isNaN(availableWidth) ? availableWidth : YogaMath.Max(0, availableWidth - marginAxisRow - paddingAndBorderAxisRow);
+        float innerHeight = Float.isNaN(availableHeight) ? availableHeight : YogaMath.Max(0, availableHeight - marginAxisColumn - paddingAndBorderAxisColumn);
 
         if (widthMeasureMode == YogaMeasureMode.Exactly && heightMeasureMode == YogaMeasureMode.Exactly) {
             // Don't bother sizing the text if both dimensions are already defined.
@@ -1404,7 +1404,7 @@ public class YogaNode implements Iterable<YogaNode> {
         float marginAxisRow = GetMarginForAxis(YogaFlexDirection.Row, ownerWidth);
         float marginAxisColumn = GetMarginForAxis(YogaFlexDirection.Column, ownerWidth);
 
-        SetLayoutMeasuredDimension(BoundAxis(YogaFlexDirection.Row, (widthMeasureMode == YogaMeasureMode.Undefined || widthMeasureMode == YogaMeasureMode.AtMost)?  paddingAndBorderAxisRow : availableWidth - marginAxisRow, ownerWidth, ownerWidth), YogaDimension.Width);
+        SetLayoutMeasuredDimension(BoundAxis(YogaFlexDirection.Row, (widthMeasureMode == YogaMeasureMode.Undefined || widthMeasureMode == YogaMeasureMode.AtMost) ? paddingAndBorderAxisRow : availableWidth - marginAxisRow, ownerWidth, ownerWidth), YogaDimension.Width);
 
         SetLayoutMeasuredDimension(BoundAxis(YogaFlexDirection.Column, (heightMeasureMode == YogaMeasureMode.Undefined || heightMeasureMode == YogaMeasureMode.AtMost) ? paddingAndBorderAxisColumn : availableHeight - marginAxisColumn, ownerHeight, ownerWidth), YogaDimension.Height);
     }
@@ -1416,7 +1416,7 @@ public class YogaNode implements Iterable<YogaNode> {
 
             SetLayoutMeasuredDimension(BoundAxis(YogaFlexDirection.Row, Float.isNaN(availableWidth) || (widthMeasureMode == YogaMeasureMode.AtMost && availableWidth < 0.0f) ? 0.0f : availableWidth - marginAxisRow, ownerWidth, ownerWidth), YogaDimension.Width);
 
-            SetLayoutMeasuredDimension(BoundAxis(YogaFlexDirection.Column, Float.isNaN(availableHeight) || (heightMeasureMode == YogaMeasureMode.AtMost && availableHeight < 0.0f)?  0.0f : availableHeight - marginAxisColumn, ownerHeight, ownerWidth), YogaDimension.Height);
+            SetLayoutMeasuredDimension(BoundAxis(YogaFlexDirection.Column, Float.isNaN(availableHeight) || (heightMeasureMode == YogaMeasureMode.AtMost && availableHeight < 0.0f) ? 0.0f : availableHeight - marginAxisColumn, ownerHeight, ownerWidth), YogaDimension.Height);
             return true;
         }
 
@@ -1448,7 +1448,7 @@ public class YogaNode implements Iterable<YogaNode> {
             // We want to make sure our available height does not violate min and max
             // constraints
             float minInnerResolved = _style.MinDimensions[dimension.ordinal()].Resolve(ownerDim);
-            float minInnerDim = Float.isNaN(minInnerResolved)?  0.0F : minInnerResolved - paddingAndBorder;
+            float minInnerDim = Float.isNaN(minInnerResolved) ? 0.0F : minInnerResolved - paddingAndBorder;
 
             float maxInnerResolved = _style.MaxDimensions[dimension.ordinal()].Resolve(ownerDim);
             float maxInnerDim = Float.isNaN(maxInnerResolved) ? Float.MAX_VALUE : maxInnerResolved - paddingAndBorder;
@@ -1462,7 +1462,7 @@ public class YogaNode implements Iterable<YogaNode> {
     private float ComputeFlexBasisForChildren(float availableInnerWidth, float availableInnerHeight, YogaMeasureMode widthMeasureMode, YogaMeasureMode heightMeasureMode, YogaDirection direction, YogaFlexDirection mainAxis, YogaConfig config, boolean performLayout, /*ref */ float totalOuterFlexBasis) {
         YogaNode singleFlexChild = null;
         List<YogaNode> children = _children;
-        YogaMeasureMode measureModeMainDim = mainAxis.IsRow()?  widthMeasureMode : heightMeasureMode;
+        YogaMeasureMode measureModeMainDim = mainAxis.IsRow() ? widthMeasureMode : heightMeasureMode;
 
         // If there is only one child with flexGrow + flexShrink it means we can set
         // the computedFlexBasis to 0 instead of measuring and shrinking / flexing the
@@ -1496,8 +1496,8 @@ public class YogaNode implements Iterable<YogaNode> {
             if (performLayout) {
                 // Set the initial position (relative to the owner).
                 YogaDirection childDirection = child.ResolveDirection(direction);
-                float mainDim = mainAxis.IsRow()?  availableInnerWidth : availableInnerHeight;
-                float crossDim = mainAxis.IsRow()?  availableInnerHeight : availableInnerWidth;
+                float mainDim = mainAxis.IsRow() ? availableInnerWidth : availableInnerHeight;
+                float crossDim = mainAxis.IsRow() ? availableInnerHeight : availableInnerWidth;
 
                 child.SetPosition(childDirection, mainDim, crossDim, availableInnerWidth);
             }
@@ -1552,7 +1552,7 @@ public class YogaNode implements Iterable<YogaNode> {
         case Exactly:
         case AtMost:
             float sizeIn = size.get();
-            size.set((Float.isNaN(maxSize) || sizeIn < maxSize)?  sizeIn : maxSize);
+            size.set((Float.isNaN(maxSize) || sizeIn < maxSize) ? sizeIn : maxSize);
             break;
         case Undefined:
             if (!Float.isNaN(maxSize)) {
@@ -1826,7 +1826,7 @@ public class YogaNode implements Iterable<YogaNode> {
             if (collectedFlexItemsValues.RemainingFreeSpace < 0) {
                 flexShrinkScaledFactor = -currentRelativeChild.ResolveFlexShrink() * childFlexBasis;
 
-                // Is this child able to shrink
+                // Is this child able to shrink?
                 if (!Float.isNaN(flexShrinkScaledFactor) && flexShrinkScaledFactor != 0) {
                     baseMainSize = childFlexBasis + collectedFlexItemsValues.RemainingFreeSpace / collectedFlexItemsValues.TotalFlexShrinkScaledFactors * flexShrinkScaledFactor;
                     boundMainSize = currentRelativeChild.BoundAxis(mainAxis, baseMainSize, availableInnerMainDim, availableInnerWidth);
@@ -1845,7 +1845,7 @@ public class YogaNode implements Iterable<YogaNode> {
             } else if (!Float.isNaN(collectedFlexItemsValues.RemainingFreeSpace) && collectedFlexItemsValues.RemainingFreeSpace > 0) {
                 flexGrowFactor = currentRelativeChild.ResolveFlexGrow();
 
-                // Is this child able to grow
+                // Is this child able to grow?
                 if (flexGrowFactor != 0) {
                     baseMainSize = childFlexBasis + collectedFlexItemsValues.RemainingFreeSpace / collectedFlexItemsValues.TotalFlexGrowFactors * flexGrowFactor;
                     boundMainSize = currentRelativeChild.BoundAxis(mainAxis, baseMainSize, availableInnerMainDim, availableInnerWidth);
@@ -1886,7 +1886,7 @@ public class YogaNode implements Iterable<YogaNode> {
             float updatedMainSize = childFlexBasis;
             if (!Float.isNaN(collectedFlexItemsValues.RemainingFreeSpace) && collectedFlexItemsValues.RemainingFreeSpace < 0) {
                 flexShrinkScaledFactor = -currentRelativeChild.ResolveFlexShrink() * childFlexBasis;
-                // Is this child able to shrink
+                // Is this child able to shrink?
                 if (flexShrinkScaledFactor != 0) {
                     float childSize = 0F;
                     if (!Float.isNaN(collectedFlexItemsValues.TotalFlexShrinkScaledFactors) && collectedFlexItemsValues.TotalFlexShrinkScaledFactors == 0) {
@@ -1900,7 +1900,7 @@ public class YogaNode implements Iterable<YogaNode> {
             } else if (!Float.isNaN(collectedFlexItemsValues.RemainingFreeSpace) && collectedFlexItemsValues.RemainingFreeSpace > 0) {
                 flexGrowFactor = currentRelativeChild.ResolveFlexGrow();
 
-                // Is this child able to grow
+                // Is this child able to grow?
                 if (flexGrowFactor != 0) {
                     updatedMainSize = currentRelativeChild.BoundAxis(mainAxis, childFlexBasis + collectedFlexItemsValues.RemainingFreeSpace / collectedFlexItemsValues.TotalFlexGrowFactors * flexGrowFactor, availableInnerMainDim, availableInnerWidth);
                 }
@@ -1931,7 +1931,7 @@ public class YogaNode implements Iterable<YogaNode> {
                 childCrossSize = (currentRelativeChild.GetResolvedDimension(Dimension[crossAxis.ordinal()]).Resolve(availableInnerCrossDim)) + marginCross;
                 boolean isLoosePercentageMeasurement = currentRelativeChild.GetResolvedDimension(Dimension[crossAxis.ordinal()]).Unit == YogaUnit.Percent && measureModeCrossDim != YogaMeasureMode.Exactly;
 
-                childCrossMeasureMode = Float.isNaN(childCrossSize) || isLoosePercentageMeasurement?  YogaMeasureMode.Undefined : YogaMeasureMode.Exactly;
+                childCrossMeasureMode = Float.isNaN(childCrossSize) || isLoosePercentageMeasurement ? YogaMeasureMode.Undefined : YogaMeasureMode.Exactly;
             }
 
             AtomicReference<YogaMeasureMode> childMainMeasureModeRef = new AtomicReference<>(childMainMeasureMode);
@@ -1947,10 +1947,10 @@ public class YogaNode implements Iterable<YogaNode> {
 
             boolean requiresStretchLayout = !currentRelativeChild.IsStyleDimensionDefined(crossAxis, availableInnerCrossDim) && GetAlign(currentRelativeChild) == YogaAlign.Stretch && currentRelativeChild.GetMarginLeadingValue(crossAxis).Unit != YogaUnit.Auto && currentRelativeChild.GetMarginTrailingValue(crossAxis).Unit != YogaUnit.Auto;
 
-            float childWidth = isMainAxisRow?  childMainSize : childCrossSize;
+            float childWidth = isMainAxisRow ? childMainSize : childCrossSize;
             float childHeight = !isMainAxisRow ? childMainSize : childCrossSize;
 
-            YogaMeasureMode childWidthMeasureMode = isMainAxisRow?  childMainMeasureMode : childCrossMeasureMode;
+            YogaMeasureMode childWidthMeasureMode = isMainAxisRow ? childMainMeasureMode : childCrossMeasureMode;
             YogaMeasureMode childHeightMeasureMode = !isMainAxisRow ? childMainMeasureMode : childCrossMeasureMode;
 
             // Recursively call the layout algorithm for this child with the updated
@@ -2227,7 +2227,7 @@ public class YogaNode implements Iterable<YogaNode> {
         child.LayoutNode(childWidth, childHeight, direction, YogaMeasureMode.Exactly, YogaMeasureMode.Exactly, childWidth, childHeight, true, "abs-layout", config);
 
         if (child.IsTrailingPositionDefined(mainAxis) && !child.IsLeadingPositionDefined(mainAxis)) {
-            child.SetLayoutPosition(_layout.MeasuredDimensions[Dimension[mainAxis.ordinal()].ordinal()] - child._layout.MeasuredDimensions[Dimension[mainAxis.ordinal()].ordinal()] - GetTrailingBorder(mainAxis) - child.GetTrailingMargin(mainAxis, width) - child.GetTrailingPosition(mainAxis, isMainAxisRow?  width : height), Leading[mainAxis.ordinal()]);
+            child.SetLayoutPosition(_layout.MeasuredDimensions[Dimension[mainAxis.ordinal()].ordinal()] - child._layout.MeasuredDimensions[Dimension[mainAxis.ordinal()].ordinal()] - GetTrailingBorder(mainAxis) - child.GetTrailingMargin(mainAxis, width) - child.GetTrailingPosition(mainAxis, isMainAxisRow ? width : height), Leading[mainAxis.ordinal()]);
         } else if (!child.IsLeadingPositionDefined(mainAxis) && _style.JustifyContent == YogaJustify.Center) {
             child.SetLayoutPosition((_layout.MeasuredDimensions[Dimension[mainAxis.ordinal()].ordinal()] - child._layout.MeasuredDimensions[Dimension[mainAxis.ordinal()].ordinal()]) / 2.0f, Leading[mainAxis.ordinal()]);
         } else if (!child.IsLeadingPositionDefined(mainAxis) && _style.JustifyContent == YogaJustify.FlexEnd) {
@@ -2281,7 +2281,7 @@ public class YogaNode implements Iterable<YogaNode> {
     }
 
     private YogaAlign GetAlign(YogaNode child) {
-        YogaAlign align = child._style.AlignSelf == YogaAlign.Auto?  _style.AlignItems : child._style.AlignSelf;
+        YogaAlign align = child._style.AlignSelf == YogaAlign.Auto ? _style.AlignItems : child._style.AlignSelf;
 
         if (align == YogaAlign.Baseline && _style.FlexDirection.IsColumn())
             return YogaAlign.FlexStart;
@@ -2369,9 +2369,9 @@ public class YogaNode implements Iterable<YogaNode> {
             return false;
 
         boolean useRoundedComparison = config != null && config.PointScaleFactor != 0;
-        float effectiveWidth = useRoundedComparison?  YogaMath.RoundValueToPixelGrid(width, config.PointScaleFactor, false, false) : width;
+        float effectiveWidth = useRoundedComparison ? YogaMath.RoundValueToPixelGrid(width, config.PointScaleFactor, false, false) : width;
         float effectiveHeight = useRoundedComparison ? YogaMath.RoundValueToPixelGrid(height, config.PointScaleFactor, false, false) : height;
-        float effectiveLastWidth = useRoundedComparison?  YogaMath.RoundValueToPixelGrid(lastWidth, config.PointScaleFactor, false, false) : lastWidth;
+        float effectiveLastWidth = useRoundedComparison ? YogaMath.RoundValueToPixelGrid(lastWidth, config.PointScaleFactor, false, false) : lastWidth;
         float effectiveLastHeight = useRoundedComparison ? YogaMath.RoundValueToPixelGrid(lastHeight, config.PointScaleFactor, false, false) : lastHeight;
 
         boolean hasSameWidthSpec = lastWidthMode == widthMode && YogaMath.FloatsEqual(effectiveLastWidth, effectiveWidth);
@@ -2635,7 +2635,7 @@ public class YogaNode implements Iterable<YogaNode> {
 
     public float GetLayoutX() {
         float value = _layout.Position[YogaEdge.Left.ordinal()];
-        return Float.isNaN(value)?  0 : value;
+        return Float.isNaN(value) ? 0 : value;
     }
 
     public float GetLayoutY() {
@@ -2650,7 +2650,7 @@ public class YogaNode implements Iterable<YogaNode> {
 
     public float GetLayoutHeight() {
         float value = _layout.Dimensions[YogaDimension.Height.ordinal()];
-        return Float.isNaN(value)?  0 : value;
+        return Float.isNaN(value) ? 0 : value;
     }
 
     public YogaDirection GetLayoutDirection() {
@@ -2915,7 +2915,7 @@ public class YogaNode implements Iterable<YogaNode> {
     public void SetBorderLeftWidth(float value) {
         YogaEdge edge = YogaEdge.Left;
         YogaValue current = _style.Border[edge.ordinal()];
-        YogaValue next = new YogaValue(value, Float.isNaN(value)?  YogaUnit.Undefined : YogaUnit.Point);
+        YogaValue next = new YogaValue(value, Float.isNaN(value) ? YogaUnit.Undefined : YogaUnit.Point);
 
         if (current.Unit != next.Unit || (next.Unit != YogaUnit.Undefined && current.Value != next.Value)) {
             _style.Border[edge.ordinal()] = next;
@@ -2934,7 +2934,7 @@ public class YogaNode implements Iterable<YogaNode> {
     public void SetBorderTopWidth(float value) {
         YogaEdge edge = YogaEdge.Top;
         YogaValue current = _style.Border[edge.ordinal()];
-        YogaValue next = new YogaValue(value, Float.isNaN(value)?  YogaUnit.Undefined : YogaUnit.Point);
+        YogaValue next = new YogaValue(value, Float.isNaN(value) ? YogaUnit.Undefined : YogaUnit.Point);
 
         if (current.Unit != next.Unit || (next.Unit != YogaUnit.Undefined && current.Value != next.Value)) {
             _style.Border[edge.ordinal()] = next;
@@ -2953,7 +2953,7 @@ public class YogaNode implements Iterable<YogaNode> {
     public void SetBorderRightWidth(float value) {
         YogaEdge edge = YogaEdge.Right;
         YogaValue current = _style.Border[edge.ordinal()];
-        YogaValue next = new YogaValue(value, Float.isNaN(value)?  YogaUnit.Undefined : YogaUnit.Point);
+        YogaValue next = new YogaValue(value, Float.isNaN(value) ? YogaUnit.Undefined : YogaUnit.Point);
 
         if (current.Unit != next.Unit || (next.Unit != YogaUnit.Undefined && current.Value != next.Value)) {
             _style.Border[edge.ordinal()] = next;
@@ -2972,7 +2972,7 @@ public class YogaNode implements Iterable<YogaNode> {
     public void SetBorderBottomWidth(float value) {
         YogaEdge edge = YogaEdge.Bottom;
         YogaValue current = _style.Border[edge.ordinal()];
-        YogaValue next = new YogaValue(value, Float.isNaN(value)  ?YogaUnit.Undefined : YogaUnit.Point);
+        YogaValue next = new YogaValue(value, Float.isNaN(value) ? YogaUnit.Undefined : YogaUnit.Point);
 
         if (current.Unit != next.Unit || (next.Unit != YogaUnit.Undefined && current.Value != next.Value)) {
             _style.Border[edge.ordinal()] = next;
@@ -3010,7 +3010,7 @@ public class YogaNode implements Iterable<YogaNode> {
     public void SetBorderEndWidth(float value) {
         YogaEdge edge = YogaEdge.End;
         YogaValue current = _style.Border[edge.ordinal()];
-        YogaValue next = new YogaValue(value, Float.isNaN(value)?  YogaUnit.Undefined : YogaUnit.Point);
+        YogaValue next = new YogaValue(value, Float.isNaN(value) ? YogaUnit.Undefined : YogaUnit.Point);
 
         if (current.Unit != next.Unit || (next.Unit != YogaUnit.Undefined && current.Value != next.Value)) {
             _style.Border[edge.ordinal()] = next;
@@ -3029,7 +3029,7 @@ public class YogaNode implements Iterable<YogaNode> {
     public void SetBorderWidth(float value) {
         YogaEdge edge = YogaEdge.All;
         YogaValue current = _style.Border[edge.ordinal()];
-        YogaValue next = new YogaValue(value, Float.isNaN(value)?  YogaUnit.Undefined : YogaUnit.Point);
+        YogaValue next = new YogaValue(value, Float.isNaN(value) ? YogaUnit.Undefined : YogaUnit.Point);
 
         if (current.Unit != next.Unit || (next.Unit != YogaUnit.Undefined && current.Value != next.Value)) {
             _style.Border[edge.ordinal()] = next;
