@@ -1,15 +1,25 @@
 package snownee.kiwi.ui.client.widget;
 
+import snownee.kiwi.ui.client.UIContext;
+
 public class Root extends NestedWidget {
 
-    @Override
-    public void draw(float pTicks) {
-        super.draw(pTicks);
+    public Root(UIContext ctx) {
+        super(ctx);
     }
 
     @Override
-    public void done() {
+    public void init() {
         node.CalculateLayout();
-        super.done();
+        super.init();
     }
+
+    @Override
+    public void draw(int mouseX, int mouseY, float pTicks) {
+        if (ctx != null) {
+            ctx.screen.renderBackground();
+        }
+        super.draw(mouseX, mouseY, pTicks);
+    }
+
 }

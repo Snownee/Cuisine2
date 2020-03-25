@@ -6,5 +6,5 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public interface IStaticRenderable extends IRenderable {
-    void render(int xOffset, int yOffset, int maskTop, int maskBottom, int maskLeft, int maskRight);
+    void render(int xOffset, int yOffset, int maskTop, int maskBottom, int maskLeft, int maskRight, float pTicks);
 }

@@ -6,16 +6,23 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.INestedGuiEventHandler;
+import snownee.kiwi.ui.client.UIContext;
 
 public class NestedWidget extends Widget implements INestedGuiEventHandler {
+
+    public NestedWidget(UIContext ctx) {
+        super(ctx);
+    }
 
     protected final List<Widget> children = Lists.newArrayList();
 
     @Override
-    public void draw(float pTicks) {
-        super.draw(pTicks);
+    public void draw(int mouseX, int mouseY, float pTicks) {
+        super.draw(mouseX, mouseY, pTicks);
         for (Widget child : children) {
-            child.draw(pTicks);
+            if (child.visible) {
+                child.draw(mouseX, mouseY, pTicks);
+            }
         }
     }
 
@@ -55,10 +62,10 @@ public class NestedWidget extends Widget implements INestedGuiEventHandler {
     }
 
     @Override
-    public void done() {
-        super.done();
+    public void init() {
+        super.init();
         for (Widget child : children) {
-            child.done();
+            child.init();
         }
     }
 

@@ -44,6 +44,8 @@ public class YogaNode implements Iterable<YogaNode> {
     private boolean _isDirty;
     private YogaValue[] _resolvedDimensions; // [2]
 
+    public static final YogaConfig defaultConfig = new YogaConfig();
+
     public YogaNode() {
         _print = null;
         _hasNewLayout = true;
@@ -57,7 +59,7 @@ public class YogaNode implements Iterable<YogaNode> {
         _owner = null;
         _children = new ArrayList<>();
         _nextChild = null;
-        _config = new YogaConfig();
+        _config = defaultConfig;
         _isDirty = false;
         _resolvedDimensions = new YogaValue[] { YogaValue.UNDEFINED, YogaValue.UNDEFINED };
 
@@ -111,7 +113,7 @@ public class YogaNode implements Iterable<YogaNode> {
 
     public YogaNode(YogaConfig config) {
         this();
-        _config = config != null ? config : new YogaConfig();
+        _config = config != null ? config : defaultConfig;
 
         if (_config.UseWebDefaults) {
             _style.FlexDirection = YogaFlexDirection.Row;
