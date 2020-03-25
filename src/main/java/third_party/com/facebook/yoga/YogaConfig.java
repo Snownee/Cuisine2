@@ -1,4 +1,4 @@
-﻿package third_party.com.facebook.yoga;
+package third_party.com.facebook.yoga;
 
 import java.util.Arrays;
 
@@ -6,7 +6,7 @@ import third_party.com.facebook.yoga.YogaDelegates.YogaNodeCloned;
 
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
- * Copyright (c) 2018-present, Marius Klimantavičius
+ * Copyright (c) 2018-present, Marius Klimantaviius
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.

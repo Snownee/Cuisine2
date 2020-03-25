@@ -1,8 +1,8 @@
-﻿package third_party.com.facebook.yoga;
+package third_party.com.facebook.yoga;
 
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
- * Copyright (c) 2018-present, Marius Klimantavičius
+ * Copyright (c) 2018-present, Marius Klimantaviius
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,14 +14,14 @@ public class YogaMath {
         if (!Float.isNaN(a) && !Float.isNaN(b))
             return Math.max(a, b);
 
-        return Float.isNaN(a) ? b : a;
+        return Float.isNaN(a)? b : a;
     }
 
     public static float Min(float a, float b) {
         if (!Float.isNaN(a) && !Float.isNaN(b))
             return Math.min(a, b);
 
-        return Float.isNaN(a) ? b : a;
+        return Float.isNaN(a)? b : a;
     }
 
     public static float RoundValueToPixelGrid(float value, float pointScaleFactor, boolean forceCeil, boolean forceFloor) {
