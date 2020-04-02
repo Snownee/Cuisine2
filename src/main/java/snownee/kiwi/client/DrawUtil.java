@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import snownee.kiwi.client.element.DrawMode;
 
 public final class DrawUtil {
     private static int blitOffset;
@@ -76,5 +77,53 @@ public final class DrawUtil {
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
+    }
+
+    public static void draw(BufferBuilder bufferBuilder, float uMin, float vMin, float uMax, float vMax, float xOffset, float yOffset, float tiledWidth, float tiledHeight, float width, float height, DrawMode mode) {
+        if (mode == DrawMode.REPEAT) {
+            drawTiled(bufferBuilder, uMin, vMin, uMax, vMax, xOffset, yOffset, tiledWidth, tiledHeight, width, height);
+        } else if (mode == DrawMode.STRETCH) {
+            drawStretched(bufferBuilder, uMin, vMin, uMax, vMax, xOffset, yOffset, tiledWidth, tiledHeight, width, height);
+        }
+    }
+
+    public static void drawTiled(BufferBuilder bufferBuilder, float uMin, float vMin, float uMax, float vMax, float xOffset, float yOffset, float tiledWidth, float tiledHeight, float width, float height) {
+        float xTileCount = tiledWidth / width;
+        float xRemainder = tiledWidth - (xTileCount * width);
+        float yTileCount = tiledHeight / height;
+        float yRemainder = tiledHeight - (yTileCount * height);
+
+        float yStart = yOffset + tiledHeight;
+
+        float uSize = uMax - uMin;
+        float vSize = vMax - vMin;
+
+        for (int xTile = 0; xTile <= xTileCount; xTile++) {
+            for (int yTile = 0; yTile <= yTileCount; yTile++) {
+                float tileWidth = (xTile == xTileCount) ? xRemainder : width;
+                float tileHeight = (yTile == yTileCount) ? yRemainder : height;
+                float x = xOffset + (xTile * width);
+                float y = yStart - ((yTile + 1) * height);
+                if (tileWidth > 0 && tileHeight > 0) {
+                    float maskRight = width - tileWidth;
+                    float maskTop = height - tileHeight;
+                    float uOffset = (maskRight / width) * uSize;
+                    float vOffset = (maskTop / height) * vSize;
+
+                    draw(bufferBuilder, uMin, vMin + vOffset, uMax - uOffset, vMax, x, y + maskTop, tileWidth, tileHeight);
+                }
+            }
+        }
+    }
+
+    public static void drawStretched(BufferBuilder bufferBuilder, float uMin, float vMin, float uMax, float vMax, float xOffset, float yOffset, float tiledWidth, float tiledHeight, float width, float height) {
+        draw(bufferBuilder, uMin, vMin, uMax, vMax, xOffset, yOffset, width, height);
+    }
+
+    public static void draw(BufferBuilder bufferBuilder, float minU, float minV, float maxU, float maxV, float xOffset, float yOffset, float width, float height) {
+        bufferBuilder.pos(xOffset, yOffset + height, 0).tex(minU, maxV).endVertex();
+        bufferBuilder.pos(xOffset + width, yOffset + height, 0).tex(maxU, maxV).endVertex();
+        bufferBuilder.pos(xOffset + width, yOffset, 0).tex(maxU, minV).endVertex();
+        bufferBuilder.pos(xOffset, yOffset, 0).tex(minU, minV).endVertex();
     }
 }
