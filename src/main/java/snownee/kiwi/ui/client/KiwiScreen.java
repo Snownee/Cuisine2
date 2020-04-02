@@ -6,6 +6,7 @@ import net.minecraft.util.text.StringTextComponent;
 import snownee.kiwi.client.element.FillDrawable;
 import snownee.kiwi.ui.client.widget.NestedWidget;
 import snownee.kiwi.ui.client.widget.Root;
+import snownee.kiwi.ui.client.widget.SlotWidget;
 import snownee.kiwi.ui.client.widget.Widget;
 import third_party.com.facebook.yoga.YogaDirection;
 import third_party.com.facebook.yoga.YogaFlexDirection;
@@ -60,7 +61,10 @@ public class KiwiScreen extends Screen {
         root_child1.background = new FillDrawable(0xffff00ff);
         root_child1.node.SetFlexGrow(1);
         main.addChild(1, root_child1);
-
+        SlotWidget slotWidget = null;
+        slotWidget = new SlotWidget(ctx);
+        slotWidget.node.SetFlexGrow(1);
+        main.addChild(2,slotWidget);
         root_child0.node.SetMargin(YogaValue.Pt(5));
         root_child1.node.SetMargin(YogaValue.Pt(5));
 

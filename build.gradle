@@ -7,7 +7,7 @@ buildscript {
         maven { url = 'https://dist.creeper.host/Sponge/maven' }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.0.159', changing: false
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
         
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
