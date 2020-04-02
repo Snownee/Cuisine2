@@ -7,7 +7,7 @@ import snownee.kiwi.ui.client.UIContext;
 
 public class SlotWidget extends Widget {
     //new ResourceLocation(Kiwi.MODID, "textures/gui/slot.png")
-    public static final IDrawable SLOT_BACKGROUND = new NineSliceDrawable(null, 3, 3, 1, 2, 1, 2);
+    //public static final IDrawable SLOT_BACKGROUND = new NineSliceDrawable(null, 3, 3, 1, 2, 1, 2);
     protected Slot slot;
 
     public SlotWidget(UIContext ctx) {

@@ -3,6 +3,7 @@ package snownee.kiwi.ui.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
+import snownee.kiwi.client.DefaultDrawables;
 import snownee.kiwi.client.element.FillDrawable;
 import snownee.kiwi.ui.client.widget.NestedWidget;
 import snownee.kiwi.ui.client.widget.Root;
@@ -35,7 +36,7 @@ public class KiwiScreen extends Screen {
         root.node.SetHeight(YogaValue.Pt(height));
 
         NestedWidget main = new NestedWidget(ctx);
-        main.background = new FillDrawable(0xffffffff);
+        main.background = DefaultDrawables.getPanel();
 
         //main.node.SetMargin(YogaValue.AUTO);
         //        main.node.SetMarginHorizontal(YogaValue.AUTO);
