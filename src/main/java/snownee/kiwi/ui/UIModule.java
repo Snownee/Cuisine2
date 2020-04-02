@@ -18,6 +18,7 @@ public final class UIModule extends AbstractModule {
         IResourceManager resourceManager = event.getMinecraftSupplier().get().getResourceManager();
         if (resourceManager instanceof IReloadableResourceManager) {
             ((IReloadableResourceManager) resourceManager).addReloadListener(KiwiSpriteUploader.GUI_ATLAS);
+            ((IReloadableResourceManager) resourceManager).addReloadListener(DefaultDrawables.INSTANCE);
         }
 
         KiwiSpriteUploader.GUI_ATLAS.registerSprite(DefaultDrawables.SLOT_LOCATION);

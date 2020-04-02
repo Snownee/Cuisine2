@@ -35,9 +35,8 @@ public class SlotWidget extends Widget {
     @Override
     public void draw(int mouseX, int mouseY, float pTicks) {
         super.draw(mouseX, mouseY, pTicks);
-        System.out.println("" + this.left + this.right);
-        System.out.println(("" + mouseX + mouseY));
         if (isHovering(mouseX, mouseY)) {
+            //TODO draw highlight
             if (this.ctx.mc.currentScreen != null)
                 this.ctx.mc.currentScreen.renderTooltip(addInformation(ITooltipFlag.TooltipFlags.NORMAL), mouseX, mouseY);
         }
