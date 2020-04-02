@@ -61,12 +61,15 @@ public class KiwiScreen extends Screen {
         root_child1.background = new FillDrawable(0xff0000ff);
         root_child1.node.SetFlexGrow(1);
         main.addChild(1, root_child1);
+
+        root_child0.node.SetMargin(YogaValue.Pt(5));
+        root_child1.node.SetMargin(YogaValue.Pt(5));
+
         SlotWidget slotWidget = null;
         slotWidget = new SlotWidget(ctx);
         slotWidget.node.SetFlexGrow(1);
+        slotWidget.background = new FillDrawable(0xffffffff);
         main.addChild(2, slotWidget);
-        root_child0.node.SetMargin(YogaValue.Pt(5));
-        root_child1.node.SetMargin(YogaValue.Pt(5));
 
         root.node.SetStyleDirection(YogaDirection.LeftToRight);
         root.init();
@@ -74,7 +77,7 @@ public class KiwiScreen extends Screen {
 
     @Override
     public void render(int mouseX, int mouseY, float pTicks) {
-        root.draw(mouseY, mouseY, pTicks);
+        root.draw(mouseX, mouseY, pTicks);
         super.render(mouseX, mouseY, pTicks);
     }
 
