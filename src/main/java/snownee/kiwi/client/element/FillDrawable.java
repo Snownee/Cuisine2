@@ -13,15 +13,19 @@ public class FillDrawable implements IDrawable {
 
     public FillDrawable(int color0, int color1) {
         this.color = color0;
-        this.color1 = color1;
+        if (color1 == -1) {
+            color1 = 0x00010101;
+        } else {
+            this.color1 = color1;
+        }
     }
 
     @Override
     public void draw(float left, float top, float width, float height, float pTicks) {
         if (color1 == -1) {
-            DrawUtil.fill(left, top, width, height, color);
+            DrawUtil.fill(left, top, left + width, top + height, color);
         } else {
-            DrawUtil.fillGradient(left, top, width, height, color, color1);
+            DrawUtil.fillGradient(left, top, left + width, top + height, color, color1);
         }
     }
 

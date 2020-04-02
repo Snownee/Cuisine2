@@ -14,21 +14,21 @@ public final class DrawUtil {
 
     private DrawUtil() {}
 
-    public static void fill(float x, float y, float width, float height, int color) {
-        fill(TransformationMatrix.identity().getMatrix(), x, y, width, height, color);
+    public static void fill(float left, float top, float right, float bottom, int color) {
+        fill(TransformationMatrix.identity().getMatrix(), left, top, right, bottom, color);
     }
 
-    public static void fill(Matrix4f matrix, float x, float y, float width, float height, int color) {
-        if (x < width) {
-            float i = x;
-            x = width;
-            width = i;
+    public static void fill(Matrix4f matrix, float left, float top, float right, float bottom, int color) {
+        if (left < right) {
+            float i = left;
+            left = right;
+            right = i;
         }
 
-        if (y < height) {
-            float j = y;
-            y = height;
-            height = j;
+        if (top < bottom) {
+            float j = top;
+            top = bottom;
+            bottom = j;
         }
 
         float f3 = (color >> 24 & 255) / 255.0F;
@@ -40,10 +40,10 @@ public final class DrawUtil {
         RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.pos(matrix, x, height, 0.0F).color(f, f1, f2, f3).endVertex();
-        bufferbuilder.pos(matrix, width, height, 0.0F).color(f, f1, f2, f3).endVertex();
-        bufferbuilder.pos(matrix, width, y, 0.0F).color(f, f1, f2, f3).endVertex();
-        bufferbuilder.pos(matrix, x, y, 0.0F).color(f, f1, f2, f3).endVertex();
+        bufferbuilder.pos(matrix, left, bottom, 0.0F).color(f, f1, f2, f3).endVertex();
+        bufferbuilder.pos(matrix, right, bottom, 0.0F).color(f, f1, f2, f3).endVertex();
+        bufferbuilder.pos(matrix, right, top, 0.0F).color(f, f1, f2, f3).endVertex();
+        bufferbuilder.pos(matrix, left, top, 0.0F).color(f, f1, f2, f3).endVertex();
         bufferbuilder.finishDrawing();
         WorldVertexBufferUploader.draw(bufferbuilder);
         RenderSystem.enableTexture();
