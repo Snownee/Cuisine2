@@ -1,4 +1,4 @@
-package snownee.kiwi.client.element;
+package snownee.kiwi.client;
 
 public enum DrawMode {
     STRETCH,

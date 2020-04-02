@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import snownee.kiwi.client.element.DrawMode;
 
 public final class DrawUtil {
     private static int blitOffset;
