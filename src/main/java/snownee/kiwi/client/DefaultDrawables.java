@@ -36,8 +36,8 @@ public enum DefaultDrawables implements ISelectiveResourceReloadListener {
         }
         KiwiSpriteUploader atlas = KiwiSpriteUploader.GUI_ATLAS;
         TextureAtlasSprite slotSprite = atlas.getSprite(SLOT_LOCATION);
-        slot = new NineSliceDrawable(slotSprite, 3, 3, 1, 2, 1, 2, DrawMode.STRETCH);
+        slot = new NineSliceDrawable(slotSprite, 3, 3, 1, 1, 1, 1, DrawMode.STRETCH);
         TextureAtlasSprite panelSprite = atlas.getSprite(PANEL_LOCATION);
-        panel = new NineSliceDrawable(panelSprite, 9, 9, 4, 5, 4, 5, DrawMode.STRETCH);
+        panel = new NineSliceDrawable(panelSprite, 9, 9, 4, 4, 4, 4, DrawMode.STRETCH);
     }
 }

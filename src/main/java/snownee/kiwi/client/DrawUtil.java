@@ -82,7 +82,7 @@ public final class DrawUtil {
         if (mode == DrawMode.REPEAT) {
             drawTiled(bufferBuilder, uMin, vMin, uMax, vMax, xOffset, yOffset, tiledWidth, tiledHeight, width, height);
         } else if (mode == DrawMode.STRETCH) {
-            drawStretched(bufferBuilder, uMin, vMin, uMax, vMax, xOffset, yOffset, tiledWidth, tiledHeight, width, height);
+            draw(bufferBuilder, uMin, vMin, uMax, vMax, xOffset, yOffset, tiledWidth, tiledHeight);
         }
     }
 
@@ -113,10 +113,6 @@ public final class DrawUtil {
                 }
             }
         }
-    }
-
-    public static void drawStretched(BufferBuilder bufferBuilder, float uMin, float vMin, float uMax, float vMax, float xOffset, float yOffset, float tiledWidth, float tiledHeight, float width, float height) {
-        draw(bufferBuilder, uMin, vMin, uMax, vMax, xOffset, yOffset, width, height);
     }
 
     public static void draw(BufferBuilder bufferBuilder, float minU, float minV, float maxU, float maxV, float xOffset, float yOffset, float width, float height) {
