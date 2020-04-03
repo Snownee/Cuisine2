@@ -68,7 +68,6 @@ public class KiwiScreen extends Screen {
         SlotWidget slotWidget = null;
         slotWidget = new SlotWidget(ctx);
         slotWidget.node.SetFlexGrow(1);
-        slotWidget.background = new FillDrawable(0xffffffff);
         main.addChild(2, slotWidget);
 
         root.node.SetStyleDirection(YogaDirection.LeftToRight);

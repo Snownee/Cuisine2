@@ -26,6 +26,8 @@ public class SlotWidget extends Widget {
         background = DefaultDrawables.getSlot();
         this.node.SetWidth(YogaValue.Pt(16));
         this.node.SetHeight(YogaValue.Pt(16));
+        this.node.SetMaxWidth(YogaValue.Pt(16));
+        this.node.SetMaxHeight(YogaValue.Pt(16));
     }
 
     public void setSlot(Slot slot) {
