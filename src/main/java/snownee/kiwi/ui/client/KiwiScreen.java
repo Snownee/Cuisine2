@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
 import snownee.kiwi.client.DefaultDrawables;
 import snownee.kiwi.client.element.FillDrawable;
+import snownee.kiwi.ui.client.widget.Button;
 import snownee.kiwi.ui.client.widget.NestedWidget;
 import snownee.kiwi.ui.client.widget.Root;
 import snownee.kiwi.ui.client.widget.SlotWidget;
@@ -51,10 +52,10 @@ public class KiwiScreen extends Screen {
         //main.node.SetFlexDirection(YogaFlexDirection.Row);
         root.addChild(0, main);
 
-        Widget root_child0 = new Widget(ctx);
-        root_child0.background = new FillDrawable(0xffff0000);
+        Button root_child0 = new Button(ctx);
         root_child0.node.SetFlexGrow(1);
         root_child0.node.SetFlexBasis(YogaValue.Pt(50));
+        //root_child0.background = new FillDrawable(0xffff0000);
         main.addChild(0, root_child0);
 
         Widget root_child1 = new Widget(ctx);
@@ -78,6 +79,11 @@ public class KiwiScreen extends Screen {
     public void render(int mouseX, int mouseY, float pTicks) {
         root.draw(mouseX, mouseY, pTicks);
         super.render(mouseX, mouseY, pTicks);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int type) {
+        return root.mouseClicked(mouseX, mouseY, type);
     }
 
 }

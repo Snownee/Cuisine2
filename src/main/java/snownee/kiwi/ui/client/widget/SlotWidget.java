@@ -24,10 +24,10 @@ public class SlotWidget extends Widget {
         TextureAtlasSprite p = (i.getSprite(new ResourceLocation("minecraft", "item/apple")));
         System.out.println(p);
         background = DefaultDrawables.getSlot();
-        this.node.SetWidth(YogaValue.Pt(16));
-        this.node.SetHeight(YogaValue.Pt(16));
-        this.node.SetMaxWidth(YogaValue.Pt(16));
-        this.node.SetMaxHeight(YogaValue.Pt(16));
+        this.node.SetWidth(YogaValue.Pt(18));
+        this.node.SetHeight(YogaValue.Pt(18));
+        this.node.SetMaxWidth(YogaValue.Pt(18));
+        this.node.SetMaxHeight(YogaValue.Pt(18));
     }
 
     public void setSlot(Slot slot) {
@@ -37,7 +37,7 @@ public class SlotWidget extends Widget {
     @Override
     public void draw(int mouseX, int mouseY, float pTicks) {
         super.draw(mouseX, mouseY, pTicks);
-        if (isHovering(mouseX, mouseY)) {
+        if (isMouseOver(mouseX, mouseY)) {
             //TODO draw highlight
             if (this.ctx.mc.currentScreen != null)
                 this.ctx.mc.currentScreen.renderTooltip(addInformation(ITooltipFlag.TooltipFlags.NORMAL), mouseX, mouseY);

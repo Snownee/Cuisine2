@@ -1,6 +1,11 @@
 package snownee.kiwi.ui.client.widget;
 
+import javax.annotation.Nullable;
+
+import com.google.common.base.Strings;
+
 import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.chat.NarratorChatListener;
 import snownee.kiwi.client.element.IDrawable;
 import snownee.kiwi.ui.client.UIContext;
 import third_party.com.facebook.yoga.YogaNode;
@@ -38,7 +43,26 @@ public class Widget implements IGuiEventListener {
         bottom = top + node.GetLayoutHeight();
     }
 
-    public boolean isHovering(int mouseX, int mouseY) {
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
         return visible && mouseX > left && mouseX < right && mouseY > top && mouseY < bottom;
+    }
+
+    @Nullable
+    public String getMesseage() {
+        return null;
+    }
+
+    public void narrate() {
+        String s = getMesseage();
+        if (!Strings.isNullOrEmpty(s)) {
+            NarratorChatListener.INSTANCE.say(s);
+        }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int type) {
+        System.out.println(this);
+        return false;
     }
 }

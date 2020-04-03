@@ -17,14 +17,14 @@ public class NineSliceDrawable implements IDrawable {
     private final float sliceBottom;
     private final DrawMode mode;
 
-    public NineSliceDrawable(TextureAtlasSprite sprite, float width, float height, float left, float right, float top, float bottom, DrawMode mode) {
+    public NineSliceDrawable(TextureAtlasSprite sprite, float width, float height, float sliceLeft, float sliceRight, float sliceTop, float sliceBottom, DrawMode mode) {
         this.sprite = sprite;
         this.width = width;
         this.height = height;
-        this.sliceLeft = left;
-        this.sliceRight = right;
-        this.sliceTop = top;
-        this.sliceBottom = bottom;
+        this.sliceLeft = sliceLeft;
+        this.sliceRight = sliceRight;
+        this.sliceTop = sliceTop;
+        this.sliceBottom = sliceBottom;
         this.mode = mode;
     }
 

@@ -87,9 +87,9 @@ public final class DrawUtil {
     }
 
     public static void drawTiled(BufferBuilder bufferBuilder, float uMin, float vMin, float uMax, float vMax, float xOffset, float yOffset, float tiledWidth, float tiledHeight, float width, float height) {
-        float xTileCount = tiledWidth / width;
+        int xTileCount = (int) (tiledWidth / width);
         float xRemainder = tiledWidth - (xTileCount * width);
-        float yTileCount = tiledHeight / height;
+        int yTileCount = (int) (tiledHeight / height);
         float yRemainder = tiledHeight - (yTileCount * height);
 
         float yStart = yOffset + tiledHeight;

@@ -23,5 +23,8 @@ public final class UIModule extends AbstractModule {
 
         KiwiSpriteUploader.GUI_ATLAS.registerSprite(DefaultDrawables.SLOT_LOCATION);
         KiwiSpriteUploader.GUI_ATLAS.registerSprite(DefaultDrawables.PANEL_LOCATION);
+        KiwiSpriteUploader.GUI_ATLAS.registerSprite(DefaultDrawables.BTN_LOCATION);
+        KiwiSpriteUploader.GUI_ATLAS.registerSprite(DefaultDrawables.BTN_ACTIVE_LOCATION);
+        KiwiSpriteUploader.GUI_ATLAS.registerSprite(DefaultDrawables.BTN_DISABLED_LOCATION);
     }
 }
