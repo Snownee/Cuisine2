@@ -115,4 +115,12 @@ public class NestedWidget extends Widget implements INestedGuiEventHandler {
         }
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+        for (Widget child : children) {
+            child.destroy();
+        }
+    }
+
 }

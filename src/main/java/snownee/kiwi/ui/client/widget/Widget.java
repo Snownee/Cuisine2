@@ -8,6 +8,7 @@ import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.chat.NarratorChatListener;
 import snownee.kiwi.client.element.IDrawable;
 import snownee.kiwi.ui.client.UIContext;
+import snownee.kiwi.ui.client.event.EventBus;
 import third_party.com.facebook.yoga.YogaNode;
 
 public class Widget implements IGuiEventListener {
@@ -19,6 +20,7 @@ public class Widget implements IGuiEventListener {
     public float bottom;
     public IDrawable background;
     public boolean visible = true;
+    public final EventBus bus = new EventBus(this);
 
     public Widget(UIContext ctx) {
         node = new YogaNode();
@@ -43,6 +45,10 @@ public class Widget implements IGuiEventListener {
         bottom = top + node.GetLayoutHeight();
     }
 
+    public void destroy() {
+        bus.destroy();
+    }
+
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return visible && mouseX > left && mouseX < right && mouseY > top && mouseY < bottom;
@@ -62,7 +68,6 @@ public class Widget implements IGuiEventListener {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int type) {
-        System.out.println(this);
-        return false;
+        return bus.fire("click");
     }
 }

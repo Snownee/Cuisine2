@@ -56,6 +56,9 @@ public class KiwiScreen extends Screen {
         root_child0.node.SetFlexGrow(1);
         root_child0.node.SetFlexBasis(YogaValue.Pt(50));
         //root_child0.background = new FillDrawable(0xffff0000);
+
+        root_child0.bus.bind("click", btn -> true);
+
         main.addChild(0, root_child0);
 
         Widget root_child1 = new Widget(ctx);
@@ -73,6 +76,14 @@ public class KiwiScreen extends Screen {
 
         root.node.SetStyleDirection(YogaDirection.LeftToRight);
         root.init();
+    }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        if (root != null) {
+            root.destroy();
+        }
     }
 
     @Override
