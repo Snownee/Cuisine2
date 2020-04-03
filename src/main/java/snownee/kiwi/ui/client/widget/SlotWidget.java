@@ -20,10 +20,8 @@ public class SlotWidget extends Widget {
 
     public SlotWidget(UIContext ctx) {
         super(ctx);
-        AtlasTexture i = this.ctx.mc.getModelManager().getAtlasTexture(new ResourceLocation("minecraft", "textures/atlas/blocks.png"));
-        TextureAtlasSprite p = (i.getSprite(new ResourceLocation("minecraft", "item/apple")));
-        System.out.println(p);
         background = DefaultDrawables.getSlot();
+        System.out.println(background);
         this.node.SetWidth(YogaValue.Pt(16));
         this.node.SetHeight(YogaValue.Pt(16));
         this.node.SetMaxWidth(YogaValue.Pt(16));
