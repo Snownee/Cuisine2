@@ -4,8 +4,11 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
+import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.chat.NarratorChatListener;
+import net.minecraft.util.SoundEvents;
 import snownee.kiwi.client.element.IDrawable;
 import snownee.kiwi.ui.client.UIContext;
 import snownee.kiwi.ui.client.event.EventBus;
@@ -69,5 +72,9 @@ public class Widget<T extends Widget<T>> implements IGuiEventListener {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int type) {
         return bus.fire("click");
+    }
+
+    public void playDownSound(SoundHandler soundHandler) {
+        soundHandler.play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 }

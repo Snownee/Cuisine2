@@ -33,4 +33,14 @@ public class Button<T extends Button<T>> extends Widget<T> {
             drawable.draw(left, top, node.GetLayoutWidth(), node.GetLayoutHeight(), pTicks);
         }
     }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int type) {
+        if (bus.fire("click")) {
+            playDownSound(ctx.mc.getSoundHandler());
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
