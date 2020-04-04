@@ -6,6 +6,7 @@ public class Root<T extends Root<T>> extends NestedWidget<T> {
 
     public Root(UIContext ctx) {
         super(ctx);
+        ctx.root = this;
     }
 
     @Override
@@ -20,6 +21,12 @@ public class Root<T extends Root<T>> extends NestedWidget<T> {
             ctx.screen.renderBackground();
         }
         super.draw(mouseX, mouseY, pTicks);
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        ctx.root = null;
     }
 
 }

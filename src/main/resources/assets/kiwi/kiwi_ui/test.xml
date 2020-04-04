@@ -1,0 +1,7 @@
+<kxml>
+	<div>
+		<button/>
+		<div></div>
+		<slot/>
+	</div>
+</kxml>

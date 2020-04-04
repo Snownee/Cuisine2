@@ -14,9 +14,13 @@ import snownee.kiwi.AbstractModule;
 import snownee.kiwi.KiwiModule;
 import snownee.kiwi.client.DefaultDrawables;
 import snownee.kiwi.client.KiwiSpriteUploader;
+import snownee.kiwi.ui.data.KXMLLoader;
 
 @KiwiModule(name = "ui")
 public final class UIModule extends AbstractModule {
+
+    public static final KXMLLoader LOADER = new KXMLLoader("kiwi_ui");
+
     public UIModule() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> clientStart(modEventBus));
@@ -30,6 +34,7 @@ public final class UIModule extends AbstractModule {
             if (resourceManager instanceof IReloadableResourceManager) {
                 ((IReloadableResourceManager) resourceManager).addReloadListener(KiwiSpriteUploader.GUI_ATLAS);
                 ((IReloadableResourceManager) resourceManager).addReloadListener(DefaultDrawables.INSTANCE);
+                ((IReloadableResourceManager) resourceManager).addReloadListener(LOADER);
             }
 
             KiwiSpriteUploader.GUI_ATLAS.registerSprite(DefaultDrawables.SLOT_LOCATION);
