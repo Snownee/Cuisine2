@@ -90,6 +90,7 @@ public class KiwiScreen extends Screen {
         super.onClose();
         if (root != null) {
             root.destroy();
+            root = null;
         }
     }
 
@@ -102,6 +103,11 @@ public class KiwiScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int type) {
         return root.mouseClicked(mouseX, mouseY, type);
+    }
+
+    @Binding(target = "#btn", event = "click")
+    public void testClick(Widget widget) {
+        System.out.println("hi");
     }
 
 }

@@ -24,6 +24,7 @@ public class Widget<T extends Widget<T>> implements IGuiEventListener {
     public IDrawable background;
     public boolean visible = true;
     public final EventBus<T> bus = new EventBus<T>((T) this);
+    public String text;
 
     public Widget(UIContext ctx) {
         node = new YogaNode();
@@ -58,12 +59,12 @@ public class Widget<T extends Widget<T>> implements IGuiEventListener {
     }
 
     @Nullable
-    public String getMesseage() {
-        return null;
+    public String getText() {
+        return text;
     }
 
     public void narrate() {
-        String s = getMesseage();
+        String s = getText();
         if (!Strings.isNullOrEmpty(s)) {
             NarratorChatListener.INSTANCE.say(s);
         }
