@@ -57,7 +57,14 @@ public class KiwiScreen extends Screen {
         root_child0.node.SetFlexBasis(YogaValue.Pt(50));
         //root_child0.background = new FillDrawable(0xffff0000);
 
-        root_child0.bus.bind("click", btn -> true);
+        root_child0.bus.bind("click", btn -> {
+            System.out.println("1");
+            return false;
+        });
+        root_child0.bus.bind("click", btn -> {
+            System.out.println("2");
+            return true;
+        });
 
         main.addChild(0, root_child0);
 

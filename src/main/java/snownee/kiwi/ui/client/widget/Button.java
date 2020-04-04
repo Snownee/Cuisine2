@@ -6,7 +6,7 @@ import snownee.kiwi.client.DefaultDrawables;
 import snownee.kiwi.client.element.IDrawable;
 import snownee.kiwi.ui.client.UIContext;
 
-public class Button extends Widget {
+public class Button<T extends Button<T>> extends Widget<T> {
     @Nullable
     public IDrawable activeBackground = DefaultDrawables.getBtnActive();
     @Nullable

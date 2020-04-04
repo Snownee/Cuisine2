@@ -9,7 +9,7 @@ import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.INestedGuiEventHandler;
 import snownee.kiwi.ui.client.UIContext;
 
-public class NestedWidget extends Widget implements INestedGuiEventHandler {
+public class NestedWidget<T extends NestedWidget<T>> extends Widget<T> implements INestedGuiEventHandler {
 
     public NestedWidget(UIContext ctx) {
         super(ctx);

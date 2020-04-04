@@ -4,18 +4,15 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import snownee.kiwi.client.DefaultDrawables;
 import snownee.kiwi.ui.client.UIContext;
 import third_party.com.facebook.yoga.YogaValue;
 
-public class SlotWidget extends Widget {
+public class SlotWidget<T extends SlotWidget<T>> extends Widget<T> {
     protected Slot slot;
 
     public SlotWidget(UIContext ctx) {

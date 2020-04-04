@@ -11,7 +11,7 @@ import snownee.kiwi.ui.client.UIContext;
 import snownee.kiwi.ui.client.event.EventBus;
 import third_party.com.facebook.yoga.YogaNode;
 
-public class Widget implements IGuiEventListener {
+public class Widget<T extends Widget<T>> implements IGuiEventListener {
     public final YogaNode node;
     public final UIContext ctx;
     public float left;
@@ -20,7 +20,7 @@ public class Widget implements IGuiEventListener {
     public float bottom;
     public IDrawable background;
     public boolean visible = true;
-    public final EventBus bus = new EventBus(this);
+    public final EventBus<T> bus = new EventBus<T>((T) this);
 
     public Widget(UIContext ctx) {
         node = new YogaNode();

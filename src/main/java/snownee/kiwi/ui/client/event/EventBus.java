@@ -8,17 +8,17 @@ import com.google.common.collect.Maps;
 
 import snownee.kiwi.ui.client.widget.Widget;
 
-public final class EventBus {
+public final class EventBus<T extends Widget<T>> {
 
-    private Widget owner;
-    private final Map<String, Predicate<Widget>> callbacks = Maps.newHashMap();
+    private T owner;
+    private final Map<String, Predicate<T>> callbacks = Maps.newHashMap();
 
-    public EventBus(Widget owner) {
+    public EventBus(T owner) {
         this.owner = owner;
     }
 
-    public void bind(String eventName, Predicate<Widget> callback) {
-        Predicate<Widget> oldCallback = callbacks.get(eventName);
+    public void bind(String eventName, Predicate<T> callback) {
+        Predicate<T> oldCallback = callbacks.get(eventName);
         if (oldCallback == null) {
             callbacks.put(eventName, callback);
         } else {

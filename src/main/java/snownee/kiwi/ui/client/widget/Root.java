@@ -2,7 +2,7 @@ package snownee.kiwi.ui.client.widget;
 
 import snownee.kiwi.ui.client.UIContext;
 
-public class Root extends NestedWidget {
+public class Root<T extends Root<T>> extends NestedWidget<T> {
 
     public Root(UIContext ctx) {
         super(ctx);
