@@ -7,7 +7,8 @@ import snownee.kiwi.crafting.EmptyInventory;
 public class MillInventory extends EmptyInventory {
     public ItemStack item;
     public FluidStack fluid;
-    public MillInventory(ItemStack item,FluidStack fluid){
+
+    public MillInventory(ItemStack item, FluidStack fluid) {
         this.item = item;
         this.fluid = fluid;
     }

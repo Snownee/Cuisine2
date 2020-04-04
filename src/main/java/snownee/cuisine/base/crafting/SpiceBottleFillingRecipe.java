@@ -42,18 +42,18 @@ public class SpiceBottleFillingRecipe extends DynamicShapedRecipe {
         ItemStack container = inv.getStackInSlot(pos[0] + (pos[1] + 1) * inv.getWidth());
         ItemStack in = ItemHandlerHelper.copyStackWithSize(inv.getStackInSlot(pos[0] + pos[1] * inv.getWidth()), 1);
         AtomicBoolean ret = new AtomicBoolean(false);
-//        if (inv.getStackInSlot(pos[0] + pos[1] * inv.getWidth()).getCount()==1){
-//            in.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(i -> {
-//                if (i instanceof FluidHandlerItemStack &&
-//                        bottle.fill(container, ((FluidHandlerItemStack) i).getFluid(), IFluidHandler.FluidAction.SIMULATE) > 0) {
-//                    ret.set(true);
-//                }
-//                if (i instanceof FluidBucketWrapper &&
-//                        bottle.fill(container, ((FluidBucketWrapper) i).getFluid(), IFluidHandler.FluidAction.SIMULATE) == FluidAttributes.BUCKET_VOLUME) {
-//                    ret.set(true);
-//                }
-//            });
-//        }
+        //        if (inv.getStackInSlot(pos[0] + pos[1] * inv.getWidth()).getCount()==1){
+        //            in.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(i -> {
+        //                if (i instanceof FluidHandlerItemStack &&
+        //                        bottle.fill(container, ((FluidHandlerItemStack) i).getFluid(), IFluidHandler.FluidAction.SIMULATE) > 0) {
+        //                    ret.set(true);
+        //                }
+        //                if (i instanceof FluidBucketWrapper &&
+        //                        bottle.fill(container, ((FluidBucketWrapper) i).getFluid(), IFluidHandler.FluidAction.SIMULATE) == FluidAttributes.BUCKET_VOLUME) {
+        //                    ret.set(true);
+        //                }
+        //            });
+        //        }
         return ret.get() || bottle.fill(container, in, true).isEmpty();
     }
 
@@ -65,25 +65,25 @@ public class SpiceBottleFillingRecipe extends DynamicShapedRecipe {
         }
         ItemStack in = ItemHandlerHelper.copyStackWithSize(inv.getStackInSlot(pos[0] + pos[1] * inv.getWidth()), 1);
         ItemStack container = ItemHandlerHelper.copyStackWithSize(inv.getStackInSlot(pos[0] + (pos[1] + 1) * inv.getWidth()), 1);
-//        AtomicBoolean ret = new AtomicBoolean(false);
-//        inv.getStackInSlot(pos[0] + pos[1] * inv.getWidth()).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(i -> {
-//            if (i instanceof FluidHandlerItemStack) {
-//                int num = bottle.fill(container, ((FluidHandlerItemStack) i).getFluid(), IFluidHandler.FluidAction.EXECUTE);
-//                if (num > 0) {
-//                    ((FluidHandlerItemStack) i).getFluid().shrink(num);
-//                    ret.set(true);
-//                }
-//            }
-//            if (i instanceof FluidBucketWrapper) {
-//                int num = bottle.fill(container, ((FluidBucketWrapper) i).getFluid(), IFluidHandler.FluidAction.EXECUTE);
-//                if (num == FluidAttributes.BUCKET_VOLUME) {
-//                    ret.set(true);
-//                }
-//            }
-//        });
-//        if (ret.get()) {
-//            return container;
-//        }
+        //        AtomicBoolean ret = new AtomicBoolean(false);
+        //        inv.getStackInSlot(pos[0] + pos[1] * inv.getWidth()).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(i -> {
+        //            if (i instanceof FluidHandlerItemStack) {
+        //                int num = bottle.fill(container, ((FluidHandlerItemStack) i).getFluid(), IFluidHandler.FluidAction.EXECUTE);
+        //                if (num > 0) {
+        //                    ((FluidHandlerItemStack) i).getFluid().shrink(num);
+        //                    ret.set(true);
+        //                }
+        //            }
+        //            if (i instanceof FluidBucketWrapper) {
+        //                int num = bottle.fill(container, ((FluidBucketWrapper) i).getFluid(), IFluidHandler.FluidAction.EXECUTE);
+        //                if (num == FluidAttributes.BUCKET_VOLUME) {
+        //                    ret.set(true);
+        //                }
+        //            }
+        //        });
+        //        if (ret.get()) {
+        //            return container;
+        //        }
         this.bottle.fill(container, in, false);
         return in.isEmpty() ? container : ItemStack.EMPTY;
     }
@@ -91,14 +91,14 @@ public class SpiceBottleFillingRecipe extends DynamicShapedRecipe {
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
         NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
-//        int[] pos = getMatchPos(inv);
-//        ItemStack in = ItemHandlerHelper.copyStackWithSize(inv.getStackInSlot(pos[0] + pos[1] * inv.getWidth()), 1);
-//        if (in.hasContainerItem()) {
-//            nonnulllist.set(pos[0] + pos[1] * inv.getWidth(), in.getContainerItem());
-//        }
-//        else if (in.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()) {
-//            nonnulllist.set(pos[0] + pos[1] * inv.getWidth(), in);
-//        }
+        //        int[] pos = getMatchPos(inv);
+        //        ItemStack in = ItemHandlerHelper.copyStackWithSize(inv.getStackInSlot(pos[0] + pos[1] * inv.getWidth()), 1);
+        //        if (in.hasContainerItem()) {
+        //            nonnulllist.set(pos[0] + pos[1] * inv.getWidth(), in.getContainerItem());
+        //        }
+        //        else if (in.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()) {
+        //            nonnulllist.set(pos[0] + pos[1] * inv.getWidth(), in);
+        //        }
         return nonnulllist;
     }
 

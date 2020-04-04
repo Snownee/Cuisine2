@@ -226,7 +226,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
             }
 
             if (list.isEmpty() && !ForgeConfig.SERVER.treatEmptyTagsAsAir.get()) {
-//                list.add(FluidStack.EMPTY); //FIXME 与Ingredient逻辑不一致
+                //                list.add(FluidStack.EMPTY); //FIXME 与Ingredient逻辑不一致
             }
 
             return list;

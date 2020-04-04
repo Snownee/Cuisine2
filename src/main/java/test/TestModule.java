@@ -21,12 +21,12 @@ public class TestModule extends AbstractModule {
     }
 
     @SubscribeEvent
-    public void onFoodCookedEvent(FoodCookedEvent event){
+    public void onFoodCookedEvent(FoodCookedEvent event) {
         List<MaterialInstance> list = event.foodBuilder.getMaterials();
-        for (MaterialInstance i : list){
-            CuisineAPI.getResearchInfo(event.foodBuilder.getCook()).addStar(i.material,1);
-            CuisineAPI.getResearchInfo(event.foodBuilder.getCook()).addProgress(i.material,1);
-            System.out.println(i.toString()+" up");
+        for (MaterialInstance i : list) {
+            CuisineAPI.getResearchInfo(event.foodBuilder.getCook()).addStar(i.material, 1);
+            CuisineAPI.getResearchInfo(event.foodBuilder.getCook()).addProgress(i.material, 1);
+            System.out.println(i.toString() + " up");
         }
     }
 

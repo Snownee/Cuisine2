@@ -76,16 +76,16 @@ public class MillingRecipe extends Recipe<MillInventory> {
         @Override
         public MillingRecipe read(ResourceLocation recipeId, JsonObject json) {
             Ingredient ingredient = Ingredient.EMPTY;
-            if (JSONUtils.hasField(json,"ingredient")){
+            if (JSONUtils.hasField(json, "ingredient")) {
                 ingredient = Ingredient.deserialize(JSONUtils.getJsonObject(json, "ingredient"));
-                if (ingredient.getMatchingStacks()[0].getItem().equals(Blocks.BARRIER.asItem())){
+                if (ingredient.getMatchingStacks()[0].getItem().equals(Blocks.BARRIER.asItem())) {
                     throw new JsonSyntaxException("An error item tag. Could not find any item.");
                 }
             }
             FluidIngredient fluid_ingredient = FluidIngredient.EMPTY;
-            if (JSONUtils.hasField(json,"fluid_ingredient")){
+            if (JSONUtils.hasField(json, "fluid_ingredient")) {
                 fluid_ingredient = FluidIngredient.deserialize(JSONUtils.getJsonObject(json, "fluid_ingredient"));
-                if (fluid_ingredient.getMatchingFluids().length==0){
+                if (fluid_ingredient.getMatchingFluids().length == 0) {
                     throw new JsonSyntaxException("An error fluid tag. Could not find any Fluid.");
                 }
             }
@@ -100,7 +100,7 @@ public class MillingRecipe extends Recipe<MillInventory> {
             if (fluidStack == null && itemStack == null) {
                 throw new JsonSyntaxException("need a result item or fluid.");
             }
-//            return null;
+            //            return null;
             return new MillingRecipe(recipeId, ingredient, fluid_ingredient, itemStack, fluidStack);
 
         }

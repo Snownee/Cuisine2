@@ -23,27 +23,27 @@ public class ResearchData extends WorldSavedData {
 
     @Override
     public void read(CompoundNBT data) {
-        ListNBT listNBT = data.getList("ResearchData",10);
-        for (INBT i : listNBT){
-            CompoundNBT nbt = (CompoundNBT)i;
+        ListNBT listNBT = data.getList("ResearchData", 10);
+        for (INBT i : listNBT) {
+            CompoundNBT nbt = (CompoundNBT) i;
             ResearchInfoImpl info = new ResearchInfoImpl();
             info.read(nbt);
             UUID id = nbt.getUniqueId("Id");
-            players.put(id,info);
+            players.put(id, info);
         }
     }
 
     @Override
     public CompoundNBT write(CompoundNBT data) {
         ListNBT list = new ListNBT();
-        for (UUID id : players.keySet()){
-            ResearchInfo info = players.getOrDefault(id,ResearchInfo.Empty.INSTANCE);
+        for (UUID id : players.keySet()) {
+            ResearchInfo info = players.getOrDefault(id, ResearchInfo.Empty.INSTANCE);
             CompoundNBT nbt = new CompoundNBT();
-            nbt.putUniqueId("Id",id);
+            nbt.putUniqueId("Id", id);
             info.write(nbt);
             list.add(nbt);
         }
-        data.put("ResearchData",list);
+        data.put("ResearchData", list);
         return data;
     }
 
@@ -54,8 +54,8 @@ public class ResearchData extends WorldSavedData {
 
     public ResearchInfo get(Entity entity) {
         if (!players.containsKey(entity.getUniqueID()))
-            players.put(entity.getUniqueID(),new ResearchInfoImpl());
-        return players.getOrDefault(entity.getUniqueID(),ResearchInfo.Empty.INSTANCE);
+            players.put(entity.getUniqueID(), new ResearchInfoImpl());
+        return players.getOrDefault(entity.getUniqueID(), ResearchInfo.Empty.INSTANCE);
     }
 
 }

@@ -16,18 +16,17 @@ public class TestCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher, boolean integrated) {
         LiteralArgumentBuilder<CommandSource> builder = Commands.literal(Kiwi.MODID);
         if (integrated) {
-            builder.then(Commands.literal("test")
-                    .executes(ctx -> dumpLoots(ctx.getSource())));
+            builder.then(Commands.literal("test").executes(ctx -> dumpLoots(ctx.getSource())));
         }
 
         dispatcher.register(builder);
     }
+
     public static int dumpLoots(CommandSource source) throws CommandSyntaxException {
         try {
             System.out.println(111);
-            for (ResourceLocation i :CuisineRegistries.MATERIALS.getKeys()){
-                CuisineAPI.getResearchInfo(source.getEntity()).setProgress(CuisineRegistries.MATERIALS.getValue(i),
-                        CuisineAPI.getResearchInfo(source.getEntity()).getProgress(CuisineRegistries.MATERIALS.getValue(i))+1);
+            for (ResourceLocation i : CuisineRegistries.MATERIALS.getKeys()) {
+                CuisineAPI.getResearchInfo(source.getEntity()).setProgress(CuisineRegistries.MATERIALS.getValue(i), CuisineAPI.getResearchInfo(source.getEntity()).getProgress(CuisineRegistries.MATERIALS.getValue(i)) + 1);
             }
         } catch (PatternSyntaxException e) {
             System.out.println(222);

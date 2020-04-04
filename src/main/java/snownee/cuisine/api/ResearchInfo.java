@@ -30,11 +30,11 @@ public interface ResearchInfo {
 
     void addProgress(CuisineFood food, int progress);
 
-    default void read(CompoundNBT data){
+    default void read(CompoundNBT data) {
 
     }
 
-    default CompoundNBT write(CompoundNBT data){
+    default CompoundNBT write(CompoundNBT data) {
         return data;
     }
 
