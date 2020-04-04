@@ -2,7 +2,7 @@ package third_party.org.sam.rosenthal.cssselectortoxpath.utilities;
 
 public class CssSelectorToXPathConverterException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+    //private static final long serialVersionUID = 1L;
 
     public CssSelectorToXPathConverterException() {
         super();

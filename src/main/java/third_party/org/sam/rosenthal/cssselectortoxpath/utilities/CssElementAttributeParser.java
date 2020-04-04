@@ -41,6 +41,7 @@ public class CssElementAttributeParser {
         return builder.toString();
     }
 
+    @SuppressWarnings("null")
     public void checkValid(String elementWithAttributesString) throws CssSelectorToXPathConverterException {
         int reIndexAttributeValueType = 9;
         int reIndexAttributeValue = 16;

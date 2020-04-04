@@ -1965,6 +1965,7 @@ public class YogaNode implements Iterable<YogaNode> {
         return deltaFreeSpace;
     }
 
+    @SuppressWarnings("unused")
     private static final class JustifyMainAxisReturn {
         YogaCollectFlexItemsRowValues collectedFlexItemsValues;
         int startOfLineIndex;
