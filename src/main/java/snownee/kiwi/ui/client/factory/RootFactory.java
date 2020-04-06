@@ -14,9 +14,4 @@ public enum RootFactory implements WidgetFactory<Root> {
         return new Root(ctx);
     }
 
-    @Override
-    public ElementContentType getContentType() {
-        return ElementContentType.ELEMENT;
-    }
-
 }

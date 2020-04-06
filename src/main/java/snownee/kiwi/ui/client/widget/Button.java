@@ -2,6 +2,8 @@ package snownee.kiwi.ui.client.widget;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Strings;
+
 import snownee.kiwi.client.DefaultDrawables;
 import snownee.kiwi.client.element.IDrawable;
 import snownee.kiwi.ui.client.UIContext;
@@ -31,6 +33,9 @@ public class Button<T extends Button<T>> extends Widget<T> {
         }
         if (drawable != null) {
             drawable.draw(left, top, node.GetLayoutWidth(), node.GetLayoutHeight(), pTicks);
+        }
+        if (!Strings.isNullOrEmpty(text)) {
+            ctx.screen.drawCenteredString(ctx.mc.fontRenderer, text, (int) (left + right) / 2, (int) (top + bottom - ctx.mc.fontRenderer.FONT_HEIGHT) / 2, 0xFFFFFFFF);
         }
     }
 

@@ -30,6 +30,7 @@ public class KXMLLoader extends ReloadListener<Map<ResourceLocation, Document>> 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final int XML_EXTENSION_LENGTH = ".xml".length();
     private final String folder;
+    public final Map<ResourceLocation, Document> map = Maps.newHashMap();
 
     public KXMLLoader(String folder) {
         this.folder = folder;
@@ -41,8 +42,7 @@ public class KXMLLoader extends ReloadListener<Map<ResourceLocation, Document>> 
         int i = this.folder.length() + 1;
 
         try {
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             for (ResourceLocation resourcelocation : resourceManagerIn.getAllResourceLocations(this.folder, path -> {
                 return path.endsWith(".xml");
             })) {
@@ -51,7 +51,7 @@ public class KXMLLoader extends ReloadListener<Map<ResourceLocation, Document>> 
 
                 try (IResource iresource = resourceManagerIn.getResource(resourcelocation); InputStream inputstream = iresource.getInputStream(); Reader reader = new BufferedReader(new InputStreamReader(inputstream, StandardCharsets.UTF_8))) {
 
-                    Document doc = dBuilder.parse(inputstream);
+                    Document doc = docBuilder.parse(inputstream);
                     Element kxml = doc.getDocumentElement();
                     if (kxml == null || !kxml.getTagName().equals("kxml")) {
                         throw new IllegalArgumentException("Cannot find kxml tag from data file " + resourcelocation1);
@@ -74,8 +74,8 @@ public class KXMLLoader extends ReloadListener<Map<ResourceLocation, Document>> 
 
     @Override
     protected void apply(Map<ResourceLocation, Document> objectIn, IResourceManager resourceManagerIn, IProfiler profilerIn) {
-        // TODO Auto-generated method stub
-
+        map.clear();
+        map.putAll(objectIn);
     }
 
     protected ResourceLocation getPreparedPath(ResourceLocation rl) {

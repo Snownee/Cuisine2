@@ -27,6 +27,10 @@ public class NestedWidget<T extends NestedWidget<T>> extends Widget<T> implement
         }
     }
 
+    public void addChild(Widget child) {
+        addChild(children().size(), child);
+    }
+
     public void addChild(int index, Widget child) {
         children.add(index, child);
         node.Insert(index, child.node);

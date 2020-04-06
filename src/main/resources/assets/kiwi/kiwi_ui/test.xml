@@ -1,6 +1,9 @@
+<!DOCTYPE kxml [
+<!ENTITY title "Click">
+]>
 <kxml>
 	<div>
-		<button/>
+		<button>&gt; &title;! &lt;</button>
 		<div></div>
 		<slot/>
 	</div>

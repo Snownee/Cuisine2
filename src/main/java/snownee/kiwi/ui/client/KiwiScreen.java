@@ -1,25 +1,25 @@
 package snownee.kiwi.ui.client;
 
+import org.w3c.dom.Document;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
-import snownee.kiwi.client.DefaultDrawables;
-import snownee.kiwi.client.element.FillDrawable;
-import snownee.kiwi.ui.client.widget.Button;
-import snownee.kiwi.ui.client.widget.NestedWidget;
+import snownee.kiwi.ui.UIModule;
+import snownee.kiwi.ui.client.factory.UILoader;
 import snownee.kiwi.ui.client.widget.Root;
-import snownee.kiwi.ui.client.widget.SlotWidget;
 import snownee.kiwi.ui.client.widget.Widget;
-import third_party.com.facebook.yoga.YogaDirection;
-import third_party.com.facebook.yoga.YogaJustify;
-import third_party.com.facebook.yoga.YogaValue;
 
 public class KiwiScreen extends Screen {
 
+    protected final ResourceLocation id;
     private Root root;
+    protected boolean ready;
 
-    public KiwiScreen() {
-        super(new StringTextComponent("test"));
+    public KiwiScreen(ResourceLocation id) {
+        super(new StringTextComponent(id.toString()));
+        this.id = id;
     }
 
     @Override
@@ -29,6 +29,13 @@ public class KiwiScreen extends Screen {
         UIContext ctx = new UIContext();
         ctx.screen = this;
 
+        Document doc = UIModule.KXML_LOADER.map.get(id);
+        if (doc == null) {
+            return;
+        }
+        root = UILoader.INSTANCE.load(doc, ctx);
+
+        /*
         root = new Root(ctx);
         root.node.SetJustifyContent(YogaJustify.Center);
         //root.node.SetAlignContent(YogaAlign.Center);
@@ -82,13 +89,16 @@ public class KiwiScreen extends Screen {
         main.addChild(2, slotWidget);
 
         root.node.SetStyleDirection(YogaDirection.LeftToRight);
+        */
         root.init();
+        ready = true;
     }
 
     @Override
     public void onClose() {
         super.onClose();
         if (root != null) {
+            ready = false;
             root.destroy();
             root = null;
         }
@@ -96,12 +106,17 @@ public class KiwiScreen extends Screen {
 
     @Override
     public void render(int mouseX, int mouseY, float pTicks) {
-        root.draw(mouseX, mouseY, pTicks);
+        if (ready) {
+            root.draw(mouseX, mouseY, pTicks);
+        }
         super.render(mouseX, mouseY, pTicks);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int type) {
+        if (!ready) {
+            return false;
+        }
         return root.mouseClicked(mouseX, mouseY, type);
     }
 
