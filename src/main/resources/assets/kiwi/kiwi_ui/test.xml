@@ -1,9 +1,10 @@
 <!DOCTYPE kxml [
 <!ENTITY title "Click">
 ]>
+<?style test?>
 <kxml>
 	<div>
-		<button>&gt; &title;! &lt;</button>
+		<button id="btn">&gt; &title;! &lt;</button>
 		<div></div>
 		<slot/>
 	</div>

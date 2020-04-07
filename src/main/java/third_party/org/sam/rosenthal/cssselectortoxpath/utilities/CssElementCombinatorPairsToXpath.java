@@ -1,9 +1,7 @@
 package third_party.org.sam.rosenthal.cssselectortoxpath.utilities;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 import third_party.org.sam.rosenthal.cssselectortoxpath.model.CssAttribute;
 import third_party.org.sam.rosenthal.cssselectortoxpath.model.CssAttributePsuedoClass;
@@ -11,7 +9,7 @@ import third_party.org.sam.rosenthal.cssselectortoxpath.model.CssAttributeValueT
 import third_party.org.sam.rosenthal.cssselectortoxpath.model.CssElementCombinatorPair;
 
 public class CssElementCombinatorPairsToXpath {
-    public static final Properties VERSION_PROPERTIES = getVersionProperties();
+    //public static final Properties VERSION_PROPERTIES = getVersionProperties();
 
     private CssSelectorStringSplitter cssSelectorString = new CssSelectorStringSplitter();
 
@@ -33,6 +31,7 @@ public class CssElementCombinatorPairsToXpath {
         return xpathBuilder.toString();
     }
 
+    /*
     private static Properties getVersionProperties() {
         ClassLoader classLoader = CssElementCombinatorPairsToXpath.class.getClassLoader();
         Properties properties = new Properties();
@@ -43,6 +42,7 @@ public class CssElementCombinatorPairsToXpath {
         }
         return properties;
     }
+    */
 
     private void addElementToXpathString(StringBuilder xpathBuilder, CssElementCombinatorPair elementCombinatorPair) {
         String element = elementCombinatorPair.getCssElementAttributes().getElement();
@@ -168,6 +168,7 @@ public class CssElementCombinatorPairsToXpath {
         }
     }
 
+    /*
     public String mainGo(String[] args) throws NiceCssSelectorStringForOutputException {
 
         if (args.length != 1) {
@@ -199,4 +200,5 @@ public class CssElementCombinatorPairsToXpath {
         }
         System.exit(exitValue);
     }
+    */
 }

@@ -16,6 +16,7 @@ public class KiwiScreen extends Screen {
     protected final ResourceLocation id;
     private Root root;
     protected boolean ready;
+    protected UIContext ctx;
 
     public KiwiScreen(ResourceLocation id) {
         super(new StringTextComponent(id.toString()));
@@ -26,13 +27,13 @@ public class KiwiScreen extends Screen {
     public void init(Minecraft mc, int width, int height) {
         super.init(mc, width, height);
 
-        UIContext ctx = new UIContext();
-        ctx.screen = this;
-
         Document doc = UIModule.KXML_LOADER.map.get(id);
         if (doc == null) {
             return;
         }
+
+        ctx = new UIContext(doc);
+        ctx.screen = this;
         root = UILoader.INSTANCE.load(doc, ctx);
 
         /*
@@ -101,6 +102,7 @@ public class KiwiScreen extends Screen {
             ready = false;
             root.destroy();
             root = null;
+            ctx = null;
         }
     }
 

@@ -1,5 +1,9 @@
 package snownee.kiwi.ui.client.factory;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.CharacterData;
@@ -10,7 +14,9 @@ import org.w3c.dom.NodeList;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.client.gui.screen.Screen;
 import snownee.kiwi.Kiwi;
+import snownee.kiwi.ui.client.Binding;
 import snownee.kiwi.ui.client.UIContext;
 import snownee.kiwi.ui.client.widget.NestedWidget;
 import snownee.kiwi.ui.client.widget.Root;
@@ -32,8 +38,35 @@ public class UILoader {
         factories.put("button", ButtonFactory.INSTANCE);
     }
 
+    @SuppressWarnings("boxing")
     public Root<? extends Root> load(Document doc, UIContext ctx) {
         Root<? extends Root> root = parseRecursively(doc.getDocumentElement(), ctx);
+        Class<? extends Screen> clazz = ctx.screen.getClass();
+        for (Method method : clazz.getMethods()) {
+            int mod = method.getModifiers();
+            if (Modifier.isStatic(mod) || Modifier.isAbstract(mod)) {
+                continue;
+            }
+            Binding binding = method.getAnnotation(Binding.class);
+            if (binding == null) {
+                continue;
+            }
+            String selector = binding.target();
+            String event = binding.event();
+            List<Widget> widgets = ctx.getWidgetsBySelector(selector);
+            for (Widget widget : widgets) {
+                widget.bus.bind(event, $ -> {
+                    System.out.println(method);
+                    System.out.println(ctx);
+                    try {
+                        return (Boolean) method.invoke(ctx.screen, $);
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                        Kiwi.logger.catching(e);
+                        return false;
+                    }
+                });
+            }
+        }
         return root;
     }
 
@@ -84,6 +117,7 @@ public class UILoader {
         String name = element.getTagName();
         WidgetFactory factory = factories.getOrDefault(name, DivisionFactory.INSTANCE);
         Widget widget = factory.parse(element, ctx);
+        ctx.elementMap.put(element, widget);
         return (T) widget;
     }
 }
