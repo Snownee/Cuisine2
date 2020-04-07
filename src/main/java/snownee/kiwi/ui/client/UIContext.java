@@ -50,8 +50,19 @@ public class UIContext {
         return (T) elementMap.get(element);
     }
 
-    @Nullable
+    public <T extends Widget<T>> List<T> getWidgetsByTagName(String tagName) {
+        NodeList nodeList = doc.getElementsByTagName(tagName);
+        return nodeListToWidgetList(nodeList);
+    }
+
     public <T extends Widget<T>> List<T> getWidgetsBySelector(String selector) {
+        if (selector.matches("#[a-zA-Z0-9-]+")) {
+            T widget = getWidgetById(selector.substring(1));
+            return Collections.singletonList(widget);
+        }
+        if (selector.matches("[a-zA-Z0-9-]+")) {
+            return getWidgetsByTagName(selector);
+        }
         try {
             String expression = SELECTOR_CONVERTER.convertCssSelectorStringToXpathString(selector);
             XPath xPath = XPathFactory.newInstance().newXPath();
