@@ -38,7 +38,6 @@ public class UILoader {
         factories.put("button", ButtonFactory.INSTANCE);
     }
 
-    @SuppressWarnings("boxing")
     public Root<? extends Root> load(Document doc, UIContext ctx) {
         Root<? extends Root> root = parseRecursively(doc.getDocumentElement(), ctx);
         Class<? extends Screen> clazz = ctx.screen.getClass();
@@ -51,15 +50,16 @@ public class UILoader {
             if (binding == null) {
                 continue;
             }
+            if (method.getReturnType() != boolean.class) {
+                throw new IllegalArgumentException("Bound method " + method.getName() + " does not return a boolean value.");
+            }
             String selector = binding.target();
             String event = binding.event();
             List<Widget> widgets = ctx.getWidgetsBySelector(selector);
             for (Widget widget : widgets) {
                 widget.bus.bind(event, $ -> {
-                    System.out.println(method);
-                    System.out.println(ctx);
                     try {
-                        return (Boolean) method.invoke(ctx.screen, $);
+                        return (boolean) method.invoke(ctx.screen, $);
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                         Kiwi.logger.catching(e);
                         return false;

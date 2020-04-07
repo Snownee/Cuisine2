@@ -123,8 +123,9 @@ public class KiwiScreen extends Screen {
     }
 
     @Binding(target = "#btn", event = "click")
-    public void testClick(Widget widget) {
+    public boolean testClick(Widget widget) {
         System.out.println("hi");
+        return true;
     }
 
 }
